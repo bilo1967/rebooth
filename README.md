@@ -1,8 +1,20 @@
-# reBooth
+# ReBooth
 
 ## Disclaimer:
 
-The code is still full of commented parts and debugging instructions and needs to be cleaned up. Also, some of the internal documentation is still in Italian and needs to be translated. Use it at your own risk. We do not take any responsibility for any kind of damage it might cause. That said, once you meet the prerequisites, rebooth should work as is.
+This code is still full of commented parts and debugging instructions and needs to be cleaned up. Also, some of the internal documentation is still in Italian and needs to be translated. Use it at your own risk. We do not take any responsibility for any kind of damage it might cause. That said, once you meet the prerequisites, rebooth should work as is.
+
+## What is ReBooth and how it works
+
+ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training. The system connects a teacher and a group of students (about 6/7; the exact number of students depends on the hardware quality and the teacher's connection).
+
+There's a single audio/video webrtc connection between the teacher and each student (the connection topology is star shaped). The teacher can communicate one-way to the whole class (class call) or individually talk with each student (intercom). Students can communicate each other only via chat, with text messages transparently routed by the teacher using the webrtc data channel. Audio and binary files, on the other hand, are exchanged using a web server.
+
+To reduce the risk of compromising student activity, ReBooth:
+1) Sends the entire audio file to the student's browser before the teacher starts the session or exam. This allows the student to listen to the audio file in its original audio quality, without being affected by any connection problems or drops.
+2) Records the student's audio with two separate procedures: on the one hand, it records the audio streaming the teacher receives on their computer and, on the other, it records the student's audio locally on their computer and then sends this audio to the server where ReBooth is hosted.
+3) Students can save their recordings and eventually send them to the teacher by other means.
+
 
 ## Prerequisites:
 
