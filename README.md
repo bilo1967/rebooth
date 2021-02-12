@@ -1,12 +1,17 @@
 # reBooth
 
+## Disclaimer:
+
+The code is still full of commented parts and debugging instructions and needs to be cleaned up. Also, some of the internal documentation is still in Italian and needs to be translated. Use it at your own risk. We do not take any responsibility for any kind of damage it might cause. That said, once you meet the prerequisites, rebooth should work as is.
+
 ## Prerequisites:
 
 - a [PeerJS server](https://github.com/peers/peerjs-server);
 - one or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn));
 - one or more TURN servers; you may buy access to an existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn));
 - a SMTP server (to send invitations);
-- an web server running PHP ≥ 5.5 with a writeable directory;
+- a web server with PHP (≥ 5.5) and HTTPS to host your rebooth implementation;
+- a writeable directory on this server to store recordings and temporary data;
 - a PHP authentication module (you'll have to write your own).
 
 
