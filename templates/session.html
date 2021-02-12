@@ -1,0 +1,2651 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <title></title>
+
+  <!-- favicon for all devices -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+  <link rel="manifest" href="/images/icons/site.webmanifest">
+  <link rel="mask-icon" href="/images/icons/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/images/icons/favicon.ico">
+  
+  
+  <!--script src="https://kit.fontawesome.com/ea65ac0a48.js"></script-->
+  <!--link href="/js/fontawesome/css/all.min.css" rel="stylesheet"-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/fontawesome.min.js" integrity="sha256-NP9NujdEzS5m4ZxvNqkcbxyHB0dTRy9hG13RwTVBGwo=" crossorigin="anonymous"></script>  
+  
+  
+  <!-- Bootstrap 4.4.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
+  <!--link rel="stylesheet" href="css/bootstrap.min.css" /-->
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
+  <!--script src="js/bootstrap.min.js"></script--> <!-- Bootstrap 4.4.1 -->
+  
+  <!-- ReBooth -->
+  <link rel="stylesheet" href="css/rebooth.css?0.10">
+
+  
+  <!-- https://github.com/daneden/animate.css -->
+  <link rel="stylesheet" href="css/animate.min.css">
+  <script src="js/animatecss.js"></script>
+
+  <!-- Create ZIP file -->
+  <script src="js/jszip.min.js"></script>
+
+  <!-- Bootstrap 4 alerts, confirm, prompt boxex -->
+  <script src="js/bootbox.min.js"></script>
+  
+  <script src="js/myrecorder.js"></script>
+  <script src="js/mychrono.js"></script>
+  <script src="js/log.js"></script>  
+  
+  
+  <!--script src="js/bootstrap4-input-clearer.min.js"></script-->
+  <script src="js/js.cookie.js"></script>
+
+  <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.0.4/peerjs.min.js"></script-->
+  <script src="js/peerjs.min.js?0.05"></script>
+  
+  
+  <script src="js/io-devices.js"></script>
+  <script src="js/utils.js?0.02"></script>
+  <script src="js/crc-32.js"></script>
+
+  <script src="config/config.js?0.08"></script>
+  <script src="js/rebooth.js?0.05"></script>
+  
+  <script src="js/rebooth-file-manager.js?0.04"></script>
+
+
+
+
+  
+  
+<style>
+
+#teacher {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    cursor: move;
+}
+
+
+.file-item:hover {
+    background: #ffffd0 !important;
+}
+
+
+.file-item-description {
+    background: transparent !important;
+}
+
+bo-dy {
+    background: rgb(2,0,36);
+    background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(56,9,121,1) 16%, rgba(0,212,255,1) 100%);
+}
+
+body {
+    background: url(images/bg10.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.head-panel {
+    background: rgba(56,9,121,0.25);
+    color: white;
+}
+
+.normal-video-controls {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    background: transparent;
+    height: var(--normal-video-height);
+}
+
+/* vertical overflow scroller at left */
+#log-board-container {
+    height: 153px;
+    max-height: 153px;
+    overflow-y: scroll;
+    direction: rtl; 
+    padding-left: 4px;
+}
+#log-board-container:hover {
+    z-index: 10;
+   
+}
+
+
+#log-board {
+    direction: ltr; 
+}
+
+
+
+.log-item-warning {
+    font-style: italic;
+}
+
+.log-item-error {
+    color: brown;
+    //font-weight: bold;
+}
+
+.log-board-item {
+    font-size: 0.75rem;
+}
+
+</style>
+  
+<script>
+var invitations = JSON.parse('<?=$_SESSION["invitations"]?>');
+
+const userName        = '<?=@$_SESSION["user"]?>';
+const classCode       = '<?=@$_SESSION["classCode"]?>';
+const boothURL        = '<?=$CONFIG["booth_url"]?>';
+
+const RecIdPrefix     = "rs";   // recording session prefix
+
+const BoothPollingInterval = 3210;
+var pollingIntervalTimer = null;
+
+var me                = null; // <===
+var localCameraElem   = null;
+var booths            = [];
+
+var recording         = false;
+
+var recorderChrono    = null;
+
+var classCall         = null;
+
+var recordingIds      = null;
+
+
+
+// Pointers to functions to clear/pause/resume a batch activity
+var clearBatch        = () => {};
+var resumeBatch       = () => {};
+var pauseBatch        = () => {};
+
+
+// Session token is initialized when the page is loaded, 
+// and stored on the server when the class starts to prevent 
+// unauthorized uploads/downloads from the booths (or from
+// a malicious script).
+// It is removed from the server when the teacher logs out
+// and page is closed (or reloaded, in which case it's also
+// re-initialized)
+// It is sent to each booth as they connect.
+
+var sessionToken = null;
+
+class SessionToken {
+
+    token = null;
+    members = [];
+    
+    constructor() {
+        this.token = getPins(1, 10)[0];
+        console.log("Session token is: " + this.token);
+    }
+    
+    addMember(m) {
+        if (!this.members.includes(m)) this.members.push(m);
+    }
+    
+    get() {
+        return this.token;
+    }
+    
+    set() {
+        this.save();
+    }
+    
+    save() {
+
+        $.ajax({
+            type: 'POST',
+            url: '/actions/session-set-token',
+            data: {
+                token: this.token,
+                members: this.members,
+            },
+            cache: false,
+            dataType: "json",
+        }).done((d) => {
+            if (d.Result == "OK") {
+                console.log("Session token has been set to " + this.token);
+            } else {
+                // ERROR
+                console.warn("Could not set the session token", d);
+            }
+        }).fail(e => {
+            // ERROR
+            console.log(e);
+        });
+    }
+    
+    unset() {
+        let fd = new FormData();
+        
+        $.ajax({
+            type: 'POST',
+            url: '/actions/session-unset-token',
+          //data: fd,
+          //processData: false,
+          //contentType: false,
+            dataType: "json",
+        }).done((d) => {
+            if (d.Result == "OK") {
+                console.log("Session token has been unset");
+            } else {
+                // ERROR
+                console.warn("Could not unset the session token", d);
+            }
+        }).fail(e => {
+            // ERROR
+            console.log(e);
+        });
+
+    }
+}
+
+
+
+function loadClock() {
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
+function updateClock(){
+    var months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+    var days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
+   
+    var date = new Date();
+   
+    var hours = date.getHours();
+    
+    var minutes = date.getMinutes() < 10 
+                  ? '0' + date.getMinutes() 
+                  : date.getMinutes();
+    
+    //var seconds = date.getSeconds() < 10 
+    //              ? '0' + date.getSeconds() 
+    //              : date.getSeconds();
+    
+    var dayOfWeek = days[date.getDay()];
+    //var month = months[date.getMonth()];
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var year = date.getFullYear();
+    
+    var dateString = dayOfWeek + ', ' + day + '/' + month + '/' + year;
+    
+    $('#date').text(dateString);
+    $('#time').text(hours+":"+minutes);
+} 
+
+$(document).ready(function() {
+
+    recordingIds = new SessionIdGenerator(RecIdPrefix);
+
+    // Bootstrap custom tooltips
+    $('[data-tooltip="tooltip"]').tooltip(); 
+    $("input[data-tooltip='tooltip']").mouseout(function(){
+      $(this).tooltip('hide');
+    });    
+    
+    loadClock();
+
+    bootbox.alert({
+        centerVertical: true,
+        title: "Welcome to "+AppName+ " v"+AppVersion,
+        message: "Remember that students won't be able to connect to their booths until you press the 'start the class' button"
+    });
+
+    if (DebugMode) {
+        let d = new Date();
+        saveLog = "[" + d.toTimeStamp() + "] " + AppName + " " + AppVersion + " teacher log console redirection enabled\n";
+        redirectConsole();        
+    }
+    
+    $('.download-log-link').on('click', function(e) {
+        this.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(saveLog));
+        this.setAttribute('download', 'log.txt');
+    });
+    
+    
+    $('#teacher-video-toggle').on('click', () => {
+        if (toggleVideo(me.mediaStream)) {
+            $('#teacher-video-toggle > i').removeClass('fa-video fa-video-slash').addClass('fa-video');
+        } else {
+            $('#teacher-video-toggle > i').removeClass('fa-video fa-video-slash').addClass('fa-video-slash');
+        }
+    });
+
+    // Setup logon/logoff buttons
+    $('#logoff').removeClass('disabled');
+    $('#logon').removeClass('disabled');
+    $('#logoff').addClass('disabled');
+    
+    // Setup Record/Stop buttons
+    $('#recorder-start').removeClass('disabled');
+    $('#recorder-stop').removeClass('disabled').addClass('disabled');
+
+
+    function appendLog(message, cls="") {
+        $("#log-board").append('<div class="log-board-item ' + cls + '">' + message + "</div>");
+        $("#log-board").scrollToEnd();
+        $("#log-board-container").scrollToEnd();
+    }
+
+    $('#log-board').html("");
+    appendLog("Welcome to " + AppName + " v" + AppVersion);
+
+
+    // Make self video div draggable around
+    dragElement("teacher");
+
+    recorderChrono = new MyChrono(100, (t) => {
+        t = Math.floor(t / 10);
+        
+        $('#recorder-chrono').text(t.toMMSS());
+    });
+
+    //$('.player-control').prop('disabled', 'disabled');
+
+    // Set title
+    $('#application-name').html(AppName + " v" + AppVersion);
+
+
+    sessionToken = new SessionToken();
+
+
+    // clear button in inputs
+    //$(function() {
+    //    $('.clearer').clearer();
+    //});
+    
+
+    // Load local camera and microphone selectors
+    setDeviceSelectors({
+       vs: $('#select-video-source')[0], // select box for video source devices
+       as: $('#select-audio-source')[0], // select box for audio source devices
+       ao: $('#select-audio-output')[0], // select box for audio output devices
+    });
+    
+    
+    function addBoothElem(pin, n, email) {
+    
+        let invitationLink = boothURL + "?pin=" + pin + "&t=" + userName + (classCode != '' ? '&c='+classCode : '') + "&s=" + email;
+        
+        if (email == "" || typeof email == 'undefined') email = "student@booth.n" + n;
+    
+        // Clono il div prototipo della cabina e lo aggiungo al pannello delle connessioni
+        var elem = $('#connection-prototype')
+           .clone()
+           .prop('id', "booth-" + pin)
+           .data('pin', pin)
+           .data('who', email)
+           .css('display', 'block');
+        $('#booths').append(elem);
+        
+        // Set various IDs for current booth
+        $('#booth-'+pin+" .normal-video-controls").prop('id', 'booth-video-controls-' + pin);
+        $('#booth-'+pin+" video").prop('id', 'booth-video-' + pin);
+        $('#booth-'+pin+" video").prop('poster', 'images/booth-' + n + '.png');
+        
+        $('#booth-'+pin+" .card-header").prop('id', 'booth-header-' + pin).data('ord', n);
+        $('#booth-'+pin+" .booth-name").prop('id', 'booth-name-' + pin).html("Booth n&#186; " + n);
+        $('#booth-'+pin+" .invitation-link")
+            .prop('id', 'invitation-link-' + pin)
+            .data('invitation-link', invitationLink)
+            .attr('title', "Click to copy the invitation link for “" + email + "” (pin:" + pin + ")");
+
+        $('#booth-'+pin+" .take-snapshot").prop('id', 'take-snapshot-' + pin);
+        $('#booth-'+pin+" .kick-out").prop('id', 'kick-out-' + pin);
+        $('#booth-'+pin+" .talk-to-booth").prop('id', 'talk-to-booth-' + pin);
+        $('#booth-'+pin+" .download-booth-recording").prop('id', 'download-booth-recording-' + pin);
+        
+        
+        // Add a row to the booths status log table (see status-dialog)
+        $('#status-log').append(
+            '<tr id="booth-status-'+pin+'">' +
+              '<th>'+n+'</th>'+
+              '<td class="booth-student-status">'+email+'</td>' +
+              '<td class="booth-player-status"></td>' +
+              '<td class="booth-recorder-status"></td>'+
+            '</tr>'
+        );
+        
+        
+    }
+    
+
+    function initBooths() {
+        booths = [];
+        let i = 1;
+        $('#booths').html('');
+        invitations.forEach((invitation) => {
+        
+            let pin = invitation.pin;
+            let email = invitation.email;
+
+            addBoothElem(pin, i, email);
+                
+            booths.push({pin: pin, videoElement: $('#booth-video-' + pin)[0]});
+
+            console.log("Added booth " + pin + " for " + email);
+            
+            i++;
+        });
+        
+        // Load custom tooltips for new DOM elements
+        $('[data-tooltip="tooltip"]').tooltip();
+        $("input[data-tooltip='tooltip']").mouseout(function(){
+          $(this).tooltip('hide');
+        });    
+        
+    }
+    
+
+    $('#add-booth').on('click', function () {
+        let newpin = null;
+        do {
+            const pins = getPins(1, PinLength);
+            newpin = pins[0];
+        } while (invitations.find(i => { return i.pin == newpin; }) !== undefined );
+        
+
+        invitations.push({pin: newpin, email: null});
+
+        addBoothElem(newpin, invitations.length , "");
+        
+        $('[data-tooltip="tooltip"]').tooltip();
+        $("input[data-tooltip='tooltip']").mouseout(function(){
+          $(this).tooltip('hide');
+        });    
+        
+        
+        me.addBooth(newpin, $('#booth-video-' + newpin)[0]);
+        
+        console.log("Added a booth with PIN: " + newpin);
+        
+    });
+    
+    
+    function initTeacher() {
+
+        if (me instanceof Teacher) {
+            me.logoff();
+            me = null;
+        }
+        
+        sessionToken.unset();
+        
+        me = new Teacher(
+            {
+                muted: true,
+                videoElement: $('#teacher-video')[0],
+                // starting connection - prepare interface
+                onBoothConnect: (pin, who) => {
+                
+                    let d = new Date();
+                    console.log(pin + " " + who + " has joined the class");
+                    appendLog(who + " has joined the class (" + d.toTimeStamp() + ")");
+                    
+                    $('#booth-header-' + pin).removeClass('bg-info').addClass('bg-primary');
+                    $('#booth-name-'+pin).html(who);
+                    
+                    $('#booth-'+pin+" .take-snapshot").addClass('cursor-pointer');
+                    $('#booth-'+pin+" .kick-out").addClass('cursor-pointer').removeClass('disabled');
+
+                    
+                    me.send(pin, {sessionToken: {value: sessionToken.get()}});
+                    
+                    sessionToken.addMember(pin);
+                    sessionToken.save();
+                },
+                // Connection completed
+                onBoothConnected: (pin, who) => {
+                
+                    console.log("FATTO " + pin);
+                    me.shareScreenToBooth(pin); // Safe to do even if we're not actually sharing the screen
+                    
+                },
+                onBoothDisconnect: (pin, who) => {
+                    //let e = $('#booth-header-' + pin);
+                    //e.removeClass('bg-primary').addClass('bg-info').html("Booth n&#186; " + e.data('ord'));
+
+                    me.send(pin, {flags: {value: 'clear all flags'}});
+                    clearAllFlags(pin);
+                    
+                    let talking = $('#booth-'+pin+' .talk-to-booth-indicator').hasClass('spinner-grow');
+                    if (talking) {
+                        me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
+                    }
+                    
+                    $('#booth-header-' + pin).removeClass('bg-primary').addClass('bg-info');
+                    $('booth-name-'+pin).html("Booth n&#186; " + $('#booth-header-' + pin).data('ord'));
+                    $('#booth-'+pin+' .booth-mini-log').html('');
+                    $('#booth-'+pin+' .take-snapshot').removeClass('cursor-pointer');
+                    $('#booth-'+pin+' .kick-out').removeClass('cursor-pointer').addClass('disabled');
+                    
+                    $('#booth-'+pin+' .listen-to-booth-indicator').removeClass('spinner-grow');
+                    $('#booth-'+pin+' .talk-to-booth-indicator').removeClass('spinner-grow');
+                    $('#booth-'+pin+' .talk-to-booth')
+                        .removeClass('active')
+                        .removeClass('disabled')
+                        .addClass('active');
+                    
+                    let d = new Date();
+                    console.log(pin + " " + who + " disconnected");
+                    appendLog(who + " disconnected (" + d.toTimeStamp() + ")");
+
+                },
+                onDataReceived: function(pin, who, data) {
+
+                    if (data.chat) {
+                    
+                        animateCSS('#send-chat-text', 'heartBeat');
+                        
+                        if ($('#shared-chat').prop("checked") == true) {
+                            me.forEachConnectedBooth(booth => {
+                                if (booth.pin != pin) {
+                                    booth.send({chat: {pin: pin, who: who, text: data.chat.text}});
+                                    console.log("Sending a chat message from " + pin + " to " + pin);                                
+                                }
+                            });
+                        }
+
+                        let n = who.indexOf("@");
+                        if (n > 0) who = who.substr(0, n);
+                        who = who.trunc(15);  
+      
+                        let t = "<span style='color: purple'><b>" + who + "</b>&gt; " + data.chat.text + "</span>";
+                        $("#chat-board").append(t);
+                        $("#chat-board").scrollToEnd();
+                    } else if (data.flags) {
+                    
+                        switch (data.flags.value) {
+                            case "raise hand":
+                                clearAllFlags(pin);
+                                //$('#booth-video-controls-'+pin).css('background', 'rgba(255, 0, 0, 0.5)');
+                                loadAndPlay("sounds/boing.wav");
+                                $('#booth-video-controls-'+pin+' .booth-flags').html(
+                                    '<span class="fa-stack fa-4x text-warning">' +
+                                    '<i class="fas fa-circle fa-stack-2x" style="opacity: 0.8"></i>' +
+                                    '<i class="fas fa-hand-paper fa-stack-1x fa-inverse"></i>' +
+                                    '</span>'
+                                ); 
+                                
+                                break;
+                            case "hand downn":
+                                clearAllFlags(pin);
+                                break;
+                            case "thumbs up":
+                                clearAllFlags(pin);
+                                $('#booth-video-controls-'+pin+' .booth-flags').html(
+                                    '<span class="fa-stack fa-4x text-success">' +
+                                    '<i class="fas fa-circle fa-stack-2x" style="opacity: 0.8"></i>' +
+                                    '<i class="fas fa-thumbs-up fa-stack-1x fa-inverse"></i>' +
+                                    '</span>'
+                                );
+                                break;
+                            case "thumbs down":
+                                clearAllFlags(pin);
+                                $('#booth-video-controls-'+pin+' .booth-flags').html(
+                                    '<span class="fa-stack fa-4x text-danger">' +
+                                    '<i class="fas fa-circle fa-stack-2x" style="opacity: 0.8"></i>' +
+                                    '<i class="fas fa-thumbs-down fa-stack-1x fa-inverse"></i>' +
+                                    '</span>'
+                                );
+                                break;
+                            case "clear all flags":
+                                clearAllFlags(pin);
+                                break;
+                        
+                        } 
+                    } else if (data.player) {
+                        $(document).trigger('booth-player-feedback', {
+                            date: Date.now(),
+                            pin: pin,
+                            who: who,
+                            action: data.player.action,
+                            parameters: data.player.parameters
+                        });
+                    } else if (data.recorder) {
+                        $(document).trigger('booth-recorder-feedback', {
+                            date: Date.now(),
+                            pin: pin,
+                            who: who,
+                            action: data.recorder.action,
+                            parameters: data.recorder.parameters
+                        });
+                    } else if (data.info) {
+                        $(document).trigger('info-feedback', {
+                            date: Date.now(),
+                            pin: pin,
+                            who: who,
+                            action: data.info.action,
+                            parameters: data.info.parameters
+                        });
+                    } else if (data.snapshot) {
+                    
+                        console.log("SNAPSHOT IN ARRIVO?");
+                        downloadDataURL(data.snapshot.parameters.url, data.snapshot.parameters.filename);
+                    
+                    } else if (data.system) {
+                        switch (data.system.value) {
+                            case 'hangup':
+                                let d = new Date();
+                                //console.log(pin + " " + who + " has left the class");
+                                appendLog(who + " has left the class (" + d.toTimeStamp() + ")");
+                                break;
+                        }
+                    }
+                    
+                },
+
+            },
+            booths
+        );
+    } // End of init teacher function
+
+    // Let's go!
+    initBooths();
+    initTeacher();
+    
+    // Set booth polling interval function
+    pollingIntervalTimer = setInterval(() => {
+        if (me) {
+            me.sendToAll({info: {action: "status"}});
+            me.forEachBooth(booth => {
+                $('#booth-status-'+booth.pin+">td.booth-player-status").html('');
+                $('#booth-status-'+booth.pin+">td.booth-recorder-status").html('');
+            });
+            
+        }
+    }, BoothPollingInterval);
+    
+
+    $(document).on('info-feedback', (event, data) => {
+        //let timestamp = data.timeStamp;
+        let action = data.action;
+        let pin = data.pin;
+        let who = data.who;
+        let params = data.parameters;
+        
+        let pf = params.playerFile ? params.playerFile : "none"; 
+        let ps = params.playerStatus;
+        let pt = (Math.floor(params.playerTime)+"").toHHMMSS();
+        let rs = params.recorderStatus;
+        let rt = (Math.floor(params.recorderTime)+"").toHHMMSS();
+        
+        if (pf != 'none' && pf != fileName) {
+            pf = '<span style="text-decoration:line-through;">'+pf+'</span>';
+        } else if (pf == 'none') {
+            pf = '<em>' + pf + '</em>';
+        }
+
+        $('#booth-status-'+pin+">td.booth-player-status").html(pf+' ('+ps+': '+pt+')');
+        $('#booth-status-'+pin+">td.booth-recorder-status").html(rs+': '+rt);
+        
+        me.getBooth(pin).registry.file = params.playerFile;
+        me.getBooth(pin).registry.crc = params.playerFileCRC;
+    });
+    
+    
+    $('#share-screen').on('click', () => {
+    
+        if (me.sharingScreen()) {
+            console.log("Teacher asked to stop sharing the screen");
+            me.unshareScreen();
+            $('#share-screen > i').removeClass('fa-blink');
+        } else {
+        
+            navigator.mediaDevices
+                .getDisplayMedia(ScreenShareConstraints)
+                .then(stream => {
+                    console.log('Screen, application or browser tab has been shared');
+                    
+                    $('#share-screen > i').addClass('fa-blink');
+                    animateCSS('#send-chat-text', 'heartBeat');
+                    
+                    stream.getVideoTracks()[0].onended = () => {
+                        console.log('Sharing screen ended');  
+                        me.unshareScreen();
+                        $('#share-screen > i').removeClass('fa-blink');
+                    }
+            
+                    me.shareScreen(stream);
+                    
+                }).catch(err => {
+                
+                    me.unshareScreen();
+                    $('#share-screen > i').removeClass('fa-blink');
+                    
+                    console.error("Error sharing screen: " + err);
+                    return null; 
+                });        
+        }
+              
+
+    });
+
+
+    $('#export-status-button').on('click', function() {
+    
+        let t = $('#status-table').table2CSV(";");
+        let blob = new Blob([t], {type: 'text/plain'});
+        var dlink = document.createElement('a');
+        dlink.download = 'booths.csv';
+        dlink.href = window.URL.createObjectURL(blob);
+        dlink.click();
+        dlink.remove();
+    });
+
+
+    // Handle chronometer and timeout for batch activities
+    var batchChrono = null;
+    var batchTimeout = null;
+
+    clearBatch = () => {
+
+        if (batchChrono) batchChrono.clear();
+        if (batchTimeout) clearTimeout(batchTimeout);
+        
+        $('#batch-display').removeClass('hide').addClass('hide');
+        
+        me.sendToAll({batch: { action: "clear", parameters: {} }});
+
+        $('#audio-player').off('ended.sim');
+        $('#audio-player').off('ended.con');
+
+        console.log("Batch cleared");
+        appendLog("Batch cleared");
+
+    }
+    
+    pauseBatch = () => {
+        console.log("Pause batch");
+        if (batchChrono) batchChrono.pause();
+    }
+    
+    resumeBatch = () => {
+        console.log("Resume batch");
+        if (batchChrono) batchChrono.resume();
+    }
+
+
+    $('#simultaneous-batch,#consecutive-batch').on('click', (e) => {
+        e.preventDefault();
+        
+        // type contains the event target id (simultaneous-batch, consecutive-batch)
+        let type = (e.target.id == 'simultaneous-batch' ? 'SIM' : 'CON');
+        
+        console.log("Trying to start a " + type + " batch");
+    
+        // check if there's any booth connected 
+        // and verify if they've loaded
+        let fileok = true;
+        let n = 0;
+        let err = false, t = "", m = "";
+        
+        let audioPlayer = $('#audio-player')[0];
+        let duration = audioPlayer.duration;
+        
+        me.forEachConnectedBooth(booth => {
+            n++;
+            if (booth.registry.file != fileName || booth.registry.crc != fileCRC) fileok = false;
+        });
+        
+        if (recording) {
+            err = true;
+            t = "Recorder busy";
+            m = "Can't start an interpretation session while recording";
+        } else if (!audioPlayer.paused) {
+            err = true;
+            t = "Player busy";
+            m = "Can't start an interpretation session while the player is playing";
+        } else if (n == 0) {
+            err = true;
+            t = "No booth connected";
+            m = "There are no connected booths yet";
+        } else if (!fileok) {
+            err = true;
+            t = "Audio file not ready on all booths";
+            m = "You've not loaded an audio file or the audio file has not been sent to all booths yet";
+        } else if (isNaN(duration) || duration == 0) {
+            err = true;
+            t = "Unsupported audio file";
+            m = "Can't figure out the duration of the audio file you've uploaded (unsupported file type for this feature)";
+        }
+
+
+        if (err) {
+            console.log("The " + type + " batch cannot be started: " + t);
+            bootbox.alert({
+                centerVertical: true,
+                title: t,
+                message: m,
+            });
+            return;
+        }
+        
+        console.log("Scheduling a " + type + " batch...");
+        appendLog("Scheduling a " + type + " batch...");
+
+        
+        var batchDuration = null;
+        
+        let now = new Date();
+        
+        let session = recordingIds.id;
+                
+        
+        if (type == 'SIM') {
+            bootbox.prompt({
+                title: "Simultaneous translation session",
+                message: "<div class='mb-2'>The recording will begin along with the audio playback and will continue past its end for the number of seconds you specify below. </div>",
+                inputType: 'number',
+                min: 0,
+                locale: 'en	',
+                value: Cookies.get('simultaneous-batch-delay') || SimultaneousBatchDefaultDelay,
+                buttons: {
+                    confirm: {
+                        label: 'Start session',
+                    },
+                },
+                callback: function (result) {
+                    if (result === null) {
+                        console.log("Batch of type " + type + " aborted");
+                        appendLog("Batch of type " + type + " aborted");
+                        return;
+                    }
+                    console.log("Batch of type " + type + " started");
+                    appendLog("Batch of type " + type + " started");
+                    
+                    result = parseInt(result) || 0;
+                    
+                    Cookies.set('simultaneous-batch-delay', result, { expires: 365 });
+                    
+                    batchDuration = duration + result;
+                    
+                    console.log("Batch in progress: triggering recorder start command");
+                    $('#recorder-start').trigger('click');
+
+
+                    console.log("Batch in progress: scheduling the batch on all booths");
+                    me.sendToAll({
+                        batch: {
+                            action: "simultaneous", 
+                            parameters: {
+                                delay: result,
+                                duration: batchDuration,
+                                file: fileName,
+                                crc: fileCRC,
+                                teacher: userName, 
+                                session: session,
+                            }
+                        }
+                    });
+ 
+                    
+                    $('#batch-counter').html('--:--');
+                    
+                    batchChrono = new MyChrono(
+                        100,
+                        (t) => {
+                            t = Math.floor(t / 10);
+                            
+                            if (batchDuration <= t) {
+                                //batchChrono.stop();
+                                batchChrono.clear();
+                                t = batchDuration;
+                            }
+                            
+                            $('#batch-counter').html(Math.floor(batchDuration - t).toMMSS());
+                    });
+                    
+                    // Delay 1s audio player
+                    console.log("Batch in progress: triggering player start command (1s delay)");
+                    setTimeout(() => {
+                        $('#audio-player-play').trigger('click');
+                        batchChrono.start()
+                    }, 1000);
+                    
+                    $('#batch-type').html('Simultaneous');
+                    $('#batch-display').removeClass('hide');
+                    
+                    
+                    
+                    // Append an event handler for the "onended" of the player
+                    console.log("Batch in progress: appending 'onended' event handler for current track");
+                    $('#audio-player').on('ended.sim', function() {
+
+                        console.log("Batch in progress: the audio track is over. Recording for " + result + " more seconds.");
+                    
+                        batchTimeout = setTimeout(() => {
+                            console.log("Batch in progress: triggering a recorder stop command");
+                            $('#recorder-stop').trigger('click');
+                        }, result*1000);
+                    });
+                    
+                },
+            });        
+
+        } else { 
+            // type == 'CON'
+            bootbox.prompt({
+                title: "Consecutive translation session",
+                message: "<div class='mb-2'>Audio playback will start immediately. Recording will begin at the end of playback and will last for the duration of the audio plus the number of seconds you set below. You can also enter a negative number of seconds to make the recording shorter than the original audio length.</div>",
+                inputType: 'number',
+                min: -parseInt(duration - 1),
+                locale: 'en	',
+                value: Cookies.get('consecutive-batch-delay') || ConsecutiveBatchDefaultDelay,
+                buttons: {
+                    confirm: {
+                        label: 'Start session',
+                    },
+                },
+                callback: function (result) {
+                    if (result === null) {
+                        console.log("Batch of type " + type + " aborted");
+                        appendLog("Batch of type " + type + " aborted");
+                        return;
+                    }
+                    console.log("Batch of type " + type + " started");
+                    appendLog("Batch of type " + type + " started");
+
+                    
+                    result = parseInt(result) || 0;
+                    
+                    
+                    batchDuration = duration + result;
+                    
+                    if (batchDuration < 0) {
+                        
+                        return false;
+                    }
+
+                    Cookies.set('consecutive-batch-delay', result, { expires: 365 });
+
+                    
+                    console.log("Batch in progress: scheduling the batch on all booths");
+                    me.sendToAll({
+                        batch: {
+                            action: "consecutive", 
+                            parameters: {
+                                delay: result,
+                                duration: batchDuration,
+                                file: fileName,
+                                crc: fileCRC,
+                                teacher: userName, 
+                                session: session,
+                            }
+                        }
+                    });
+                    
+                    
+                    
+                    $('#batch-counter').html(batchDuration.toMMSS());
+                    
+                    batchChrono = new MyChrono(
+                        100,
+                        (t) => {
+                            t = Math.floor(t / 10);
+                            
+                            if (batchDuration <= t) {
+                                //batchChrono.stop();
+                                batchChrono.clear();
+                                t = batchDuration;
+                            }
+                            
+                            $('#batch-counter').html(Math.floor(batchDuration - t).toMMSS());
+                    });
+                    
+                    // Start audio player
+                    console.log("Batch in progress: triggering a player start command");
+                    $('#audio-player-play').trigger('click');
+                    
+                    $('#batch-type').html('Consecutive');
+                    $('#batch-display').removeClass('hide');
+                    
+                    // Append an event handler for the "onended" of the player
+                    console.log("Batch in progress: appending 'onended' event handler for current track");
+                    $('#audio-player').on('ended.con', function() {
+                    
+                        console.log("Batch in progress: the audio track is over. Recording will start delayed by 1s");
+                    
+                        // Delay 1s audio recorder
+                        
+                        setTimeout(() => {
+                        
+                            batchChrono.start();
+
+                            console.log("Batch in progress: triggering recorder start command. The recording will be automatically stopped after " + batchDuration + "s");                            
+                            $('#recorder-start').trigger('click');
+                            
+                            batchTimeout = setTimeout(() => {
+                                console.log("Batch in progress: triggering a recorder stop command");
+                                $('#recorder-stop').trigger('click');
+                            }, batchDuration * 1000);
+                        
+                        
+                        }, 1000);
+                    
+                    });
+
+
+                },
+                
+            });           
+        }
+        
+        
+    
+    });
+
+    
+    
+    
+    
+    // Reload device list when the config button is clicked
+    $('#config-button').on('click', function() {
+        console.log("enumerating devices");
+        navigator.mediaDevices
+            .enumerateDevices()
+            .then(gotDevices)
+            .then(() => {
+                $('#config-panel').modal('show');
+            })
+            .catch(handleLocalMediaStreamError);    
+    });
+    
+    $('#select-video-source').on('change', () => {
+        Cookies.set('teacher-video-source', $('#select-video-source').val(), { expires: 365 });
+        setUserMediaConstraints();
+    });
+    $('#select-audio-source').on('change', () => {
+        Cookies.set('teacher-audio-source', $('#select-audio-source').val(), { expires: 365 });
+        setUserMediaConstraints();
+    });
+    $('#select-audio-output').on('change', () => {
+        Cookies.set('teacher-audio-output', $('#select-audio-output').val(), { expires: 365 });
+        changeAudioDestination($('#audio-player')[0]);
+        me.forEachBooth(booth => {
+            changeAudioDestination(booth.videoElement);
+        });
+    });
+    
+//  $('#select-video-source').on('change', setUserMediaConstraints);
+//  $('#select-audio-source').on('change', setUserMediaConstraints);
+//  $('#select-audio-output').on('change', () => {
+//      changeAudioDestination($('#audio-player')[0]);
+//      me.forEachBooth(booth => {
+//          changeAudioDestination(booth.videoElement);
+//      });
+//  });
+    
+    navigator.mediaDevices
+        .enumerateDevices()
+        .then(gotDevices)
+        .then(() => {
+            $('#select-video-source').val(Cookies.get('teacher-video-source') || 'default');
+            $('#select-audio-source').val(Cookies.get('teacher-audio-source') || 'default');
+            $('#select-audio-output').val(Cookies.get('teacher-audio-output') || 'default');
+        })
+        .then(() => {
+            setUserMediaConstraints();  
+            changeAudioDestination($('#audio-player')[0]);
+            me.forEachBooth(booth => {
+                changeAudioDestination(booth.videoElement);
+            });
+        })        
+        .catch(handleLocalMediaStreamError);
+        
+    // setUserMediaConstraints();
+
+    $('#load-class').on('click', function() {
+        invitations = null;
+        invitations = [
+            {pin: '12345', email: 'tizio@grr.la'},
+            {pin: '23451', email: 'caio@grr.la'},            
+            {pin: '34512', email: 'sempronio@grr.la'}
+        ];
+        initBooths();
+        initTeacher();
+/*        
+        navigator.mediaDevices
+            .enumerateDevices()
+            .then(gotDevices)
+            .catch(handleLocalMediaStreamError);
+        setUserMediaConstraints();    
+*/        
+        //
+        // save invitations to session
+        //
+    
+    });
+
+    $(document).on('player-feedback', (event, data) => {
+        let timestamp = event.timeStamp;
+        let action = data.action;
+        let params = data.parameters;
+        let file = params.file;
+        let crc = params.crc;
+        
+        
+        switch (action) {
+        case 'ready':
+            console.log("Asking all booths to load file '" + file + "'");
+            me.sendToAll({player: {action: "load", parameters: {teacher: userName, file: file, crc: crc}}});
+            break;
+        case 'play':
+            console.log("Asking all booths to play file '" + file + "'");
+            me.sendToAll({player: {action: "play", parameters: {teacher: userName, file: file}}});
+            break;
+        case 'pause':
+            console.log("Asking all booths to pause file '" + file + "'");
+            me.sendToAll({player: {action: "pause", parameters: {teacher: userName, file: file}}});
+            break;
+        case 'stop':
+            console.log("Asking all booths to stop file '" + file + "'");
+            me.sendToAll({player: {action: "stop", parameters: {teacher: userName, file: file}}});
+            break;
+        }
+    });
+    
+    $(document).on('control-booth-recorder', (event, data) => {
+    
+        let now = new Date();
+        let timestamp = event.timeStamp;
+        let teacher = userName;
+
+        console.log("Recording ID is " + recordingIds.id);
+        
+        let parameters = {
+            teacher: userName, 
+            session: recordingIds.id,
+        };
+        
+        switch (data.action) {
+//      case 'save':
+//          me.sendToAll({recorder: {action: "save", parameters: {teacher: userName, session: session}}});
+//          break;
+        case 'record':
+            console.log("Recorder: record");
+            // New session id
+            me.sendToAll({recorder: {action: "record",        parameters: parameters}});
+            break;
+        case 'pause':
+            console.log("Recorder: pause");
+            me.sendToAll({recorder: {action: "pause",         parameters: parameters}});
+            break;
+        case 'resume':
+            console.log("Recorder: resume");
+            me.sendToAll({recorder: {action: "resume",        parameters: parameters}});
+            break;
+        case 'stop-and-save':
+            console.log("Recorder: stop and save");
+            me.sendToAll({recorder: {action: "stop-and-save", parameters: parameters}});
+            break;
+        }
+    });    
+    
+    $(document).on('booth-recorder-feedback', (event, data) => {
+        let timestamp = event.timeStamp;
+        let pin = data.pin;
+        let who = data.who;
+        let action = data.action;
+        let params = data.parameters;
+        let file = params.file;
+        let session = params.session;
+        
+        switch (action) {
+        case 'rec-ready':
+            setTimeout(() => {
+                    $.ajax({
+                        type: "POST",
+                        url: "/actions/session-get-blob",
+                        data: { session: session, student: who, stat: 1 },
+                        dataType: 'json'
+                    }).done( (d) => {
+                        if (d.Result == "OK") {
+                            // Now that we're sure that the file exists we add the download link
+                            $('#download-booth-recording-'+pin)
+                                .attr('href', "/actions/session-get-blob?session="+session+"&student="+who)
+                                .removeClass('disabled');
+                        } else {
+                            // SHOULD NEVER GET HERE
+                        }
+                    }).fail( (e) => {
+                        // NEITHER HERE
+                        console.log(e);
+                    });
+                },
+                1000
+            );
+            console.log("Recording from booth " + pin + " (" + who + ") + as '" + file + "'");
+            appendLog("Recording from booth " + pin + " (" + who + ") has been uploaded to the server as '" + file + "'");
+            break;
+        default:
+            break;
+        }
+    
+    });
+
+    $(document).on('booth-player-feedback', (event, data) => {
+        let timestamp = event.timeStamp;
+        let pin = data.pin;
+        let who = data.who;
+        let action = data.action;
+        let params = data.parameters;
+        let file = params.file;
+        let crc = params.crc;
+        let mesg = params.mesg;
+        
+        switch (action) {
+        case 'ready':
+            me.getBooth(pin).registry.file = file;
+            me.getBooth(pin).registry.crc = crc;
+            
+            console.log("Booth " + pin + " (" + who + ") ready to play '" + file + "'");
+            $('#booth-' + pin + " .booth-mini-log").html('<i class="fas fa-hand-point-right"></i>&nbsp;' + file);
+            break;
+        case 'started':
+            console.log("Booth " + pin + " (" + who + ") has started playing '" + file + "'");
+            break;
+        case 'paused':
+            console.log("Booth " + pin + " (" + who + ") has paused '" + file + "'");
+            break;
+        case 'ended':
+            console.log("Booth " + pin + " (" + who + ") has ended playing '" + file + "'");
+            break;
+        case 'error':
+            break;
+        case 'crc-error':
+            $('#booth-' + pin + " .booth-mini-log").html('<b><i class="fas fa-exclamation-triangle"></i>&nbsp;UPLOAD FAILED. PLEASE TRY AGAIN</b>');
+            console.log("Booth " + pin + " (" + who + ") file '" + file + "' is corrupt");
+            break;
+        case 'http-error':
+            console.log("Booth " + pin + " (" + who + "): HTTP error '" + mesg + "' loading file '" + file + "'");
+            break;
+        }
+    });
+
+
+
+//    window.addEventListener('beforeunload', function (e) { 
+//        e.preventDefault(); 
+//        e.returnValue = ''; 
+//    });     
+
+//    window.addEventListener('unload', (e) => { 
+//        console.warn("Page has been closed or reloaded - Closing sessions");
+//        
+//        sessionToken.unset();
+//        
+//        me.forEachConnectedBooth(booth => { 
+//            me.send(booth.pin, {action: "leaving", message: "bye"});
+//        });
+//        
+//        setTimeout(function() {
+//            me.destroy();
+//        }, 100);
+//    });     
+    
+    // Handle page close or reload
+    $(window).on('beforeunload', function (e) {
+        // Shows a warning 
+        return e.originalEvent.returnValue;
+    });
+    
+    $(window).on('unload', (e) => {
+        console.warn("Page has been closed or reloaded - Closing sessions");
+        
+        sessionToken.unset();
+        
+        me.forEachConnectedBooth(booth => { 
+            me.send(booth.pin, {action: "leaving", message: "bye"});
+        });
+            
+        setTimeout(function() {
+            me.destroy();
+        }, 100);
+    });
+    
+    
+    $('#logon').on('click', function(e) {
+
+        e.preventDefault();
+        if ($(this).hasClass('disabled')) return;
+        
+        $('#logoff').removeClass('disabled');
+        $('#logon').removeClass('disabled');
+        $('#logoff').addClass('disabled');
+        $('#logon').addClass('disabled');
+        
+        
+        me.logon(
+            userName,
+            classCode,
+            (id) => { 
+                appendLog('Youre connected as ' + userName + '[id = ' + id + ']');
+                $('#logoff').removeClass('disabled');
+                
+                sessionToken.set();
+
+            },
+            (err) => { 
+                appendLog(err);
+                console.log("Logon error: " + err);
+                $('#logoff').removeClass('disabled');
+                $('#logon').removeClass('disabled');
+                $('#logoff').addClass('disabled');
+            }
+        );
+        
+        
+    });
+    
+    $('#logoff').on('click', function(e) {
+
+
+        e.preventDefault();
+
+        if ($(this).hasClass('disabled')) return;
+        
+        bootbox.confirm({
+            title: "Do you really want to end this class?",
+            message: "If you end the class now any recording in progress will be stopped and all booths will be disconnected. Do you really want to continue?",
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-success'
+                }
+            },           
+            callback: (r) => {
+                if (!r) return;
+                
+                if (recording) $('#recorder-stop').trigger('click');
+                
+                activateClassCall(false);
+                
+                $('.listen-to-booth-indicator').removeClass('spinner-grow');
+                $('.talk-to-booth-indicator').removeClass('spinner-grow');
+                $('.booth-mini-log').html('');
+                
+                
+                me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
+                me.muteSelf();
+                me.muteAllBooths();
+                
+                
+                me.sendToAll({flags: {value: 'clear all flags'}});
+                clearAllFlags();
+                
+                
+                sessionToken.unset();
+                
+                me.logoff();
+                
+                appendLog("You're now disconnected");
+                
+                $('#logoff').removeClass('disabled');
+                $('#logon').removeClass('disabled');
+                $('#logoff').addClass('disabled');
+                
+            }
+        });
+        
+    });
+    
+    $('#quit').on('click', function(e) {
+        e.preventDefault();
+        
+        sessionToken.unset();
+        
+        //$('#logoff').removeClass('disabled');
+        //$('#logon').removeClass('disabled');
+        //$('#logoff').addClass('disabled');
+        //$('#logon').addClass('disabled');
+        
+        //$('#logoff').trigger('click');
+
+        window.location.replace("/setup");
+    });
+    
+    
+    $("#chat-text").on("keypress", function(e) {
+        if (e.which == 13) {
+            $('#send-chat-text').trigger('click');
+            return false;
+        }
+    });
+    
+    $('#send-chat-text').on('click', function() {
+        let t = $('#chat-text').val().trim();
+        
+if (t.startsWith('##')) {
+
+    
+    let n = t.substring(2);
+    
+    if (isNaN(n)) {
+        switch(n) {
+        case 'bw.low':
+        case 'bw.medium':
+        case 'bw.high':
+        case 'bw.max':
+            let profile = n.substring(3);
+            setBandwidthProfile(profile);
+            setUserMediaConstraints();
+            me.sendToAll({ profile: { value: profile}});
+            console.log('Changing bandwidth profile to ' + profile);
+            break;
+        case 'beta':
+            console.log('Turning beta features on');
+            $('.beta-features').removeClass('beta-features');
+            break; 
+        }
+        
+        return;
+    }
+    
+    if (n=="0") {
+        $('body').css('background', 'linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(56,9,121,1) 16%, rgba(0,212,255,1) 100%)');
+    } else {
+    
+        $('body').css('background', 'url(images/bg'+n+'.jpg) no-repeat center center fixed')
+        $('body').css('background-size', 'cover');
+    }
+
+    return;
+}
+
+        if (t == "") return;
+        
+        t = "<span>" + t + "<br/></span>";
+        
+        me.forEachConnectedBooth(booth => { 
+            me.send(booth.pin, {chat: {text: t}});
+        });
+
+        $("#chat-board").append(t);
+                      
+        $("#chat-board").scrollToEnd();        
+        
+        $('#chat-text').val('');
+    });
+    
+    
+    $('#recorder-stop').on('click', function(e) {
+        console.log("Record stop clicked");
+        e.preventDefault();
+        
+        clearBatch();
+//      $('#batch-display').removeClass('hide').addClass('hide');
+
+        
+        
+        
+        // Stop and save
+        if ($(this).hasClass('disabled')) return;
+        $('#recorder-start').removeClass('disabled');
+        $('#recorder-stop').removeClass('disabled').addClass('disabled');
+            
+        recording = false;
+        
+        
+        recorderChrono.stop(); // stop timer            
+        
+        console.log("Stop recording");
+//      $("#recorder-start > i").removeClass("fa-square").addClass("fa-circle");
+
+
+        $(document).trigger('control-booth-recorder', {
+            date: Date.now(), 
+            action: "stop-and-save",
+//          parameters: { }
+        });    
+        
+        
+        // Get list of booths that are recording (they may be not connected at the moment)
+        
+        let boothsRecording = [];
+        me.forEachBooth(booth => {
+            if (booth.recorderStatus == 'recording') boothsRecording.push(booth.pin);
+        });
+        
+        
+        if (boothsRecording.length > 0) {
+        
+            $("label[for='recorder-save']").html("Encoding...");
+            
+            $("#recorder-save > i").removeClass("fa-cog fa-spin").addClass("fa-sync fa-spin");
+            
+            let zip = new JSZip();
+
+            // We have to manage some parallel asynchronous events
+            // happening for each booth: encode the raw audio in WAV
+            // format into a blob and zip it. Only after all the blobs
+            // have been zipped into a new blob we can download it as
+            // a zip file
+            
+            var blobPromises = [];
+            
+            console.log("Collecting recordings");
+            
+            boothsRecording.forEach(pin => { 
+                
+                
+                let booth = me.booths[pin];
+            
+                blobPromises.push(
+                    booth.stopRecording().
+                        then(p => {
+                            if (p.mediaBlob.size == 0) {
+                                // E' ancora possibile?
+                            }
+                            zip.file('rec-' + recordingIds.counter + "-" + (booth.who ? booth.who : booth.pin) + ".webm", p.mediaBlob);
+                        }).catch( (err) => {
+                            // GESTIRE ERRORI
+                            console.warn("Error getting recording blob for booth " + booth.pin + " (" + booth.who + "):", err);
+                       })
+                ); 
+            });
+                
+
+            // When everything has been zipped
+            $.when.apply($, blobPromises).then(function() {
+
+                zip.generateAsync({type:"blob"}).then( function(contents) { 
+                
+                    console.log('Generating ZIP download link. Blob size is ' + contents.size);
+                
+                    var url = window.URL.createObjectURL(contents);
+                
+                    let name = recordingIds.id + "-streaming.zip";
+                
+                    $('#recorder-save').attr('href', url);
+                    $('#recorder-save').prop('download', name);
+                    
+                    $("#recorder-save").removeClass("disabled");
+                    $("#recorder-save > i").removeClass("fa-sync fa-cog fa-spin").addClass("fa-save");
+                    
+                    $("label[for='recorder-save']").html("Ready&hellip;");
+                    
+                    recordingIds.next(); // consume current recording session 
+                   
+                }, function (err) {
+                    // GESTIRE UN EVENTUALE ERRORE
+                    console.warn("Error while zipping: ", err)
+                    
+                    recordingIds.next(); // consume current recording session 
+                });        
+            });
+
+        } else {
+            appendLog("No one is recording");
+            console.log("No one is recording");
+            $("#recorder-save > i").removeClass("fa-sync fa-cog fa-spin").addClass("fa-save"); 
+            $("#recorder-save").removeClass("disabled").addClass("disabled");
+            $("label[for='recorder-save']").html("Save audio");
+            
+            recordingIds.next(); // consume current recording session 
+        }        
+
+    });
+    
+    $('#recorder-start').on('click', function(e) {
+    
+        console.log("Record start clicked");
+        e.preventDefault();
+
+        // Start recording
+        if ($(this).hasClass('disabled')) return;
+        $('#recorder-start').removeClass('disabled').addClass('disabled');
+        $('#recorder-stop').removeClass('disabled');
+        
+    
+        console.log("Start recording");
+        
+        // Disable download buttons and clear recording download link on booths
+        $('.download-booth-recording').removeClass('disabled').addClass('disabled').attr('href', '#');
+
+        $(document).trigger('control-booth-recorder', {
+            date: Date.now(), 
+            action: "record",
+//          parameters: { session: null }
+        });    
+        
+
+        let alive = 0;
+        me.forEachConnectedBooth(booth => { 
+            booth.startRecording();
+            alive++;
+        }, true);
+
+        if (!alive) {
+            appendLog("No one is connected");
+            console.log("No one is connected");
+            return false;
+        }
+        console.log("Recording started in " + alive + " connected booths");
+
+        
+        recording = true;
+        
+        recorderChrono.start(); // Start timer
+
+//      $("#recorder-start > i").removeClass("fa-circle").addClass("fa-square");
+        $("#recorder-save").addClass("disabled");
+        $("#recorder-save > i").removeClass("fa-save").addClass("fa-cog fa-spin");
+
+        $("label[for='recorder-save']").html("Recording&hellip;");
+            
+    });
+    
+    $('#recorder-save').on('click', function(e) {
+        if ($(this).hasClass('disabled')) {
+            e.preventDefault();
+        } else {
+            console.log("Save audio file");
+        }
+    });    
+
+
+
+
+
+    $('#clear-all-flags').on('click', function() {
+        me.sendToAll({flags: {value: 'clear all flags'}});
+        clearAllFlags();
+    });
+    
+    // Copy contents of log board to clipboard
+    $('#log-board').on('click', function() {
+        animateCSS('#log-board-container', "bounce");
+        let t = "User log board:\n\n";
+        
+        $(this).children().each(function() {
+            t +=  $(this).text() + "\n";
+        });
+        if (DebugMode) {
+            t += "\n=========================================\n\n";
+            t += "Browser log console output:\n\n";
+            t += saveLog;
+        }
+        
+        copyTextToClipboard(t);
+    });
+
+    
+    
+
+
+    // 
+    // When class call is activated/deactivated
+    // any private call is interrupted and all 
+    // booths are muted
+    //
+    function activateClassCall(v = true) {
+
+        me.sendToAll({
+            info: {
+                action: 'set-teacher-label',
+                parameters: { value: v ? 'class call' : false }
+            }
+        });
+
+        if ($('#class-call').hasClass('active') === v) return;
+        $('#class-call').trigger('click');
+    }
+    $('#class-call').on('click', function() {
+
+        $('.talk-to-booth-indicator').removeClass('spinner-grow');
+        $('.talk-to-booth').addClass('disabled');
+        $('.talk-to-booth').removeClass('active');
+        $('.listen-to-booth-indicator').removeClass('spinner-grow');
+        me.muteAllBooths();
+        
+/*        
+        $('.talk-to-booth').each(function() {
+            if ($(this).hasClass('active')) $(this).button('toggle');
+        });
+*/    
+        $(this).button('toggle');
+        if ($(this).hasClass('active')) {
+        
+            me.sendToAll({info: { action: 'set-teacher-label', parameters: { value: 'class call' }} });
+        
+            $(this).find('i').addClass('fa-blink-3x');
+            me.unmuteSelf();
+            console.log('Class call activated');
+            classCall = true;
+            $('.booth-video').css('pointer-events', 'none');
+            $('.talk-to-booth').addClass('disabled');            
+        } else {
+        
+            me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
+            
+            $(this).find('i').removeClass('fa-blink-3x');
+            me.muteSelf();
+            console.log('Class call ended');
+            classCall = false;
+            $('.booth-video').css('pointer-events', 'auto');
+            $('.talk-to-booth').removeClass('disabled');
+        }
+    });
+    
+    // Check if we're starting in class call mode or not
+    // I's here because it can be called only after the class
+    // call click event handler has been defined
+    if (!me.selfMuted()) {
+        activateClassCall(true);
+    }
+    
+    
+    
+    //
+    // DOWNLOAD RECORDING SESSIONS
+    //
+    $('#get-sessions').on('click', function() {
+        var sessions = [];
+        $.ajax({
+            type: "POST",
+            url: "/actions/session-list",
+            dataType: 'json'
+        }).done( (d) => {
+            if (d.Result == "OK") {
+                sessions = d.Data;
+                
+                if (sessions.length > 0) {
+                    var l = "";
+                    sessions.forEach(s => {
+                        l = '<a style="display:inline-block" class="w-100 bg-light border-bottom" download href="/actions/session-get-zip?session=' + s + '">' + s + '.zip</a><br/>' + l;
+                    });
+                    var m =
+                        "<p>Before downloading the current session be sure " +
+                        "all the booths have uploaded their recordings to the server.</p>" +
+                        '<div class="border rounded bg-light" style="height:7.85rem; overflow-y: scroll">' +
+                        l + "</div>";
+                    bootbox.alert({
+                        size: 'small',
+                        title: "Download booth backup recording sessions",
+                        message: m,
+                        centerVertical: true,
+                        buttons: {
+                            ok: {label: 'Close'}
+                        }
+                    });
+                } else {
+                    bootbox.alert({
+                        title: "Download booth backup recording sessions",
+                        message: "No recording session available yet",
+                        centerVertical: true,
+                    });
+                }
+            } else {
+                bootbox.alert({
+                    title: "Error accessing your recording session folder",
+                    message: "<p>There was a problem accessing your recording session folder on the server: <em>" +  d.Message + "</em></p>",
+                    centerVertical: true,
+                });
+            
+                console.log(d.Message);
+            }
+        }).fail( (e) => {
+            // SHOULD NEVER GET HERE
+            console.log(e);
+        });    
+    });
+    
+
+    $('#send-file-to-booths').on("change", function(e) {
+
+        Array.from(e.target.files).forEach(function(file) {
+            
+            const blob = new Blob([ file ], { type: file.type });
+            
+            console.log("Sending file '" + file.name + "'");
+            
+            let fd = new FormData();
+            fd.append('file', blob, file.name);            
+
+            $.ajax({
+                type: 'POST',
+                url: '/actions/session-put-file',
+                data: fd,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+            }).done((d) => {
+                if (d.Result == "OK") {
+                
+                    appendLog("Sending download links for uploaded file");
+                    
+                    let t = '<span style="color: black">Teacher has sent you this file: <a href="/actions/session-get-file?user='+userName+'&file=' + file.name + '" download="' + file.name + '" style="color: blue">' + file.name + '</a> (&lArr; click)</span><br/>';
+
+                    me.forEachConnectedBooth(booth => { 
+                        me.send(booth.pin, {chat: {text: t}});
+                    });
+                    
+                    t = '<span style="color:black">File <b>' + file.name + '</b> uploaded</span><br/>';
+
+                    $("#chat-board").append(t);
+                    $("#chat-board").scrollToEnd();
+                    
+                    
+                } else {
+                    // ERROR
+                    appendLog(d.Message, "log-item-error");
+                    console.warn("Upload FAILED");                                                
+                }
+
+            }).fail(e => {
+                // ERROR
+                console.log(e);
+            });            
+            
+            //datachannel.send({
+            //    action: "sendfile", 
+            //    filename: file.name,
+            //    filetype: file.type,
+            //    file: blob
+            //});            
+            
+        });
+
+
+
+
+
+        
+/*        
+            sendFilesToDataChannel(interpreterData, e.target.files);
+            break;
+        case 'send-file-to-speaker':
+            sendFilesToDataChannel(speakerData, e.target.files);
+            break;
+        case 'send-file-to-supervisor':
+            sendFilesToDataChannel(supervisorData, e.target.files);
+            break;
+        }
+        $(this).val();        
+*/        
+    });    
+    
+    
+    /////////////////////////////
+    //                         //
+    // BOOTH SPECIFIC CONTROLS //
+    //                         //
+    /////////////////////////////
+    
+    
+
+    // Copy invitation link to clipboard
+    $('#booths').on('click', '.invitation-link', function() {
+        animateCSS('#' + $(this).prop('id'), 'heartBeat');
+        copyTextToClipboard($(this).data('invitation-link'));
+    });
+    
+
+    // Kick out (force disconnect)
+    $('#booths').on('click', '.kick-out', function(e) {
+        let pin = $(this).closest('.connection').data('pin');
+        
+        if ($(this).hasClass('disabled')) return;
+        
+        // KICK OUT
+        bootbox.confirm({
+            title: "Disconnect this booth",
+            message: "Do you want to disconnet this booth?<br/>Please, do it only if the connection is stuck and the student is trying to reconnect but the system is telling that his/her PIN is already in use.",
+            centerVertical: true,
+            callback: (r) => {
+                if (!r) return;
+                let booth = me.getBooth(pin);
+                booth.disconnect();
+            }
+        });
+        
+    });
+
+
+    // Take a snapsnot
+    $('#booths').on('click', '.take-snapshot', function(e) {
+        let pin = $(this).closest('.connection').data('pin');
+        let videoElem = $('#booth-video-' + pin)[0];
+        
+        if (me.isBoothConnected(pin)) {
+            let who = me.booths[pin].who;
+            me.send(pin, {
+                snapshot: {
+                    value: 'take-snapshot',
+                    parameters: {
+                        filename: who.replace('@', '.') + '.png' 
+                    }
+                }
+           });
+        
+        }
+        return;
+        if (me.isBoothConnected(pin)) {
+            let who = me.booths[pin].who;
+        
+            takeSnapshotFromMediaStream(videoElem.srcObject, 3).then(r => {
+                loadAndPlay("sounds/shutter.wav");
+                downloadDataURL(r.url, who.replace('@', '.') + '.png');
+            });    
+        }
+    });
+    
+    
+    //
+    // Discrete listening
+    //
+    $('#booths').on('click', '.booth-video', function(e) {
+
+        let pin = $(this).closest('.connection').data('pin');
+        
+        if (!me.isBoothConnected(pin)) return;
+        
+        if (classCall) {
+            animateCSS('#class-call', 'heartBeat');
+            return;
+        }
+        
+        let listening = $(this).parent().parent().find('.listen-to-booth-indicator').hasClass('spinner-grow');
+
+        $('.listen-to-booth-indicator').removeClass('spinner-grow');
+        $('.talk-to-booth-indicator').removeClass('spinner-grow');
+        $('.talk-to-booth').removeClass('active');
+        me.muteAllBooths();
+        me.muteSelf();
+        me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
+        
+        if (!listening) {
+            $('#booth-'+pin+' .listen-to-booth-indicator').addClass('spinner-grow');
+            $('.talk-to-booth').removeClass('disabled');
+            me.unmuteBooth(pin);
+        }
+       
+    });
+
+    $('#booths').on('click', '.talk-to-booth', function() {
+    
+        // Get pin from data-pin attribute of ancestor
+        let pin = $(this).closest('.connection').data('pin');
+        let who = $(this).closest('.connection').data('who');
+    
+        
+        if (classCall) {
+            animateCSS('#class-call', 'heartBeat');
+            return;
+        }
+        if ($(this).hasClass('disabled')) return;
+        
+        if (!me.isBoothConnected(pin)) return;
+        
+        
+        let listening = $('#booth-'+pin+' .listen-to-booth-indicator').hasClass('spinner-grow');
+        let talking = $('#booth-'+pin+' .talk-to-booth-indicator').hasClass('spinner-grow');
+        
+        $('#booth-'+pin+' .talk-to-booth-indicator').removeClass('spinner-grow');
+        me.muteSelf();
+        me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
+        
+        if (talking) return;
+        
+        if (!listening) $('#booth-video-' + pin).trigger('click');
+        $('#booth-'+pin+' .talk-to-booth-indicator').addClass('spinner-grow');
+        me.unmuteSelfForBooth(pin);
+        
+        // 
+        me.forEachConnectedBooth((booth) => {
+            me.send(
+                booth.pin,
+                { 
+                    info: { action: 'set-teacher-label',
+                    parameters: { value: 'Teacher is talking to ' + (booth.pin == pin ? 'you' : who) }
+                }
+            });
+        });
+        
+    });
+
+
+    $('#booths').on('click', '.download-booth-recording', (e) => {
+        
+        if ($(this).hasClass('disabled')) {
+            e.preventDefault();
+            return false;
+        }
+
+        $.get($(this).attr('href'));
+
+
+        
+        // Get pin from data-pin attribute of ancestor
+        let pin = $(this).closest('.connection').data('pin');
+    });
+
+    
+    $('#booths').on('click', '.booth-rec', function() {
+        // Get pin from data-pin attribute of ancestor
+        let pin = $(this).closest('.connection').data('pin');
+        me.startRecording(pin);
+    });
+
+    $('#booths').on('click', '.booth-stop', function() {
+        // Get pin from data-pin attribute of ancestor
+        let pin = $(this).closest('.connection').data('pin');
+        me.stopRecording(pin);
+    });
+    
+    $('#booths').on('click', '.booth-down', function() {
+        // Get pin from data-pin attribute of ancestor
+        let pin = $(this).closest('.connection').data('pin');
+        
+        // ...
+        // ...
+
+    });    
+
+    
+    //
+    // 
+    //  UTILITY FUNCTIONS
+    //
+    //
+    function clearAllFlags(pin = false) {
+    
+        if (!pin) {
+            $('.normal-video-controls').css('background', 'transparent');
+            $('.booth-flags').html('');
+            
+        } else {
+            $('#booth-' + pin + ' .normal-video-controls').css('background', 'transparent');
+            $('#booth-' + pin + ' .booth-flags').html('');
+        }
+    }
+    
+    
+    
+});
+
+
+
+// Sets the MediaStream as the video element src.
+function gotLocalMediaStream(stream) {
+
+    me.setMediaStream(stream);
+    
+    // Pass argument to next element in promise chain
+    return navigator.mediaDevices.enumerateDevices();  
+}
+
+
+
+function dragElement(id) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  var elmnt = document.getElementById(id);
+  if (elmnt) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(id).onmousedown = dragMouseDown;
+  } else {
+    return;
+    // otherwise, move the DIV from anywhere inside the DIV:
+    //elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+
+
+
+
+</script>
+
+</head>
+<body>
+
+
+  <div class="container-fluid" style="">
+    <div class="row mb-2 head-panel">
+
+
+      <div class="col-sm-9 d-flex justify-content-between">
+      
+        <div class="d-flex flex-column mr-4" style="width: 18rem">
+          <div class="display d-flex align-self-stretch h-100  align-content-center rounded ml-1 mt-2 mb-2" style="background-color: rgba(255,255,255,0.05)">
+            <div class="align-self-center text-center w-100" >  
+              <span style="font-size: 1.3rem; color: #FFFFD0" id="application-name">App</span><br/>
+              <span style="font-size: 2.25rem" id="time">h:mm</span><br/>
+              <span style="font-size: 0.8rem" id="date">day, dd/mm/yyyy</span>
+            </div>
+          </div>      
+        </div>
+  
+        
+        <!-- TOOLBAR: BEGIN -->
+        <div class="align-self-stretch w-100">
+              <div class="mt-2 mb-2 w-100">
+              <button  id="logon"  class="btn btn-sm btn-primary mr-1">Start the class</button>
+              <button  id="logoff" class="btn btn-sm btn-warning mr-1">End the class</button>
+              <button  id="quit"   class="btn btn-sm btn-danger mr-1">Quit and create another class</button>
+              
+              <button id="add-booth"     class="ml-1 float-right btn btn-secondary" data-tooltip="tooltip" title="Add another booth"><i class="fas fa-plus-circle"></i></button>
+              <button id="config-button" class="ml-1 float-right btn btn-info" data-toggle_="modal" data-target_="#config-panel"><i class="fas fa-cogs"></i></button>
+              <!--button id="load-class"    class="ml-1 float-right btn btn-info disabled" data-tooltip="tooltip" title="Load a class" disabled><i class="fas fa-users"></i></button-->
+              
+              
+            </div>
+            
+            <div class="rounded border bg-light p-1 form-inline mb-2 unselectable">
+            
+              <div class="float-left form-inline align-items-start ">
+              
+                
+                <!-- Player: begin -->
+                <div id="player-controls" class="d-flex flex-row" style="">
+                
+                  <!-- Buttons and progress bar -->
+                  <div>
+                    <!-- Buttons -->
+                    <div class="d-flex">
+                      <div class="mr-1">
+                        <label for="open-file-manager-button" class="label-tiny text-dark">Load</label>
+                        <button  id="open-file-manager-button" class="player-control btn btn-success btn-main-toolbar" data-toggle="modal" data-target="#file-manager">
+                          <i class="fas fa-folder-open"></i>
+                        </button>
+                      </div>
+                      
+                      <div class="mr-1">
+                        <label for="audio-player-play" class="label-tiny text-dark">Play</label>
+                        <button  id="audio-player-play" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-play"></i></button>
+                      </div>
+                      
+                      <div class="mr-1">
+                        <label for="audio-player-pause" class="label-tiny text-dark">Pause</label>
+                        <button  id="audio-player-pause" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-pause"></i></button>
+                      </div>
+                      
+                      <div class="mr-0">
+                        <label for="audio-player-stop" class="label-tiny text-dark">Stop</label> 
+                        <button  id="audio-player-stop" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-stop"></i></button>
+                      </div>
+                    </div>
+                    
+                    <!-- Progress bar -->
+                    <div class="mt-auto">
+                      <label class="label-small text-dark" for="audio-player-bar" id="audio-player-text">none</label>
+                      <div class="progress" style="" id="audio-player-bar">
+                        <div id="audio-player-progress" class="progress-bar bg-info" role="progressbar" style="width:100%;"></div>
+                      </div>
+                      <div id="audio-player-display" class="text-center text-dark" style="">00:00 / 00:00</div>
+                    </div>
+                  </div>
+  
+                  <!-- Volume slider -->
+                  <div class="ml-1" style="width: 20px">
+                    <input 
+                      id="audio-player-volume"
+                      type="range"
+                      style="height: 100px"
+                      class="vertical-slider"
+                      orient="vertical"
+                      step="0.01" value="1" min="0" max="1">
+                  </div>
+  
+                </div>
+                <!-- Player: end -->
+  
+  
+                <!-- Screen share button -->
+                <div class="beta-features ml-3 mr-1 d-flex align-self-stretch align-items-center">
+                  <div>
+                      <label for="share-screen" class="label-tiny text-dark">Share screen</label>
+                      <button id="share-screen" style="font-size: 1.5rem;" class="btn btn-secondary">
+                        <i class="fas fa-desktop" style="color: white" data-tooltip="Share screen" title="Share screen"></i>  
+                      </button>
+                  </div>
+                </div>
+  
+  
+  
+                <!-- Recorder: begin -->
+                <div id="recorder-controls" class="d-flex flex-column ml-3 align-self-stretch" style="">
+                  
+                  <div class="d-flex">
+                    <div class="mr-1">
+                      <label for="recorder-start" class="label-tiny text-dark">Record</label>
+                      <a id="recorder-start" class="btn btn-danger btn-main-toolbar" data-toggle="button" aria-pressed="false" ><i class="fas fa-circle" data-tooltip="tooltip" title="Start recording"></i>
+                      </a>
+                    </div>
+  
+                    <div class="mr-1">
+                      <label for="recorder-stop" class="label-tiny text-dark">Stop Rec.</label>
+                      <a id="recorder-stop" class="btn btn-danger btn-main-toolbar" data-toggle="button" aria-pressed="false" ><i class="fas fa-stop" data-tooltip="tooltip" title="Stop recording"></i>
+                      </a>            
+                    </div>
+                    
+                    <div class="mr-0">
+                        <label for="recorder-save" class="label-tiny text-dark">Save audio</label>
+                        <a id="recorder-save" class="btn btn-success btn-main-toolbar disabled" href="" >
+                          <i class="fas fa-save" data-tooltip="tooltip" title="Collect and save audio file"></i>
+                        </a>
+                    </div>
+                  </div>
+                  
+                  <div class="text-dark text-center">
+                     <span class="ml-auto mr-auto text-dark" id="recorder-chrono">00:00</span>
+                  </div>
+                  
+                  
+                  <div class="mt-2 text-dark mt-auto w-100">
+                     <button id="get-sessions" class="btn btn-small btn-outline-secondary w-100 p-0 m-0" style="height: 22px; font-size: 0.8rem" data-tooltip="tooltip" title="Download booth backup recording sessions">Sessions</button>
+                  </div>
+  
+                </div>
+                <!-- Recorder: end -->
+  
+  
+                <!-- Batch controls: begin -->
+                <div id="batch-controls" class="d-flex flex-column ml-3 align-self-stretch" style="position: relative; width: 110px">
+  
+                  <div class="">
+                    <label for="simultaneous-batch" class="label-tiny text-dark">Sim. session</label>
+                    <a id="simultaneous-batch" style="wiadth: 6.5rem" class="w-100 btn btn-success  btn-sm di-sabled" href="">Start sim.</a>
+                  </div>
+                  
+                  <div class="mt-auto">
+                    <label for="consecutive-batch" class="label-tiny text-dark ">Cons. session</label>
+                    <a id="consecutive-batch" style="wiadth: 6.5rem" class="w-100 btn btn-sm btn-success di-sabled" href="">Start cons.</a>
+                  </div>
+  
+                  <div class="rounded border bg-success text-light w-100 h-100 hide" style="position: absolute; left: 0; top: 0" id="batch-display">
+                    <div class="text-center"><span class="fa-blink" id="batch-type">Simultaneous</span></div>
+                    <div class="text-center mt-2"><span style="font-size: 2rem"  id="batch-counter">00:00</span></div>
+                  </div>
+                  
+                </div>
+                <!-- Batch controls: end -->
+  
+  
+  
+              </div>
+              
+  
+              <!-- -->
+              <div class="ml-auto d-flex align-self-stretch align-items-center" style="">
+                <div>
+                  <label for="clear-all-flags" class="label-tiny text-dark">Check booths</label>
+                  <button id="check-booths-button" style="font-size: 1.5rem;" class="btn btn-info ml-0" data-toggle="modal" data-tooltip="tooltip" data-target="#status-dialog" title="Check booths status">
+                    <i class="fas fa-tasks"></i>
+                  </button>    
+                </div>
+                <div>
+                  <label for="clear-all-flags" class="label-tiny text-dark">Clear all flags</label>
+                  <button id="clear-all-flags" style="font-size: 1.5rem;" class="btn btn-secondary ml-1" data-tooltip="tooltip" title="Clear all flags">
+                    <i class="far fa-bell-slash"></i>
+                  </button>    
+                </div>
+                <div> 
+                  <label for="class-call" class="label-tiny text-dark">Class call</label>
+                  <button id="class-call" style="font-size: 1.5rem;" class="btn btn-warning ml-1">
+                    <i class="fas fa-bullhorn" style="color: yellow" data-tooltip="tooltip" title="Class call"></i>  
+                  </button>
+                </div>
+              </div>            
+              <!-- -->
+              
+  
+              
+  
+            
+            </div>
+        </div>  
+        <!-- TOOLBAR: END -->
+        
+      </div>      
+      
+      <div class="col-sm-3 pl-3 pt-2 mb-2 pr-3">
+        <div id="log-board-container" class="w-100 h-100 border rounded bg-info">
+      
+          <div id="log-board" class="h-100 unselectable cursor-pointer"></div>
+        </div>
+      
+      </div>
+    </div>  
+        
+    
+    <div class="row">
+      <div class="col-sm-9" style="height: calc(100vh - 200px); overflow-y: auto">
+      
+        <!-- BOOTHS HERE!!! -->
+        <div class="d-flex flex-wrap justify-content-center p-1" id="booths">      
+        </div>
+        
+      </div>
+    
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-header ">
+            Chat&nbsp
+            
+            <div class="float-right">
+            
+                <div style="" class="custom-control custom-control-right custom-checkbox custom-control-inline" data-tooltip="tooltip" title="Share the chat with all the booths">
+                    <input type="checkbox" class="custom-control-input " id="shared-chat" checked />
+                    <label class="custom-control-label" for="shared-chat">Shared</label>
+                </div>
+
+                
+
+
+
+
+
+                
+            </div>
+            
+            
+          </div>
+          <div class="card-body" id="chat-board" style="padding: 4px;overflow-y: scroll; max-height: calc(100vh - 295px); height: calc(100vh - 295px)"></div>
+          <div class="card-footer" style="padding: 4px">
+            <div class="form-inline" >
+              <input type="text"  class="form-control" id="chat-text" style="width: calc(100% - 5.6rem)" placeholder="Type text here...">
+              <button  id="send-chat-text" class="btn btn-primary ml-auto" style="width:2.5rem"><i class="far fa-paper-plane" style="margin-left:-2px" ></i></button>
+              <label id="send-file-to-booths-button" data-tooltip="tooltip" class="ml-1 btn btn-small btn-success" title="Send a document to each already connected booth" style="width:2.5rem" for="send-file-to-booths">
+                <i class="fas fa-file-upload"></i>
+              </label>
+              <input type="file" name="file" id="send-file-to-booths" class="hidden-input" />
+            </div>  
+
+         
+          
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connection" id="teacher">
+      <div class="d-flex justify-content-center" style="position: relative">
+        <video class="video-small mirrored" id="teacher-video" width="160" height="120"></video>
+        <div style="position: absolute; right: 2; bottom: 2">
+            <button class="btn btn-sm btn-outline-light" style="width:2.25rem" id="teacher-video-toggle"><i class="fas fa-video"></i></button>
+        </div>
+      </div>
+    </div>
+
+
+
+    
+  </div>
+
+
+  <!-- BOOTH PROTOTYPE: BEGIN -->
+  <div id="connection-prototype" class="connection ml-1 mb-1" style="display: none">
+    <div class="card w-100 border rounded " >
+    
+      <div class="card-header text-white bg-info">
+        <span class="invitation-link float-left mt-1 unselectable cursor-pointer" style="display:inline-block" data-tooltip="tooltip" title="Click to copy the invitation link"><i class="fas fa-link"></i></span>
+        <span class="booth-name float-left ml-1 ellipsis"></span>&nbsp;
+        <span class="take-snapshot float-right unselectable mt-1" data-tooltip="tooltip" title="Take a snapshot" style="display:inline-block"><i class="fas fa-camera"></i></span>&nbsp;
+      </div>
+      
+      <div class="card-body position-relative">
+        <div class="normal-video-controls d-flex justify-content-center align-items-center mb-1" >
+          <div class="booth-flags"></div>
+          <div class="listen-to-booth-indicator text-brightred" style="position: absolute; top: 2px; right: 2px;" role="status"></div>
+          <div class="talk-to-booth-indicator text-warning" style="position: absolute; top: 2px; left: 2px;" role="status"></div>
+          <div class="booth-mini-log ellipsis label-small  ml-1 mr-1" style="position: absolute; bottom: 1px; left: 1px"></div>
+        </div>
+        
+        <div class="d-flex justify-content-center mb-0">
+          <video class="video-normal booth-video cursor-pointer" 
+             width="240" height="180"
+             data-tooltip="tooltip" title="Click to listen to/mute the booth."></video>
+        </div>
+      </div>
+      
+      <div class="card-footer d-flex justify-content-between align-items-center">
+          <div class="">
+            <button class="talk-to-booth btn btn-sm btn-success"  title="Talk to the booth"><i class="fas fa-headset"></i></button>
+            &nbsp;
+          </div>
+          <div class="">
+            <button class="disabled kick-out btn btn-sm btn-danger text-light" data-tooltip="tooltip" title="Force disconnection if connection is stuck"><i class="fas fa-skull"></i></button>
+            <a class="disabled download-booth-recording btn btn-sm btn-success" download data-tooltip="tooltip" title="download audio recording"><i class="fas fa-save"></i></a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- BOOTH PROTOTYPE: END -->
+
+ 
+<video id="audio-player" style="display: none"></video>
+
+
+<!-- DIALOGS --> 
+  
+  
+  
+<!-- File manager dialog: begin -->
+<!-- Modal -->
+<div class="modal fade" id="file-manager" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">File manager</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center w-100" style="position:absolute;top:0;left:0"></div>
+        <div class="m-2 bg-light" id="file-list" style="height: 252px; overflow-y: scroll; position: relative;">
+        
+        
+        </div>
+        <form method="post" class="m-2" action="" enctype="multipart/form-data" id="file-upload-form">     
+        
+            <div class="d-flex">
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="file-upload" name="file-upload" accept=".wav,.mp3,.mpeg3,.webm,.ogg">
+                <label class="custom-file-label" for="file-upload" >Choose file</label>
+              </div>
+              
+              <div class="">
+              <button class="btn btn-success ml-3" style="width: 8.5rem" id="file-upload-button">Upload</button>
+              </div>          
+            </div>
+        
+        </form>
+        <div class="m-2 p-2 bg-light" id="file-manager-log"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div> 
+<!-- File manager dialog: end -->   
+  
+  
+  
+  
+  
+<!-- Config dialog: begin -->
+<!-- Modal -->
+<div class="modal fade" id="config-panel" tabindex="-1" role="dialog" aria-labelledby="config-panelTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Configuration</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+    <form class="form">
+
+      <div class="form-group">
+        <label for="select-video-source">Select camera:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fas fa-video"></i></div>
+          </div>
+          <select class="form-control" id="select-video-source"></select>
+        </div>
+      </div>
+      
+  
+      <div class="form-group">
+        <label for="select-audio-source">Select microphone:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i style="width:1em" class="fas fa-microphone"></i></div>
+          </div>
+          <select class="form-control" id="select-audio-source"></select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="select-audio-output">Select audio output:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i style="width:1em"   class="fas fa-headphones-alt"></i></div>
+          </div>
+          <select class="form-control" id="select-audio-output"></select>
+        </div>      
+      </div>
+
+<!--    
+      
+      <hr/>
+
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="debugging"
+          data-toggle='collapse' data-target='#debugging-options' >
+          <label class="custom-control-label" for="debugging">Collect logs for developers</label>
+          <div class="w-100 collapse" id="debugging-options">
+            <a href="#" id="download-log">download logs</a>
+          </div>
+        </div>
+      </div>
+
+-->    
+      
+      
+    </form>
+    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+  
+</div> 
+<!-- Config dialog: end -->  
+  
+
+
+
+
+
+
+
+<!-- Booth status dialog: begin -->
+<!-- Modal -->
+<div class="modal fade" id="status-dialog" data-toggle="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" style="max-width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Booths status</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="status-table" class="table table-sm table-striped table-borderless">
+          <thead>
+            <tr>
+              <th width="2%">#</th>  
+              <th width="23%">Booth</th>
+              <th width="55%">Player status</th>
+              <th width="20%">Recorder status</th>
+            </tr>
+          </thead>
+          <tbody id="status-log">
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="export-status-button">Export</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div> 
+<!-- File manager dialog: end -->   
+
+
+  
+</body>
+</html>

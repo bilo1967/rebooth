@@ -1,0 +1,269 @@
+/* Some common values stored as variables */
+
+
+:root {
+    --small-video-width: 160px;
+    --small-video-height: 120px;
+    --normal-video-width: 240px;
+    --normal-video-height: 180px;
+    --video-toolbar-height: 36px;
+    --video-toolbar-button-height: 24px;
+    --video-wide-toolbar-button-height: 40px;
+}
+
+::placeholder {
+  color: rgb(240, 240, 240);
+}
+
+.video-small {
+    background: rgb(255,255,255);
+    margin: auto;
+    padding: 2x;
+}
+
+.video-normal {
+    width: var(--normal-video-width);
+    height: var(--normal-video-height);
+    background: rgb(255,255,255);
+    padding: 2x;
+}
+
+.connection {
+    width: var(--normal-video-width);
+}
+
+
+
+.connection .card-body {
+    padding: 0;
+}
+
+.connection .card-header, .connection .card-footer {
+    padding: 4px ;
+    height: auto;
+}
+
+.connection .card-footer .btn-sm {
+    height: var(--video-toolbar-button-height);
+}
+
+
+#teacher.connection {
+    width: calc(var(--small-video-width) + 4px);
+}
+
+.booth-mini-log {
+    width: calc(var(--normal-video-width) - 12px);
+    background: rgba(0,0,0,0.5);
+    color: white;
+}
+
+#teacher-label {
+    width: calc(var(--normal-video-width));
+    background: rgba(0,0,0,0.5);
+    color: white;
+}
+
+
+.connection-wide {
+    width: 400px;
+}
+
+ .connection-wide .card-header,  .connection-wide .card-footer {
+    height: auto;
+}
+
+.booth-name {
+    display:inline-block;
+    width: calc(var(--normal-video-width) - 60px);
+}
+
+
+.mirrored {
+  transform: rotateY(180deg);    
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.label-tiny {
+    font-size: 0.5em; 
+}
+
+.label-small {
+    font-size: 0.75em; 
+}
+
+.btn-main-toolbar { 
+    width: 40px;
+}
+
+.unselectable {
+    user-select: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}   
+
+.bg-brightred {
+    background: #FF2800;
+}
+
+.text-brightred {
+    color: #FF2800;
+}
+
+.ellipsis {
+  overflow: hidden; 
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* extend FontAwesome effetcs */
+
+@keyframes fa-blink-3x {
+    0%   { opacity: 0;   transform: scale(1.0); }
+    10%  { opacity: 0.2; transform: scale(1.2); }
+    15%  { opacity: 0.3; transform: scale(1.5); }    
+    20%  { opacity: 0.4; transform: scale(1.8); }
+    25%  { opacity: 0.7; transform: scale(2.0); }    
+    30%  { opacity: 0.8; transform: scale(2.3); }
+    35%  { opacity: 0.9; transform: scale(2.7); }    
+    40%  { opacity: 1.0; transform: scale(3.5); }
+    45%  { opacity: 1.0; transform: scale(3.5); }
+    50%  { opacity: 1.0; transform: scale(2.7); }
+    55%  { opacity: 1.0; transform: scale(2.3); }
+    60%  { opacity: 0.8; transform: scale(2.0); }
+    70%  { opacity: 0.6; transform: scale(1.8); }
+    80%  { opacity: 0.4; transform: scale(1.5); }
+    90%  { opacity: 0.2; transform: scale(1.2); }
+    100% { opacity: 0;   transform: scale(1.0); }
+}
+
+.fa-blink-3x {
+   animation: fa-blink-3x 2s linear infinite;
+   color: yellow;
+}
+
+@keyframes fa-blink-2x {
+    0%   { opacity: 0;   transform: scale(1.0); }
+    10%  { opacity: 0.2; transform: scale(1.1); }
+    15%  { opacity: 0.3; transform: scale(1.25); }    
+    20%  { opacity: 0.4; transform: scale(1.4); }
+    25%  { opacity: 0.7; transform: scale(1.5); }    
+    30%  { opacity: 0.8; transform: scale(1.65); }
+    35%  { opacity: 0.9; transform: scale(1.85); }    
+    40%  { opacity: 1.0; transform: scale(2.0); }
+    45%  { opacity: 1.0; transform: scale(2.0); }
+    50%  { opacity: 1.0; transform: scale(1.85); }
+    55%  { opacity: 1.0; transform: scale(1.65);  }
+    60%  { opacity: 0.8; transform: scale(1.5); }
+    70%  { opacity: 0.6; transform: scale(1.4); }
+    80%  { opacity: 0.4; transform: scale(1.15); }
+    90%  { opacity: 0.2; transform: scale(1.1); }
+    100% { opacity: 0;   transform: scale(1.0); }
+}
+
+.fa-blink-2x {
+   animation: fa-blink-2x 2s linear infinite;
+}
+
+
+
+.fa-blink, .fa-blink-1x {
+  animation: fa-blink 1s linear infinite;
+}
+
+@keyframes fa-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+
+/* extend Bootstrap 4 custom controls */
+
+div.custom-control-right {
+  padding-right: 24px;
+  padding-left: 0;
+  margin-left: 16px;
+  margin-right: 0;
+}
+div.custom-control-right .custom-control-label::before,
+div.custom-control-right .custom-control-label::after{
+  right: -1.5rem;
+  left: initial;
+}
+
+
+.hidden-input {
+    width: 0px;
+    height: 0px;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.beta-features {
+    display: none !important;
+}
+
+
+
+.hide {
+    display: none;
+}
+
+
+
+.display {
+    line-height: 1.2;
+}
+
+
+
+/* Vertical slider and custom vertical slider track and thumb for mozilla firefox */
+
+.vertical-slider {
+    -webkit-appearance: slider-vertical !important;
+    width: 20px;
+}
+
+
+
+input.vertical-slider[type=range]::-moz-range-track {
+  cursor: pointer;
+  background: #e0e0e0;
+  border-radius: 2px;
+  border: 0.2px solid #a0a0a0;
+}
+
+input.vertical-slider[type=range]::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 12px;
+  border: 0.5px solid black;
+  background: blue;
+  cursor: pointer;
+}
+
+
+.translucent:hover {
+    opacity: 0.9;
+}
+
+.translucent {
+    opacity: 0.3;
+}
+
+
