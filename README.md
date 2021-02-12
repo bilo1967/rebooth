@@ -6,9 +6,9 @@ This code is still full of commented parts and debugging instructions and needs 
 
 ## What is ReBooth and how it works
 
-ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training. The system connects a teacher and a group of students (about 6/7; the exact number of students depends on the hardware quality and the teacher's connection).
+ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training. The system connects a teacher and a group of students (about 6/7; the exact number of students depends on the hardware quality and the teacher's connection). 
 
-There's a single audio/video webrtc connection between the teacher and each student (the connection topology is star shaped). The teacher can communicate one-way to the whole class (class call) or individually talk with each student (intercom). Students can communicate each other only via chat, with text messages transparently routed by the teacher using the webrtc data channel. Audio and binary files, on the other hand, are exchanged using a web server.
+WebRTC connections are peer-to-peer and not peer-to-server (no SFU/MCU). There's a single audio/video webrtc connection between the teacher and each student (the connection topology is star shaped). The teacher can communicate one-way to the whole class (class call) or individually talk with each student (intercom). Students can communicate each other only via chat, with text messages transparently routed by the teacher using the webrtc data channel. Audio and binary files, on the other hand, are exchanged using a web server.
 
 To reduce the risk of compromising student activity, ReBooth:
 1) Sends the entire audio file to the student's browser before the teacher starts the session or exam. This allows the student to listen to the audio file in its original audio quality, without being affected by any connection problems or drops.
