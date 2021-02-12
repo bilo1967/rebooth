@@ -10,7 +10,7 @@ The code is still full of commented parts and debugging instructions and needs t
 - one or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn));
 - one or more TURN servers; you may buy access to an existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn));
 - a SMTP server (to send invitations);
-- a web server with PHP (≥ 5.5) and HTTPS to host your rebooth implementation;
+- a web server with PHP (≥ 5.5) and HTTPS to host your rebooth implementation (here I refer to Apache but any other server supporting PHP, HTTPS and URL rewriting should be fine);
 - a writeable directory on this server to store recordings and temporary data;
 - a PHP authentication module (you'll have to write your own).
 
