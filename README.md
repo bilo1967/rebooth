@@ -6,13 +6,13 @@ The code is still full of commented parts and debugging instructions and needs t
 
 ## Prerequisites:
 
-- a [PeerJS server](https://github.com/peers/peerjs-server);
-- one or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn))
-- one or more TURN servers; you may buy access to an existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)). You may try without a TURN server but users behind a symmetrical NAT won't be able to use reBooth.
-- a web server supporting PHP (≥ 5.5), HTTPS and URL rewriting to host your rebooth deploy (here I refer to Apache but any other modern web server should be fine);
-- a writeable directory on this server to store recordings and temporary data
-- a SMTP server (to send invitations)
-- a PHP authentication script to restrict access only to users allowed by your organization: you'll likely have to write your own.
+- A [PeerJS server](https://github.com/peers/peerjs-server);
+- One or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)).
+- One or more TURN servers; you may buy access to an existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)). You may try without a TURN server but users behind a symmetrical NAT won't be able to use reBooth.
+- A web server supporting PHP (≥ 5.5), HTTPS and URL rewriting to host your rebooth installation. Here I refer to Apache but any other modern web server should be fine.
+- A writeable directory on this server to store recordings and temporary data.
+- A SMTP server (to send invitations).
+- A PHP authentication script to restrict access only to users allowed by your organization: you'll likely have to write your own.
 
 
 ## Configuration and authentication module:
