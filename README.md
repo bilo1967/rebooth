@@ -1,6 +1,6 @@
 # ReBooth
 
-## Disclaimer:
+## Disclaimer
 
 This code is still full of commented parts and debugging instructions and needs to be cleaned up. Also, some of the internal documentation is still in Italian and needs to be translated. Use it at your own risk. We do not take any responsibility for any kind of damage it might cause. That said, once you meet the prerequisites and edit the configuration files accordingly, ReBooth should work as is.
 
@@ -15,7 +15,7 @@ To reduce the risk of compromising student activity, ReBooth:
 2) Records the student's audio with two separate procedures: on the one hand, it records the audio streaming the teacher receives on their computer and, on the other, it records the student's audio locally on their computer and then sends this audio to the server where ReBooth is hosted.
 3) Students can save their recordings and eventually send them to the teacher by other means.
 
-## Prerequisites:
+## Prerequisites
 
 - A [PeerJS server](https://github.com/peers/peerjs-server);
 - One or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)).
@@ -25,7 +25,7 @@ To reduce the risk of compromising student activity, ReBooth:
 - A SMTP server (to send invitations).
 - A PHP authentication script to restrict access only to users allowed by your organization: you'll likely have to write your own.
 
-## Configuration and authentication module:
+## Configuration and authentication module
 
 There are two configuration files you have to set up:
 - [config/config.js](config/config.js) for the javascript code running on your browser
