@@ -69,8 +69,8 @@
         "auth_module"               => 'dummy-auth.inc.php',
         "auth_function"             => 'dummyAuth',
         "auth_description"          => 'Under development - insert any formally valid email address and the suggested password "apriti sesamo" to log in',
-        "auth_username_placeholder" => 'Insert an email address as a username',
-        "auth_password_placeholder" => 'Type any password',
+        "auth_username_placeholder" => 'insert an email address as a username',
+        "auth_password_placeholder" => 'type your rebooth password',
 
 
         /*******************/
