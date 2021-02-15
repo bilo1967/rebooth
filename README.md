@@ -71,11 +71,11 @@ const PeerJSConfig = {
 ### config.inc.php
 
 ReBooth needs:
-1. a SMPT server to send email invitations to students;
-1. a few info to correctly generate these invitations;
-1. a directory writable by the web server to store teacher's audio files, student's recordings and temporary stuff;
-1. private and public key for Google Captcha v2 (optional);
-1. instructions on how to access your authentication mudule (see next section).
+* a SMPT server to send email invitations to students;
+* a few info to correctly generate these invitations;
+* a directory writable by the web server to store teacher's audio files, student's recordings and temporary stuff;
+* private and public key for Google Captcha v2 (optional);
+* instructions on how to access your authentication mudule (see next section).
 
 All of these settings must be done in the [config/config.inc.php](config/config.inc.php) file. See the comments on the file itself for details.
 
