@@ -66,9 +66,9 @@ ReBooth needs:
 1. a few info to correctly generate these invitations;
 1. a directory writable by the web server to store teacher's audio files, student's recordings and temporary stuff;
 1. private and public key for Google Captcha v2 (optional);
-1. instructions on how to access your authentication mudile
+1. instructions on how to access your authentication mudule (see next section).
 
-All of these settings must be done in the (config/config.inc.php)[config/config.inc.php] file. Follow the comments on the file itself.
+All of these settings must be done in the [config/config.inc.php](config/config.inc.php) file (follow the comments on the file itself).
 
 
 ### authentication module
