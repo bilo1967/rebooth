@@ -17,7 +17,7 @@ To reduce the risk of compromising student activity, ReBooth:
 
 ## Prerequisites
 
-- A [PeerJS server](https://github.com/peers/peerjs-server);
+- A working [PeerJS server](https://github.com/peers/peerjs-server).
 - One or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)).
 - One or more TURN servers; you may buy access to an existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)). You may try without a TURN server but users behind a symmetrical NAT won't be able to use ReBooth.
 - A web server supporting PHP (≥ 5.5), HTTPS and URL rewriting to host your ReBooth installation. Here I refer to Apache but any other modern web server should be fine.
@@ -32,6 +32,35 @@ There are two configuration files you have to set up:
 - [config/config.inc.php](config/config.inc.php) for the PHP scripts running on the server
 
 You'll also need to write your PHP own authentication module.
+
+### config.js
+
+Here you've basically to configure just the javascript access to your PeerJS, STUN and TURN servers. At the moment you can skip any other setting.
+```js
+const PeerJSConfig = {
+    host:   'your.peerjs.server', // your peerjs server address
+    port:   9443,                 // your peerjs server port
+    path:   '/',                  // your peerjs path
+    secure: true,                 // your peerjs server uses SSL?
+    
+    // You may use stun only for testing purposes but if you need to
+    // actually reach everyone you definitely need a TURN server...
+    config: {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+//          { urls: 'turn:numb.viagenie.ca', username: 'webrtc@live.com', credential: 'muazkh'},
+//          { urls: 'turn:0.peerjs.com:3478', username: 'peerjs', credential: 'peerjsp' },
+        ]
+    },
+};
+```
+
+
+### config.inc.php
+
+### authentication module
 
 _ReBooth_ is meant to be used within your organization and to authenticate users via your infrastructure. Some examples are provided but no authentication mechanism is actually implemented: you'll have to write your authentication module by your own. In this module you will implement an authentication function accepting a username a a password as parameters which returns _true_ if the authentication succeeds, _false_ otherwise. The module file has to be placed be in the [auth](auth) directory, where you'll find a few examples you may adapt for your needs. The authentication module file and function name are then set in the [config/config.inc.php](config/config.inc.php) file. 
 
