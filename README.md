@@ -95,11 +95,13 @@ This is an example dummy authentication module accepting any valid email address
 
 ## License
 
-ReBooth is available under the [GNU Affero General Public v3](https://www.gnu.org/licenses/agpl-3.0.html) License. Documentation is available under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license. 
+ReBooth is available under the [GNU Affero General Public v3](https://www.gnu.org/licenses/agpl-3.0.html) License. 
 
 In brief, this program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as  published by the Free Software Foundation, either version 3 of the  License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html) for more details.
+
+Documentation is available under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license. 
 
 ReBooth uses several third-party frameworks, components, libraries and resources:
 * [PeerJS](https://peerjs.com/">https://peerjs.com/)
