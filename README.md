@@ -101,7 +101,7 @@ In brief, this program is free software: you can redistribute it and/or modify i
 
 This program is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html) for more details.
 
-ReBooth uses several third-party frameworks, libraries and resources:
+ReBooth uses several third-party frameworks, components, libraries and resources:
 * [PeerJS](https://peerjs.com/">https://peerjs.com/)
 * [JQuery](https://jquery.com/">https://jquery.com/)
 * [Bootstrap 4](https://getbootstrap.com/)
