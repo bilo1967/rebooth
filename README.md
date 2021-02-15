@@ -77,7 +77,7 @@ ReBooth needs:
 1. private and public key for Google Captcha v2 (optional);
 1. instructions on how to access your authentication mudule (see next section).
 
-All of these settings must be done in the [config/config.inc.php](config/config.inc.php) file (follow the comments on the file itself).
+All of these settings must be done in the [config/config.inc.php](config/config.inc.php) file. See the comments on the file itself for details.
 
 
 ### authentication module
