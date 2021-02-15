@@ -35,7 +35,7 @@ You'll also need to write your PHP own authentication module.
 
 ### config.js
 
-Here you've basically to configure just the javascript access to your PeerJS, STUN and TURN servers. At the moment you can skip any other setting.
+Here you've basically to configure just the javascript access to your PeerJS, STUN and TURN servers.
 ```js
 const PeerJSConfig = {
     host:   'your.peerjs.server', // your peerjs server address
@@ -56,9 +56,20 @@ const PeerJSConfig = {
     },
 };
 ```
+ At the moment you can leave any other setting as is.
 
 
 ### config.inc.php
+
+ReBooth needs:
+1. a SMPT server to send email invitations to students;
+1. a few info to correctly generate these invitations;
+1. a directory writable by the web server to store teacher's audio files, student's recordings and temporary stuff;
+1. private and public key for Google Captcha v2 (optional);
+1. instructions on how to access your authentication mudile
+
+All of these settings must be done in the [config/config.inc.php][config/config.inc.php] file. Follow the comments on the file itself.
+
 
 ### authentication module
 
