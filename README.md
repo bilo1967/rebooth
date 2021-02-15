@@ -36,7 +36,7 @@ You can find plenty of free STUN servers. Google provides at least a dozen for f
 
 ## Installation
 
-Create the webroot directory and deploy rebooth into it.
+Create a webroot directory and deploy rebooth into it.
 Create the rebooth data directory and give the web server write permissions onto it.
 
 ```bash
@@ -46,6 +46,8 @@ Create the rebooth data directory and give the web server write permissions onto
 [you@localhost ~]$ sudo mkdir /var/www/data/your_data_dir
 [you@localhost ~]$ sudo chown apache /var/www/data/your_data_dir
 ```
+
+Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/
 
 
 ## Configuration and authentication module
