@@ -112,5 +112,5 @@ ReBooth uses several third-party frameworks, libraries and resources:
 * [FontAwesome](https://fontawesome.com/)
 * [Code snippets from WebRTC Samples](https://webrtc.github.io/samples/)
 * [Pure PHP Radius Class](http://developer.sysco.ch/php/)
-* [PHP Mailer](https://github.com/PHPMailer/PHPMailer(
+* [PHP Mailer](https://github.com/PHPMailer/PHPMailer)
 
