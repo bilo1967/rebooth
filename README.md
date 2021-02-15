@@ -44,7 +44,7 @@ Create the rebooth data directory and give the web server write permissions onto
 [you@localhost ~]$ cd /var/www/virtualhosts/your_site_webroot
 [you@localhost ~]$ sudo git clone https://github.com/bilo1967/rebooth.git .
 [you@localhost ~]$ sudo mkdir /var/www/data/your_data_dir
-[you@localhost ~]$ sudo chown apache /var/www/data/your_data_dir
+[you@localhost ~]$ sudo chown www-data /var/www/data/your_data_dir
 ```
 
 Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/
