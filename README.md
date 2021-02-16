@@ -6,30 +6,30 @@ This code is still full of commented parts and debugging instructions and needs 
 
 ## What is ReBooth and how it works
 
-ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training. The system connects a teacher and a small group of students (up to 7/8 depending on the hardware quality and the teacher's bandwidth, expecially upstream).
+ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training. The system connects a instructor and a small group of students (up to 7/8 depending on the hardware quality and the instructor's bandwidth, expecially upstream).
 
-ReBooth WebRTC connections are peer-to-peer and not peer-to-server (no SFU/MCU). There's a single audio/video webrtc connection between the teacher and each student (the connection topology is star shaped). The teacher can communicate one-way to the whole class (class call) or individually talk with each student (intercom). Students can communicate each other only via chat, with text messages transparently routed by the teacher using the webrtc data channel. Audio and binary files, on the other hand, are exchanged using a web server.
+ReBooth WebRTC connections are peer-to-peer and not peer-to-server (no SFU/MCU). There's a single audio/video WebRTC connection between the instructor and each student (the connection topology is star shaped). The instructor can communicate one-way with the whole class (class call) or individually talk with each student (intercom). Students can communicate each other only via chat, with text messages transparently routed by the instructor using the WebRTC data channel. Audio and binary files, on the other hand, are exchanged using a web server.
 
 To reduce the risk of compromising student activity, ReBooth:
-1) Sends the entire audio file to the student's browser before the teacher starts the session or exam. This allows the student to listen to the audio file in its original audio quality, without being affected by any connection problems or drops.
-2) Records the student's audio with two separate procedures: on the one hand, it records the audio streaming the teacher receives on their computer and, on the other, it records the student's audio locally on their computer and then sends this audio to the server where ReBooth is hosted.
-3) Students can save their recordings and eventually send them to the teacher by other means.
+1) Sends the entire audio file to the student's browser before the instructor starts the session or exam. This allows the student to listen to the audio file in its original audio quality, without being affected by any connection problems or drops.
+2) Records the student's audio with two separate procedures: on the one hand, it records the audio streaming the instructor receives on their computer and, on the other, it records the student's audio locally on their computer and then sends this audio to the server where ReBooth is hosted.
+3) Students can save their recordings and eventually send them to the instructor by other means.
 
 ## Prerequisites
 
 - A working [PeerJS server](https://github.com/peers/peerjs-server).
 - One or more STUN servers; you may use a free existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)).
-- One or more TURN servers; you may buy access to an existing one or setup your own (e.g. [CoTURN](https://github.com/coturn/coturn)). You may try without a TURN server but users behind a symmetrical NAT won't be able to use ReBooth.
+- One or more TURN servers; you may buy access to an existing one or set up your own (e.g. [CoTURN](https://github.com/coturn/coturn)). You may try without a TURN server but users behind a symmetrical NAT won't be able to use ReBooth.
 - A web server supporting PHP (≥ 5.5), HTTPS and URL rewriting to host your ReBooth installation. Here I refer to Apache but any other modern web server should be fine.
 - A writeable directory on this server to store recordings and temporary data.
 - A SMTP server (to send invitations).
 - A PHP authentication script to restrict access only to users allowed by your organization: you'll likely have to write your own.
 
-The PeerJS server setting is mandatory. The PeerJS server is used to keep track of active connections. It generates very low network traffic and workload for your server. The authors of PeerJS offer free access to their one, but many people use it and you may find it busy. You may have to set up your own ([https://github.com/peers/peerjs-server](https://github.com/peers/peerjs-server)). 
+The PeerJS server setting is mandatory. The PeerJS server is used to keep track of active connections. It generates very low network traffic and workload for your server. The authors of PeerJS offer free access to theirs, but many people use it and you may find it busy. You may have to set up your own ([https://github.com/peers/peerjs-server](https://github.com/peers/peerjs-server)). 
 
 STUN, TURN (and ICE) are a set of IETF standard protocols for negotiating traversing NATs when establishing peer-to-peer communication sessions. WebRTC and other VoIP stacks implement support for ICE to improve the reliability of IP communications. The PeerJS library used by ReBooth makes it's ICE (Interactive Connectivity Establishment) implementation by coordinating STUN and TURN to make a connection between hosts. A host uses Session Traversal Utilities for NAT (STUN) to discover its public IP address when it is located behind a NAT/Firewall. When this host wants to receive an incoming connection from another party, it provides this public IP address as a possible location where it can receive a connection. If the NAT/Firewall still won't allow the two hosts to connect directly, they make a connection to a server implementing Traversal Using Relay around NAT (TURN), which will relay media between the two parties. 
 
-A STUN server may be enough for testing purposes but you'll definitely need also a TURN server in a production environment.
+A STUN server may be enough for testing purposes but you'll definitely also need a TURN server in a production environment.
 
 You can find plenty of free STUN servers. Google provides at least a dozen for free and a few of them are already configured in `config.js` (see below). A TURN server, on the other hand, may have a heavy bandwidth impact on your infrastructure. You may find a free one but it will likely have strong bandwidth restrictions, making it a non viable solution. You need either a commercial TURN service or to set up your own. [CoTURN](https://github.com/coturn/coturn) is an excellent open source TURN (and STUN) implementation, available on most linux distributions.
 
@@ -58,11 +58,11 @@ There are two configuration files you have to set up:
 - [config/config.js](config/config.js) for the javascript code running on your browser
 - [config/config.inc.php](config/config.inc.php) for the PHP scripts running on the server
 
-You'll also need to write your PHP own authentication module.
+You will also need to write your PHP own authentication module.
 
 ### config.js
 
-Here you've basically to configure just the javascript access to your PeerJS, STUN and TURN servers.
+Here you basically just have to configure the javascript access to your PeerJS, STUN and TURN servers.
 ```js
 const PeerJSConfig = {
     host:   'your.peerjs.server', // your peerjs server address
@@ -91,16 +91,16 @@ const PeerJSConfig = {
 ReBooth needs:
 * a SMPT server to send email invitations to students;
 * a few info to correctly generate these invitations;
-* a directory writable by the web server to store teacher's audio files, student's recordings and temporary stuff;
+* a directory writable by the web server to store instructor's audio files, student's recordings and temporary stuff;
 * private and public key for Google Captcha v2 (optional);
 * instructions on how to access your authentication mudule (see next section).
 
-All of these settings must be done in the [config/config.inc.php](config/config.inc.php) file. See the comments on the file itself for details.
+All of these settings must be implemented in the [config/config.inc.php](config/config.inc.php) file. See the comments on the file itself for details.
 
 
 ### authentication module
 
-_ReBooth_ is meant to be used within your organization and to authenticate users via your infrastructure. Some examples are provided but no authentication mechanism is actually implemented: you'll have to write your authentication module by your own. In this module you will implement an authentication function accepting a username a a password as parameters which returns _true_ if the authentication succeeds, _false_ otherwise. The module file has to be placed be in the [auth](auth) directory, where you'll find a few examples you may adapt for your needs. The authentication module file and function name are then set in the [config/config.inc.php](config/config.inc.php) file. 
+_ReBooth_ is meant to be used within your organization and to authenticate users via your infrastructure. Some examples are provided but no authentication mechanism is actually implemented: you will have to write your authentication module by your own. In this module you will implement an authentication function accepting a username and a password as parameters which returns _true_ if the authentication succeeds, _false_ otherwise. The module file has to be placed be in the [auth](auth) directory, where you'll find a few examples that you may adapt to your needs. The authentication module file and function name are then set in the [config/config.inc.php](config/config.inc.php) file. 
 
 This is an example dummy authentication module accepting any valid email address as username and 'apriti sesamo' as password.
 ```php
@@ -113,9 +113,9 @@ This is an example dummy authentication module accepting any valid email address
 
 In the [auth directory](/auth) there are a couple of examples authentication modules with radius and imap authentication. You may adapt them to fit your needs by setting the value of a few constants at the beginning of each module.
 
-There's also a [guest-auth.inc.php](auth/guest-auth.inc.php) authentication module wich implements a basic local authentication system. Credentials are retrieved from a JSON file which is stored into the data directory and managed using a command line [helper php script located in the bin directory](bin/guest.php). Run the script without parameters to get help. Users can be added, deleted, modified. For each of them it is possibile to set a username, a password and an account expiry (in days).
+There's also a [guest-auth.inc.php](auth/guest-auth.inc.php) authentication module wich implements a basic local authentication system. Credentials are retrieved from a JSON file which is stored into the data directory and managed using a command line [helper php script located in the bin directory](bin/guest.php). Run the script without parameters to get help. Users can be added, deleted, modified. For each of them it is possible to set a username, a password and an account expiry (in days).
 
-In this cas you would set something like this into your config.inc.php file:
+In this case you would set something like this into your config.inc.php file:
 
 ```php
     "auth_module"               => 'guest-auth.inc.php',
