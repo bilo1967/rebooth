@@ -1,12 +1,15 @@
 <?php
 
+const ServerString = "{your.imap.server.name:993/imap/ssl/novalidate-cert}";
+const ImapOpenTimeout = 5; // seconds
+
 function imapAuth($u, $p) {
       
     global $server_string;
 
-    imap_timeout(IMAP_OPENTIMEOUT, 5); // secondi
+    imap_timeout(IMAP_OPENTIMEOUT, ImapOpenTimeout);
     $mbox = @imap_open(
-        "{your.imap.server.name:993/imap/ssl/novalidate-cert}",
+        ServerString,
         $u,
         $p,
         OP_HALFOPEN,                               // Do not open mailboxes
