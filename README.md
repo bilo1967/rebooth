@@ -109,6 +109,23 @@ This is an example dummy authentication module accepting any valid email address
 ?>
 ```
 
+In the [auth directory](/auth) there are a couple of examples authentication modules with radius and imap authentication. You may adapt them to fit your needs by setting the value of a few constants at the beginning of each module.
+
+There's also a [guest-auth.inc.php](auth/guest-auth.inc.php) authentication module wich implements a basic local authentication system. Credentials are retrieved from a JSON file which is stored into the data directory and managed using a command line [helper php script located in the bin directory](bin/guest.php). Run the script without parameters to get help. Users can be added, deleted, modified. For each of them it is possibile to set a username, a password and an account expiry (in days).
+
+In this cas you would set something like this into your config.inc.php file:
+
+```php
+    "auth_module"               => 'guest-auth.inc.php',
+    "auth_function"             => 'guestAuth',
+    "auth_description"          => 'Insert your credentials to log in',
+    "auth_username_placeholder" => 'type your username',
+    "auth_password_placeholder" => 'type your password',
+```
+
+You may combine modules to implement a cascade authentication system. See [auth/local-auth.inc.php](auth/local-auth.inc.php) as an example.
+
+
 ## License
 
 ReBooth is available under the [GNU Affero General Public v3](https://www.gnu.org/licenses/agpl-3.0.html) License. 
