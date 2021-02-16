@@ -33,6 +33,8 @@ A STUN server may be enough for testing purposes but you'll definitely need also
 
 You can find plenty of free STUN servers. Google provides at least a dozen for free and a few of them are already configured in `config.js` (see below). A TURN server, on the other hand, may have a heavy bandwidth impact on your infrastructure. You may find a free one but it will likely have strong bandwidth restrictions, making it a non viable solution. You need either a commercial TURN service or to set up your own. [CoTURN](https://github.com/coturn/coturn) is an excellent open source TURN (and STUN) implementation, available on most linux distributions.
 
+If you setup your own STUN, TURN or PeerJS server, be sure that their ports are not blocked by your firewall for inbound connections (expecially PeerJS which may not use a standard port). Also, verify that you can access those ports from your location.
+
 
 ## Installation
 
@@ -47,7 +49,7 @@ Create the rebooth data directory and give the web server write permissions onto
 [you@localhost ~]$ sudo chown www-data /var/www/data/your_data_dir
 ```
 
-Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/
+Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/ (or whatever)
 
 
 ## Configuration and authentication module
