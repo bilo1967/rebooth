@@ -104,8 +104,8 @@ const PeerJSConfig = {
     path:   '/',
     secure: true,                 // use SSL
     
-    // You may use stun only for testing purposes but if you need to
-    // actually reach everyone you definitely need a TURN server...
+    // You may use a STUN-only configuration for testing purposes but if you need
+    // to actually reach (mostly) everyone you definitely need also a TURN server...
     config: {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
