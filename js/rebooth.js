@@ -972,8 +972,9 @@ class Student extends Connection {
         this.teacherVideoElement.srcObject = null;
         
         setTimeout(() => {
-            if (this.dataConnection.open) this.dataConnection.close();
-            if (this.mediaConnection.open) this.mediaConnection.close();            
+            if (this.dataConnection && this.dataConnection.open) this.dataConnection.close();
+            if (this.mediaConnection && this.mediaConnection.open) this.mediaConnection.close();
+            if (this.screenConnection && this.screenConnection.open) this.screenConnection.close();
             this.dataConnection = null;
             this.mediaConnection = null;
             this.screenConnection  = null;
