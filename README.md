@@ -6,7 +6,7 @@ This code is still full of commented parts and debugging instructions and needs 
 
 ## What is ReBooth and how it works
 
-ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training, developed for the Department of Interpretation and Translation (DIT) of the University of Bologna by Gabriele Carioli and Nicoletta Spinolo.
+ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training, conceived and developed for the Department of Interpretation and Translation (DIT) of the University of Bologna by Gabriele Carioli and Nicoletta Spinolo.
 
 The system connects a instructor and a small group of students (up to 7/8 depending on the hardware quality and the instructor's bandwidth, expecially upstream).
 
