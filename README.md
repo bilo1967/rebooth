@@ -6,7 +6,9 @@ This code is still full of commented parts and debugging instructions and needs 
 
 ## What is ReBooth and how it works
 
-ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training. The system connects a instructor and a small group of students (up to 7/8 depending on the hardware quality and the instructor's bandwidth, expecially upstream).
+ReBooth (which stands for _Remote Booth_) is a [WebRTC](https://webrtc.org/) based platform for conference interpreter training, developed for the Department of Interpretation and Translation (DIT) of the University of Bologna by Gabriele Carioli and Nicoletta Spinolo.
+
+The system connects a instructor and a small group of students (up to 7/8 depending on the hardware quality and the instructor's bandwidth, expecially upstream).
 
 ReBooth WebRTC connections are peer-to-peer and not peer-to-server (no SFU/MCU). There's a single audio/video WebRTC connection between the instructor and each student (the connection topology is star shaped). The instructor can communicate one-way with the whole class (class call) or individually talk with each student (intercom). Students can communicate each other only via chat, with text messages transparently routed by the instructor using the WebRTC data channel. Audio and binary files, on the other hand, are exchanged using a web server.
 
