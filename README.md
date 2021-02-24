@@ -51,7 +51,9 @@ Create the rebooth data directory and give the web server write permissions onto
 [you@localhost ~]$ sudo chown www-data /var/www/data/your_data_dir
 ```
 
-Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/ (or whatever)
+Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/ (or whatever).
+
+URL rewriting must be enable so that extension for php scripts and html pages is removed (see [.htaccess](.htaccess) file).
 
 
 ## Configuration and authentication module
