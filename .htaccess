@@ -1,4 +1,4 @@
-#Remove .php and .html extension (with priority to .php)
+# Remove .php and .html extension (with priority to .php)
 
 RewriteEngine on 
 
