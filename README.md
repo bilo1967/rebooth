@@ -53,7 +53,7 @@ Create the rebooth data directory and give the web server write permissions onto
 
 Then configure your web server so that it will serve your rebooth webroot directory as https://your.site/ (or whatever).
 
-URL rewriting must be enable so that extension for php scripts and html pages is removed (see [.htaccess](.htaccess) file).
+URL rewriting must be also enabled so that the extension for php scripts and html pages is removed. See [.htaccess](.htaccess) file.
 
 
 ## Configuration and authentication module
