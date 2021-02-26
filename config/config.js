@@ -10,6 +10,10 @@ const PinLength = 6;
 const SimultaneousBatchDefaultDelay = 15;
 const ConsecutiveBatchDefaultDelay  = 0;
 
+// These are just for the teacher
+const BoothsGain = 2; // Boost booths volume (1=100%)
+const PlayerGain = 1; // Boost player volume (1=100%)
+
 // Teacher PC has to handle several upstream and downstream connections
 // Tipically downstream band is larger than upstream so it make sense to
 // limit upstream bandwidth 
