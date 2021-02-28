@@ -34,12 +34,12 @@
         "forbidden_extensions" => array( 'exe', 'msi', 'com', 'bat', 'vbs', 'vba', 'lnk', 'app', 'dmg'),
 
 
-        /********************************/
-        /*                              */
-        /* PHPMailer SMTP configuration */
-        /*                              */
-        /********************************/
-        
+        /***************************************************/
+        /*                                                 */
+        /* Send invitations (PHPMailer SMTP configuration) */
+        /*                                                 */
+        /***************************************************/
+        "send_invitations" => false,
         "smtp_host"        => "smtp.your.site",         // Your SMTP host
         "smtp_user"        => 'smtpuser@your.site.it',  // Your SMTP user
         "smtp_pass"        => 'smtppassword',           // Your SMTP password
