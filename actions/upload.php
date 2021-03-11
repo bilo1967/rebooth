@@ -77,10 +77,3 @@ try {
 print json_encode($result);
 
 ?>
-
-
-
-
-
-
-
