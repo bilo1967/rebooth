@@ -181,7 +181,9 @@ $(document).ready(function() {
 
     bootbox.alert({
         centerVertical: true,
-        title: "Welcome to "+AppName+ " v"+AppVersion,
+        title: "Welcome to "+AppName+ " v"+AppVersion + "<br><span style='font-size: 0.55rem'>"  +
+               "designed and developed by " + AppAuthor + " with the help of " + AppContributors + "<br/>" +
+               "for the " + AppCompany + "</span>",        
         message: "You can join the class by pressing the 'Join' button only after the teacher has started it.",
         callback: () => {
             // Here we create objects needing an user gesture to be created
