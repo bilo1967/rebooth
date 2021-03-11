@@ -8,8 +8,11 @@
 // const isRelay = mediaConnection.peerConnection.currentLocalDescription.sdp.includes('typ relay');
 
 
-const AppName    = 'ReBooth';
-const AppVersion = '0.6.1';
+const AppName         = 'ReBooth';
+const AppVersion      = '0.6.2';
+const AppAuthor       = 'Gabriele Carioli';
+const AppContributors = 'Nicoletta Spinolo';
+const AppCompany      = 'Department of Interpretation and Translation at the University of Bologna'
 
 
 var teacherVideoBW = 0; // Max video upstream bandwidth per connection
@@ -32,15 +35,16 @@ class Connection {
     
     constructor(config) {
         
-        this.userId        = null;
-        this.userName      = null;
+        this.userId         = null;
+        this.userName       = null;
                            
-        this.peer          = null;
+        this.peer           = null;
                            
-        this.mediaStream   = null; 
-        this.videoElement  = null;
-        this.onError       = null;
-        this.audioRecorder = null;
+        this.mediaStream    = null; 
+        this.videoElement   = null;
+        this.onError        = null;
+        this.audioRecorder  = null;
+        
         
         if (typeof config === 'object') {
             for (var k in config) {
@@ -62,12 +66,6 @@ class Connection {
         
         if (typeof onOk === 'function') this.onLogonOk = onOk;
         if (typeof onFail === 'function') this.onLogonFail = onFail;
-        
-        
-        // In case it has not been created in the constructor because no 
-        // UI element had been clicked at that time
-        
-        //if (this.audioCtx == null) this.audioCtx = new AudioContext();
         
         if (userName != null) {
             this.userName = userName;
@@ -228,8 +226,20 @@ class Connection {
 
 
 
-
-
+//
+// In order to have the booths on a separate audio channel we need to re-route
+// the audio flows using the Web Audio API. The audio will then be muted on each
+// booth video element and the each stream will be connected/disconnected as a
+// MediaStreamSource to an appropriate single gain node.
+// Connecting/disconnecting to/from this gain node is equivalent to mute/unmute
+// the video elent.
+// We need to pass this gain node to the class constructor
+//
+// Note that a gain node can be created from an audio context, which otherwise
+// can be started only if a UI element has been clicked
+//
+// If no gain node is passed to the constructor, booth audio won't be routed
+// 
 class Teacher extends Connection {
     
     booths             = [];
@@ -243,7 +253,8 @@ class Teacher extends Connection {
     
     screenShareStream  = null;
 
-
+    audioCtx           = null;
+    boothsGainNode     = null;
 
 
     // booths parameter: [ {pin: ..., videoElement: ... }, ...]
@@ -257,6 +268,12 @@ class Teacher extends Connection {
             if (typeof config.onBoothDisconnect === 'function') this.onBoothDisconnect = config.onBoothDisconnect;
             if (typeof config.onDataReceived === 'function') this.onDataReceived = config.onDataReceived;
             if (typeof config.muted !== 'undefined') this.muted = config.muted;
+            if (typeof config.boothsGainNode !== 'undefined' && config.boothsGainNode != null) {
+                if (! config.boothsGainNode instanceof GainNode) throw 'Invalid destination gain node';
+                if (! 'context' in config.boothsGainNode ) throw 'No context in supplied gain node';
+                
+                this.boothsGainNode = config.boothsGainNode;
+            }
         }        
         
         //if (this.userName == null) throw "userName parameter is missing";
@@ -265,7 +282,7 @@ class Teacher extends Connection {
         if (!Array.isArray(booths)) throw "Parameter booths is missing or is not an Array";
         
         booths.forEach(e => {
-            if (e) this.booths[e.pin] = new Booth(e.pin, e.videoElement /*, this.audioCtx*/);
+            if (e) this.booths[e.pin] = new Booth(e.pin, e.videoElement, this.boothsGainNode);
         });
         
     }
@@ -279,7 +296,7 @@ class Teacher extends Connection {
         let found = this.booths[pin];
         if (found) return null;
         
-        this.booths[pin] = new Booth(pin, videoElement /*, this.audioCtx*/);
+        this.booths[pin] = new Booth(pin, videoElement, this.boothsGainNode);
         
     }
     
@@ -696,7 +713,9 @@ class Teacher extends Connection {
 };
 
 
-
+//
+// The booths gain node needs to be passed to the class constructor
+// 
 class Booth {
     pin                   = null;
     videoElement          = null;
@@ -710,18 +729,37 @@ class Booth {
 //  audioBlob             = null;
 //  localMediaStreamCopy  = null;
     
-    //audioSource         = null;    
-    //audioCtx            = null;
+//  audioSource         = null;    
+//  audioCtx            = null;
+
+    // Web Audio API related fields 
+    boothsGainNode        = null;
+    audioCtx              = null;
+    audioSource           = null;   // mute => disconnect, unmute => connect(boothsGainNode)
+    audioSourceConnected  = false;  // muted =>  return !this.audioSourceConnected
     
     
-    constructor(pin, videoElement /*, audioCtx*/) {
+    constructor(pin, videoElement , gainNode = null) {
         if (! 'srcObject' in videoElement) throw 'invalid video element';
         if (! pin) throw 'invalid pin';
         //if (! 'baseLatency' in audioCtx ) throw 'invalid audio context';
         //if (! audioCtx instanceof AudioContext) throw 'invalid audio context';
         
+        
+        if (gainNode != null) {
+            if (! gainNode instanceof GainNode) throw 'Invalid destination gain node';
+            if (! 'context' in gainNode ) throw 'No context in gain node';
+
+            // Save gain node to a property and get audio context from gain node
+            this.boothsGainNode = gainNode;
+            this.audioCtx = gainNode.context;
+        } else {
+            this.boothsGainNode = null;
+            this.audioCtx = null;
+        }
+         
         this.pin = pin;
-        //this.audioCtx = audioCtx;
+
         this.videoElement = videoElement;
     }
 
@@ -748,15 +786,32 @@ class Booth {
         
         this.peer = this.mediaConnection.peer;
 
+
+        this.videoElement.muted = true;
+
         this.videoElement.srcObject = stream;
         this.mediaStream = stream;
       
         this.audioRecorder = new MyRecorder(this.mediaStream, null, {mimeType: 'audio/webm'});
 
+
         // When a booth joins the class it is muted by default
         this.videoElement.onloadedmetadata = (e) => {
+            
+            if (this.boothsGainNode) {
+                if (this.audioSource instanceof MediaStreamAudioSourceNode) {
+                    this.audioSource.disconnect();
+                    this.audioSource = null;
+                }
+                this.audioSource = audioCtx.createMediaStreamSource(stream);
+                this.audioSource.disconnect();
+                this.audioSourceConnected = false;
+            } else {
+                console.log("No booths gain node");
+                
+            }
+            
             this.videoElement.play();
-            this.videoElement.muted = true;
 // ====================>
             reduceOutstreamBandwidth(
                 this.mediaConnection,
@@ -788,18 +843,31 @@ class Booth {
         }, 0);
         
     }    
-    
+
     mute() {
-        this.videoElement.muted = true;
+        if (this.boothsGainNode != null && this.audioSource != null) {
+            this.audioSource.disconnect(); 
+            this.audioSourceConnected = false;
+        } else {
+            this.videoElement.muted = true;
+        }
     }
+
     unmute() {
-        this.videoElement.muted = false;
+        if (this.boothsGainNode != null && this.audioSource != null) {
+            this.audioSource.connect(this.boothsGainNode); 
+            this.audioSourceConnected = true;
+        } else {
+            this.videoElement.muted = false;
+        }
     }
+
     isMuted() {
         if (!this.connected) 
             return null;
         else
-            return this.videoElement.muted;
+            return (this.boothsGainNode != null  && this.audioSource != null) ?
+                (!this.audioSourceConnected) : this.videoElement.muted;
     }
     
     muteTeacher(v = true) {
@@ -1435,6 +1503,3 @@ function setBandwidthProfile(profile = 'low') {
     studentAudioBW = BandwidthProfiles[profile].StudentAudioBW;
     studentVRes    = BandwidthProfiles[profile].StudentVRes;
 }
-
-
-

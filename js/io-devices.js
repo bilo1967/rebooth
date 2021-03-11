@@ -85,9 +85,10 @@ function attachSinkId(element, sinkId) {
         if (error.name === 'SecurityError') {
           errorMessage = `You need to use HTTPS for selecting audio output device: ${error}`;
         }
-        console.error(errorMessage);
+        console.error(errorMessage + ` (sinkId: ${sinkId})`);
+        
         // Jump back to first output device in the list as it's the default.
-        audioOutputSelect.selectedIndex = 0;
+        //audioOutputSelect.selectedIndex = 0;
       });
   } else {
     console.warn('Browser does not support output device selection.');
@@ -96,6 +97,9 @@ function attachSinkId(element, sinkId) {
 
 // Change audio destination of selected <video> or <audio> element
 function changeAudioDestination(elem) {
+  
+  if (!elem) return;
+    
   const audioDestination = audioOutputSelect.value;
   attachSinkId(elem, audioDestination);
 }
