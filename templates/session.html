@@ -59,7 +59,7 @@
   <script src="js/utils.js?0.02"></script>
   <script src="js/crc-32.js"></script>
 
-  <script src="config/config.js?0.08"></script>
+  <script src="config/config.js?0.09"></script>
   <script src="js/rebooth.js?0.05"></script>
   
   <script src="js/rebooth-file-manager.js?0.04"></script>
@@ -170,6 +170,16 @@ var recorderChrono    = null;
 var classCall         = null;
 
 var recordingIds      = null;
+
+
+// WebAudio API
+var playerNode = null;
+var playerGain = null;
+var boothsGain = null;
+var mixerNode = null;
+var audioCtx = null;
+var audioDestinationElement = null;
+var audioDestinationNode = null;
 
 
 
@@ -310,8 +320,119 @@ $(document).ready(function() {
 
     bootbox.alert({
         centerVertical: true,
-        title: "Welcome to "+AppName+ " v"+AppVersion,
-        message: "Remember that students won't be able to connect to their booths until you press the 'start the class' button"
+        title: "Welcome to "+AppName+ " v"+AppVersion + "<br><span style='font-size: 0.55rem'>"  +
+               "designed and developed by " + AppAuthor + " with the help of " + AppContributors + "<br/>" +
+               "for the " + AppCompany + "</span>",
+        message: "Remember that students won't be able to connect to their booths until you press the 'start the class' button.",
+        callback: () => {
+        
+            // We do all these initializations here because some of them (noticeably
+            // the creation of an audio context) need an user interface element to be
+            // actually clicked by the user. We get here when the user clicks"OK"
+
+
+            // Create an audio context
+            audioCtx = new AudioContext();
+            
+            // Create the mixer (merger) node
+            mixerNode = audioCtx.createChannelMerger(2);
+            
+            // Create a gain node for the player (audio from the player will be routed through the nodes)
+            playerGain = audioCtx.createGain();
+            playerNode = audioCtx.createMediaElementSource($('#audio-player').get(0));
+            playerNode.connect(playerGain);
+            
+            // Create a gain node for the booths: audio streams from the booths will all be linked
+            // to this node in the Teacher class when a booth connects
+            boothsGain = audioCtx.createGain();
+            
+            
+            // Set the gain values
+            playerGain.gain.value = PlayerGain;
+            boothsGain.gain.value = BoothsGain;
+            
+
+            // Since the Web Audio API does not allow to set a specific audio device
+            // as a destination, we first create a destination node that we will use
+            // it as a source for a dynamic audio element, for which we can set the
+            // sinkId to any device we wish.
+            audioDestinationNode = audioCtx.createMediaStreamDestination();
+            
+
+            // By default we connect the gain nodes directly to the audio destination,
+            // skipping the mixer. Split audio modes can be set in the audio configuration
+            // dialog. 
+            //
+            // boothsGain.connect(mixerNode, 0, 0);  // Booths: L
+            // playerGain.connect(mixerNode, 0, 1);  // Source: R
+            //
+            boothsGain.connect(audioDestinationNode);
+            playerGain.connect(audioDestinationNode);
+            
+            // Connect the mixer (which at the moment has no inputs) to the audio dest. node
+            mixerNode.connect(audioDestinationNode); 
+
+            // Create a dynamic <audio> element
+            audioDestinationElement = new Audio();
+            
+            // Our audio stream becomes the audioDestinationElement srcObject
+            audioDestinationElement.srcObject = audioDestinationNode.stream;
+            audioDestinationElement.play();
+
+
+            // Load the audio mode cookie and override the default by
+            // triggering a change in the select box
+            $('#select-audio-mode').val(Cookies.get('audio-mode') || 'no');
+            $('#select-audio-mode').trigger('change');
+
+            // Init booths and teacher
+            initBooths();
+            initTeacher(boothsGain);
+
+            // Set booth polling interval function
+            pollingIntervalTimer = setInterval(() => {
+                if (me) {
+                    me.sendToAll({info: {action: "status"}});
+                    me.forEachBooth(booth => {
+                        $('#booth-status-'+booth.pin+">td.booth-player-status").html('');
+                        $('#booth-status-'+booth.pin+">td.booth-recorder-status").html('');
+                    });
+                    
+                }
+            }, BoothPollingInterval);
+            
+            
+            navigator.mediaDevices
+                .enumerateDevices()
+                .then(gotDevices)
+                .then(() => {
+                    $('#select-video-source').val(Cookies.get('teacher-video-source') || 'default');
+                    $('#select-audio-source').val(Cookies.get('teacher-audio-source') || 'default');
+                    $('#select-audio-output').val(Cookies.get('teacher-audio-output') || 'default');
+                })
+                .then(() => {
+                    setUserMediaConstraints();  
+                    changeAudioDestination($('#audio-player').get(0));
+                    
+                    changeAudioDestination(audioDestinationElement);
+                    
+                    me.forEachBooth(booth => {
+                        changeAudioDestination(booth.videoElement);
+                   });
+                })        
+                .catch(handleLocalMediaStreamError);
+            
+            
+            
+            
+            // Check if we're starting in class call mode or not
+            // I's here because it can be called only after the class
+            // call click event handler has been defined
+            if (!me.selfMuted()) {
+                activateClassCall(true);
+            }
+
+        }
     });
 
     if (DebugMode) {
@@ -386,6 +507,26 @@ $(document).ready(function() {
     });
     
     
+/*
+    // Let's go!
+    initBooths();
+    initTeacher();
+
+    // Set booth polling interval function
+    pollingIntervalTimer = setInterval(() => {
+        if (me) {
+            me.sendToAll({info: {action: "status"}});
+            me.forEachBooth(booth => {
+                $('#booth-status-'+booth.pin+">td.booth-player-status").html('');
+                $('#booth-status-'+booth.pin+">td.booth-recorder-status").html('');
+            });
+            
+        }
+    }, BoothPollingInterval);
+*/
+
+    
+    
     function addBoothElem(pin, n, email) {
     
         let invitationLink = boothURL + "?pin=" + pin + "&t=" + userName + (classCode != '' ? '&c='+classCode : '') + "&s=" + email;
@@ -428,7 +569,14 @@ $(document).ready(function() {
               '<td class="booth-recorder-status"></td>'+
             '</tr>'
         );
-        
+
+/*
+        var boothNode = audioCtx.createMediaElementSource($('#booth-video-' + pin).get(0));
+        boothNode.connect(boothsGain);
+
+        console.log('=====================');
+        console.log(boothNode);
+*/        
         
     }
     
@@ -485,7 +633,7 @@ $(document).ready(function() {
     });
     
     
-    function initTeacher() {
+    function initTeacher(boothsGain = null) {
 
         if (me instanceof Teacher) {
             me.logoff();
@@ -497,6 +645,7 @@ $(document).ready(function() {
         me = new Teacher(
             {
                 muted: true,
+                boothsGainNode: boothsGain,
                 videoElement: $('#teacher-video')[0],
                 // starting connection - prepare interface
                 onBoothConnect: (pin, who) => {
@@ -663,22 +812,6 @@ $(document).ready(function() {
         );
     } // End of init teacher function
 
-    // Let's go!
-    initBooths();
-    initTeacher();
-    
-    // Set booth polling interval function
-    pollingIntervalTimer = setInterval(() => {
-        if (me) {
-            me.sendToAll({info: {action: "status"}});
-            me.forEachBooth(booth => {
-                $('#booth-status-'+booth.pin+">td.booth-player-status").html('');
-                $('#booth-status-'+booth.pin+">td.booth-recorder-status").html('');
-            });
-            
-        }
-    }, BoothPollingInterval);
-    
 
     $(document).on('info-feedback', (event, data) => {
         //let timestamp = data.timeStamp;
@@ -1085,6 +1218,9 @@ $(document).ready(function() {
     $('#select-audio-output').on('change', () => {
         Cookies.set('teacher-audio-output', $('#select-audio-output').val(), { expires: 365 });
         changeAudioDestination($('#audio-player')[0]);
+        
+        changeAudioDestination(audioDestinationElement);
+        
         me.forEachBooth(booth => {
             changeAudioDestination(booth.videoElement);
         });
@@ -1099,22 +1235,7 @@ $(document).ready(function() {
 //      });
 //  });
     
-    navigator.mediaDevices
-        .enumerateDevices()
-        .then(gotDevices)
-        .then(() => {
-            $('#select-video-source').val(Cookies.get('teacher-video-source') || 'default');
-            $('#select-audio-source').val(Cookies.get('teacher-audio-source') || 'default');
-            $('#select-audio-output').val(Cookies.get('teacher-audio-output') || 'default');
-        })
-        .then(() => {
-            setUserMediaConstraints();  
-            changeAudioDestination($('#audio-player')[0]);
-            me.forEachBooth(booth => {
-                changeAudioDestination(booth.videoElement);
-            });
-        })        
-        .catch(handleLocalMediaStreamError);
+
         
     // setUserMediaConstraints();
 
@@ -1317,13 +1438,14 @@ $(document).ready(function() {
         console.warn("Page has been closed or reloaded - Closing sessions");
         
         sessionToken.unset();
-        
-        me.forEachConnectedBooth(booth => { 
-            me.send(booth.pin, {action: "leaving", message: "bye"});
-        });
+        if (me) {
+            me.forEachConnectedBooth(booth => { 
+                me.send(booth.pin, {action: "leaving", message: "bye"});
+            });
+        }
             
         setTimeout(function() {
-            me.destroy();
+            if (me) me.destroy();
         }, 100);
     });
     
@@ -1756,12 +1878,31 @@ if (t.startsWith('##')) {
         }
     });
     
-    // Check if we're starting in class call mode or not
-    // I's here because it can be called only after the class
-    // call click event handler has been defined
-    if (!me.selfMuted()) {
-        activateClassCall(true);
-    }
+
+
+    // Select audio mode
+    $('#select-audio-mode').on('change', () => {
+        let mode = $('#select-audio-mode').val()
+        Cookies.set('audio-mode', mode, { expires: 365 });
+        
+        boothsGain.disconnect();
+        playerGain.disconnect();
+        switch(mode) {
+        case 'LR':
+            boothsGain.connect(mixerNode, 0, 0);  // Booths: L
+            playerGain.connect(mixerNode, 0, 1);  // Source: R
+            break;
+        case 'RL':
+            boothsGain.connect(mixerNode, 0, 1);  // Booths: R
+            playerGain.connect(mixerNode, 0, 0);  // Source: L
+            break;
+        default:
+            boothsGain.connect(audioDestinationNode);
+            playerGain.connect(audioDestinationNode);
+            break;
+        }
+    });
+    
     
     
     
@@ -2422,7 +2563,7 @@ function dragElement(id) {
 
     <div class="connection" id="teacher">
       <div class="d-flex justify-content-center" style="position: relative">
-        <video class="video-small mirrored" id="teacher-video" width="160" height="120"></video>
+        <video class="video-small mirrored" id="teacher-video" width="160" height="120" poster="images/hartman.jpg"></video>
         <div style="position: absolute; right: 2; bottom: 2">
             <button class="btn btn-sm btn-outline-light" style="width:2.25rem" id="teacher-video-toggle"><i class="fas fa-video"></i></button>
         </div>
@@ -2476,6 +2617,7 @@ function dragElement(id) {
 
  
 <video id="audio-player" style="display: none"></video>
+
 
 
 <!-- DIALOGS --> 
@@ -2572,6 +2714,21 @@ function dragElement(id) {
           <select class="form-control" id="select-audio-output"></select>
         </div>      
       </div>
+
+      <div class="form-group">
+        <label for="select-audio-mode">Audio mode:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i style="width:1em"   class="fas fa-random"></i></div>
+          </div>
+          <select class="form-control" id="select-audio-mode">
+            <option value="no">Normal mixed stereo audio (no split audio)</option>
+            <option value="LR">Booth on Left channel, source on right channel</option>
+            <option value="RL">Source on Left channel, booth on right channel</option>
+          </select>
+        </div>      
+      </div>      
+      
 
 <!--    
       
