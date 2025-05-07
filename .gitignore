@@ -1,0 +1,12 @@
+.bak/
+dev/
+data/
+
+todo.txt
+TODO.txt
+barbatrucco.html
+checkvideo.html
+ice.html
+
+*.bak
+*.old

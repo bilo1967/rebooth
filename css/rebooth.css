@@ -1,0 +1,399 @@
+/* Some common values stored as variables */
+
+
+:root {
+    /* these are going to define aspect ratio for all video sizes */
+    --default-video-width: 240px;
+    --default-video-height: 180px;
+    
+    --tiny-video-width: 120px;
+    --small-video-width: 160px;
+    --medium-video-width: 200px;
+    --large-video-width: 300px;
+
+    --video-toolbar-height: 36px;
+    --video-toolbar-button-height: 24px;
+    --video-wide-toolbar-button-height: 40px;
+
+    --video-height: var(--default-video-height);
+    --video-width: var(--default-video-width);
+}
+
+
+::placeholder {
+  color: rgb(240, 240, 240);
+}
+
+.video-small {
+    background: rgb(255,255,255);
+    margin: auto;
+    padding: 2x;
+}
+
+.video-normal {
+    width: var(--video-width);
+    height: var(--video-height);
+    _background: rgb(250,250,255);
+    object-fit: contain;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.connection {
+    width: var(--video-width);
+}
+
+
+
+.connection .card-body {
+    padding: 0;
+}
+
+.connection .card-header, .connection .card-footer {
+    padding: 2px ;
+    height: auto;
+}
+
+.connection .card-footer .btn-sm {
+    height: var(--video-toolbar-button-height);
+}
+
+
+#teacher.connection {
+    width: calc(var(--small-video-width) + 4px);
+}
+
+.booth-mini-log {
+    w_idth: calc(var(--video-width) - 12px);
+    width: auto;
+    padding-left: 1px;
+    padding-right: 1px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+}
+
+#teacher-label {
+    width: calc( var(--video-width) );
+    background: rgba(0,0,0,0.5);
+    color: white;
+}
+
+
+.connection-wide {
+    width: 400px;
+}
+
+ .connection-wide .card-header,  .connection-wide .card-footer {
+    height: auto;
+}
+
+.booth-name {
+    display: inline-block;
+    width: calc( 100% - 38px );
+}
+
+
+.mirrored {
+  transform: rotateY(180deg);    
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.label-tiny {
+    font-size: 0.5em; 
+}
+
+.label-small {
+    font-size: 0.75em; 
+}
+
+.btn-main-toolbar { 
+    width: 40px;
+}
+
+.unselectable {
+    user-select: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}   
+
+.bg-brightred {
+    background: #FF2800;
+}
+
+.text-brightred {
+    color: #FF2800;
+}
+
+.ellipsis {
+  overflow: hidden; 
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* extend FontAwesome effetcs */
+
+@keyframes fa-blink-3x {
+    0%   { opacity: 0;   transform: scale(1.0); }
+    10%  { opacity: 0.2; transform: scale(1.2); }
+    15%  { opacity: 0.3; transform: scale(1.5); }    
+    20%  { opacity: 0.4; transform: scale(1.8); }
+    25%  { opacity: 0.7; transform: scale(2.0); }    
+    30%  { opacity: 0.8; transform: scale(2.3); }
+    35%  { opacity: 0.9; transform: scale(2.7); }    
+    40%  { opacity: 1.0; transform: scale(3.5); }
+    45%  { opacity: 1.0; transform: scale(3.5); }
+    50%  { opacity: 1.0; transform: scale(2.7); }
+    55%  { opacity: 1.0; transform: scale(2.3); }
+    60%  { opacity: 0.8; transform: scale(2.0); }
+    70%  { opacity: 0.6; transform: scale(1.8); }
+    80%  { opacity: 0.4; transform: scale(1.5); }
+    90%  { opacity: 0.2; transform: scale(1.2); }
+    100% { opacity: 0;   transform: scale(1.0); }
+}
+
+.fa-blink-3x {
+   animation: fa-blink-3x 2s linear infinite;
+   color: yellow;
+}
+
+@keyframes fa-blink-2x {
+    0%   { opacity: 0;   transform: scale(1.0); }
+    10%  { opacity: 0.2; transform: scale(1.1); }
+    15%  { opacity: 0.3; transform: scale(1.25); }    
+    20%  { opacity: 0.4; transform: scale(1.4); }
+    25%  { opacity: 0.7; transform: scale(1.5); }    
+    30%  { opacity: 0.8; transform: scale(1.65); }
+    35%  { opacity: 0.9; transform: scale(1.85); }    
+    40%  { opacity: 1.0; transform: scale(2.0); }
+    45%  { opacity: 1.0; transform: scale(2.0); }
+    50%  { opacity: 1.0; transform: scale(1.85); }
+    55%  { opacity: 1.0; transform: scale(1.65);  }
+    60%  { opacity: 0.8; transform: scale(1.5); }
+    70%  { opacity: 0.6; transform: scale(1.4); }
+    80%  { opacity: 0.4; transform: scale(1.15); }
+    90%  { opacity: 0.2; transform: scale(1.1); }
+    100% { opacity: 0;   transform: scale(1.0); }
+}
+
+.fa-blink-2x {
+   animation: fa-blink-2x 2s linear infinite;
+}
+
+
+
+.fa-blink, .fa-blink-1x {
+  animation: fa-blink 1s linear infinite;
+}
+
+@keyframes fa-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+
+/* extend Bootstrap 4 custom controls */
+
+div.custom-control-right {
+  padding-right: 24px;
+  padding-left: 0;
+  margin-left: 16px;
+  margin-right: 0;
+}
+div.custom-control-right .custom-control-label::before,
+div.custom-control-right .custom-control-label::after{
+  right: -1.5rem;
+  left: initial;
+}
+
+
+.hidden-input {
+    width: 0px;
+    height: 0px;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.beta-features {
+    display: none !important;
+}
+
+
+
+.hide {
+    display: none;
+}
+
+
+
+.display {
+    line-height: 1.2;
+}
+
+
+/*
+input.vertical-slider[type=range]::-moz-range-track {
+  cursor: pointer;
+  background: #e0e0e0;
+  border-radius: 2px;
+  border: 0.2px solid #a0a0a0;
+}
+
+input.vertical-slider[type=range]::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 12px;
+  border: 0.5px solid black;
+  background: blue;
+  cursor: pointer;
+}
+*/
+
+/* Vertical slider and custom vertical slider track and thumb for mozilla firefox */
+
+.booth-vertical--slider {
+    width: 120px; 
+    height: 20px; 
+    right: -40px;
+    
+}
+
+
+.teacher-vertical-slider-container {
+    position:relative; 
+    width: 20px; 
+}
+
+.teacher-vertical-slider {
+    position: absolute;
+    top: 45px;
+    left: -40px;
+    width: 100px !important; 
+}
+
+.booth-vertical-slider-container {
+    position:relative; 
+    width: 20px; 
+}
+
+.booth-vertical-slider {
+    position: absolute;
+    top: 80px;
+    left: -40px;
+    width: 100px !important; 
+}
+
+.vertical-slider {
+    position: absolute; 
+    transform: rotate(270deg);
+}
+
+
+.translucent:hover {
+    opacity: 0.9;
+}
+
+.translucent {
+    opacity: 0.3;
+}
+
+
+.toast-middle {
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.absolute-middle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+
+.hyphenate  {
+     -webkit-hyphens: auto;
+     -moz-hyphens: auto;
+     -ms-hyphens: auto;
+     hyphens: auto;
+ }
+
+
+.chat-me {
+    background: #99FFFF;
+    float: right;
+    clear: both;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 2px;
+}
+
+.chat-them {
+    background: #4FFFB0;
+    float: left;
+    clear: both;
+    padding: 5px;
+    border-radius: 15px;
+    margin-bottom: 2px;
+}
+
+.chat-them + .chat-them {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.chat-last {
+    margin-bottom: 10px;
+}
+
+.chat-them.chat-first {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 3px;
+}
+
+.chat-them.chat-last {
+    border-bottom-left-radius: 15px !important;
+}
+
+.chat-who {
+    display: block;
+    word-break: break-all;
+    font-size: 0.75em;
+}
+
+.chat-teacher {
+    background: #9e1b32;
+    color: white;
+}
+
+.chat-teacher a {
+    color: white;
+    font-weight: bold;
+}
+
+/* Change bootstrap disabled class */
+.btn.disabled, .btn:disabled {
+    opacity: .25;
+}

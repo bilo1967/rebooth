@@ -1,0 +1,2268 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+  <meta name="description" content="ReBooth (REmote BOOTH) is a WebRTC based platform for conference interpreter training">
+
+  <title>ReBooth:booth</title>
+
+  <!-- favicon for all devices -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+  <link rel="manifest" href="/images/icons/site.webmanifest">
+  <link rel="mask-icon" href="/images/icons/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/images/icons/favicon.ico">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/fontawesome.min.js" integrity="sha256-NP9NujdEzS5m4ZxvNqkcbxyHB0dTRy9hG13RwTVBGwo=" crossorigin="anonymous"></script>  
+
+  <!-- JQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Bootstrap 4.x -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>  
+
+  <!-- AnimateCSS -->  
+  <link rel="stylesheet" href="css/animate.min.css">
+  <script src="js/animatecss.js"></script>
+
+  <!-- Bootstrap 4 alerts, confirm, prompt boxex -->
+  <script src="js/bootbox.min.js"></script>
+
+  <!-- Toastr -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">  
+
+  <!-- CRC32 -->
+  <script src="js/crc-32.js"></script>
+  
+  <!-- JSCookies -->
+  <!-- Usage: Cookies.set('pippo', "Bla bla bla", {expires: 14}); let x = Cookies.get('pippo'); -->
+  <script src="js/js.cookie.js"></script>
+  
+  <!-- AnchorMe -->
+  <script src="js/anchorme.min.js"></script>
+  
+  <!-- PeerJS -->
+  <script src="js/peerjs.min.js?0.5"></script>
+
+  <!-- ReBooth -->
+  <link rel="stylesheet" href="css/rebooth.css?v0.11">
+  <script src="config/config.js?0.03"></script>
+  <script src="js/common.js?0.02"></script>
+  <script src="js/utils.js?0.05"></script>
+  <script src="js/tune.js?0.00"></script>
+  <script src="js/myrecorder.js?0.02"></script>
+  <script src="js/mychrono.js"></script>
+  <script src="js/log.js?0.0"></script>
+  <script src="js/emojiPicker.js"></script>
+  <script src="js/io-devices.js?0.02"></script>
+  <script src="js/rebooth.js?0.09"></script>
+
+<style>
+
+body {
+    background: url(images/boothbg.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.head-panel {
+    background: rgba(0, 146, 163, 0.75);
+    color: white;
+}
+
+/* Hide media controls even in fullscreen mode */
+#audio-player::-webkit-media-controls {
+  display:none !important;
+}
+
+::placeholder {
+  color: #AAA !important; 
+  opacity: 0.5;
+}
+
+.teacher-video-controls {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    background: transparent;
+    height: var(--video-height);
+}
+
+.log-item-info {
+    color: DarkOliveGreen;
+}
+
+.log-item-warning {
+    color: MidnightBlue;
+    font-style: italic;
+}
+
+.log-item-error {
+    color: brown;
+    //font-weight: bold;
+}
+
+.log-board-item {
+    font-size: 0.85rem;
+}
+
+
+#screen-share-video::-webkit-media-controls-play-button{
+  display:none !important;
+}
+
+
+#screen-share-video::picture-in-picture {
+  heigth: 480px;
+  width: auto;
+}
+
+
+.toast-middle {
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* bring your own prefixes */
+}
+
+</style>
+  
+<script>
+var me                = null;
+
+var fileName          = null;
+var fileCRC           = "";
+
+const urlParams = new URLSearchParams(window.location.search);
+
+var myPin           = urlParams.get('pin') ? urlParams.get('pin') : null;
+var teacherUserName = urlParams.get('t')   ? urlParams.get('t')   : null;
+var classCode       = urlParams.get('c')   ? urlParams.get('c')   : null;
+var userName        = urlParams.get('s')   ? urlParams.get('s')   : null;
+var sessionToken    = null;
+
+// Force check on query string parameters
+myPin = Student.validatePin(myPin) ? myPin : null;
+classCode = Student.validatePin(classCode) ? classCode : null;
+userName = Student.validateEmail(userName) ? userName.toLowerCase() : null;
+teacherUserName = Student.validateEmail(teacherUserName) ? teacherUserName.toLowerCase() : null;
+
+//if (userName) userName = userName.trim().replace(/[\/\\|&:;$%"<>()+, ]/g, '');
+
+
+var recorderChrono    = null;
+var recorder_         = null;
+var recordingCounter  = 1;
+
+
+// Audio context
+var audioCtx = null;
+var playerGain = null;
+var teacherGain = null;
+
+var playerSource = null;
+var teacherSource = null;
+var selfSource = null;
+
+var mixerNode = null;
+
+var audioDestinationElement = null;
+var audioDestinationNode = null;
+var audioDestinationStreamNode = null;
+
+
+var boothPlayerGainMax = PlayerGainMax;
+
+
+var mediaFetcher = null;
+var mediaFetcherProgress = 0;
+
+
+// handlers for setUserMediaConstraints function
+const myMediaConstraints = {
+    onOk: handleMediaSuccess,
+    onError: handleMediaErrors,
+    noWebcamMessage: 'Unusable or unavailable webcam',  // We don't know if the username is ok
+};
+
+// fake webcam customizations
+const fakeWebcamBackground = 'rgba(200,124,124,1)'; 
+const fakeWebcamColor = 'white';
+
+
+function logToServer(timeStamp, logLevel, script, line, column, log) {
+
+
+    if (!DebugMode || !DebugToServer || !sessionToken) return;
+
+    let fd = new FormData();
+    fd.append('pin', myPin);
+    fd.append('teacher', teacherUserName);
+    fd.append('classCode', classCode);
+    fd.append('student', userName);
+    fd.append('token', sessionToken);
+    fd.append('timeStamp', timeStamp);
+    fd.append('logLevel', logLevel);
+    fd.append('script', script);
+    fd.append('line', line);
+    fd.append('column', column);
+    fd.append('log', log);
+
+    $.ajax({
+        type: 'POST',
+        url: '/actions/session-log',
+        data: fd,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+    }).done((d) => {
+        if (d.Result != "OK") {
+            //appendLog(d.Message, "log-item-error");
+            //console.owarn("Can't upload log: " + d.Message);
+        }
+
+    }).fail(e => {
+        // ERROR
+        console.oerror("Impossible to log to the server:", e);
+    });
+}
+
+
+function uploadBlobToServer(blob, fields = {teacher, student, session, pin, token, classCode}, debug = false) {
+
+    const fd = new FormData();
+    
+    const session = fields.session;
+    
+    for (const field in fields) {
+        const value = fields[field];
+        fd.append(field, value);
+    }
+    fd.append('blob', blob, "file_name_is_ignored.webm");
+
+    if (debug) fd.append('error', 'timeout');
+    
+    $('#upload-percentage').text('');
+    
+        $.ajax({
+            type: 'POST',
+            url: debug ? '/actions/debug' : '/actions/session-put-blob',
+            data: fd,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            timeout: 8000, //UploadTimeout,    // in milliseconds
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = Math.round(evt.loaded / evt.total * 1000)/10;
+                        $('#upload-percentage').text('Upload ' + percentComplete + '%');
+                        // Update progress bar or other UI elements here
+                    }
+                }, false);
+                return xhr;
+            },
+            
+        }).done((d) => {
+            
+            if (d.Result == "OK") {
+
+                me.send({
+                    recorder: {
+                        action: "rec-ready",
+                        parameters: {
+                            session: session,
+                            file: d.File,
+                            mesg: "Recording '" + d.File + "' has been uploaded to session '" + session + "'",
+                        }
+                    }
+                });
+                appendLog("Recording uploaded");
+                if (DebugLevel >= 2) console.log("Recording uploaded");                
+
+            } else {
+            
+                // Error in upload processing by the server
+
+                me.send({
+                    recorder: {
+                        action: 'rec-upload-failed',
+                        parameters: {
+                            session: session,
+                            file: d.File,
+                            mesg: "Could not upload '" + d.File + "' to session '" + session + "'",
+                        }
+                    }
+                });
+                
+                // ERROR
+                appendLog(d.Message, "log-item-error");
+                console.warn("Upload FAILED: " + d.Message);
+                
+            }
+
+        }).fail( (jqXHR, textStatus, errorThrown) => {
+        
+            // Upload error
+            var msg = '';
+
+            if (jqXHR.status == 404) {
+                msg = 'Page not found [404]';
+            }  else if (jqXHR.status == 401) {
+                msg = 'Session expired [401]';
+            } else if (jqXHR.status == 500) {
+                msg = 'Internal Server Error [500]';
+            } else if (errorThrown === 'parsererror') {
+                msg = 'Requested JSON parse failed';
+            } else if (errorThrown === 'timeout') {
+                msg = 'Timeout';
+            } else if (errorThrown === 'abort') {
+                msg = 'Ajax request aborted';
+            } else {
+                msg = 'Unknown error occured';
+            }                    
+            
+            me.send({
+                recorder: {
+                    action: 'rec-upload-error',
+                    parameters: {
+                        session: session,
+                        mesg: "Error uploading recording to session " + session + ": " + msg,
+                    }
+                }
+            });
+            
+            appendLog("Error uploading audio: " + msg, "log-item-error");
+            console.warn(jqXHR, textStatus, errorThrown);
+        }).always(() => {
+            $('#upload-percentage').text('');
+        });
+
+}
+
+
+
+
+$(document).ready(function() {
+
+
+    //// Audio effects
+    //var StartRecordingEffect = new Tune(SoundStartRecording);
+    //var BatchOverEffect      = new Tune(SoundBatchOver);
+    //var SnapshotEffect       = new Tune(SoundSnapshot);
+    //var AudioReadyEffect     = new Tune(SoundAudioReady);
+
+    var StartRecordingEffect = null;
+    var BatchOverEffect      = null;
+    var SnapshotEffect       = null;
+    var AudioReadyEffect     = null;
+
+
+
+    // When no webcam is available we get a fake video stream from a canvas element...
+    initFakeWebcam({
+        message: 'Unusable or unavailable webcam',
+        background: fakeWebcamBackground,
+        color: fakeWebcamColor,
+        onStart: (msg) => {
+            $('#booth-video').removeClass('mirrored');
+        },
+        onStop: () => {
+            $('#booth-video').addClass('mirrored');
+        },
+    });
+
+
+    const audioPlayer = $('#audio-player').get(0);
+    
+    // Set up media fetching from server using the MediaFetcher class (see utils.js)
+    // Only one download is allowed at a time and each subsequent dowload cancels any 
+    // download in progress (default behaviour of MediaFetcher).
+    
+    mediaFetcher = new MediaFetcher("/actions/read", {
+    
+        // We display the progress percentage and
+        // send a feedback to the server, also...
+        onProgress: function( params )  {
+            let speed = "";
+            let p = Math.round(params.progress * 100);
+            
+            // Progress status messages are sent only every 5%
+            // This value should be set in a constant...
+            if (Math.round(p/5)*5 > mediaFetcherProgress) {
+                mediaFetcherProgress = Math.round(p/5)*5;
+                me.send({
+                    player: {
+                        action: "loading",
+                        parameters: {
+                            file: fileName,
+                            crc: fileCRC,
+                            progress: mediaFetcherProgress,
+                        }
+                    }
+                });
+            }
+            
+            if (params.downloadSpeed > 5000) {
+                speed = (params.downloadSpeed/1000).toFixed(1) + " Mb/s";
+            } else {
+                speed = Math.round(params.downloadSpeed) + " kb/s";
+            }
+            $('#audio-player-text').html("Loading: " + p + "% (" + speed + ")" );
+        },
+        
+        // When the download is ready we load it into the player.
+        // A CRC check is carried out on downloaded data (the downloaded file 
+        // must have the same CRC as the one requested by the teacher).
+        onLoad: async function(res, size) {
+
+            fileSize = size;
+            fileCRC = crc32(res);
+
+            if (DebugLevel >= 2) console.log('File "' + fileName + '" (' + fileSize + ' bytes) has been buffered and it\'s CRC is 0x' + fileCRC.toHex());
+
+            if (crc != fileCRC) {
+                throw Error("crc-error");
+            }
+        
+            // Genero un blob a partire dal buffer e creo un pseudolink per poterlp caricare nel player come source
+            audioPlayer.src = URL.createObjectURL(new Blob([ res ]));
+            
+            $('#audio-player').one('canplaythrough', canPlayThrough);
+            $('#audio-player-text').html(baseName(fileName));
+            
+            appendLog("Media file '<em>" + baseName(fileName) + "</em>' loaded");
+
+        },
+        onAbort: () => {
+            mediaFetcherProgress = 0;
+            console.warn("Player error or new loading requested: current fetch aborted");
+//          toastr.warning("Transfer aborted", "User action", {positionClass: "toast-middle", timeOut: 500} );
+        },
+        onError: function(msg, err) {
+        
+            mediaFetcherProgress = 0;
+
+            // GESTIONE DELL'ERRORE DI CARICAMENTO
+
+            if (msg == 'crc-error') {
+                console.warn("Player error: media file CRC mismatch");
+                
+                me.send({
+                    player: {
+                        action: "crc-error",
+                        parameters: {
+                            file: fileName,
+                            crc: fileCRC,
+                            mesg: "Teacher's and booth's media file differs",
+                        }
+                    }
+                });
+
+            } else {
+
+                console.warn("Player HTTP error " + err + ": " + msg);
+                
+                me.send({
+                    player: {
+                        action: "http-error",
+                        parameters: {
+                            file: fileName,
+                            crc: fileCRC,
+                            mesg: msg,
+                        }
+                    }
+                });
+                appendLog("Can't load media file '<em>" + fileName + "</em>' (" + msg + ")", "log-item-error");
+            }
+
+        },
+    });
+
+
+    $('#emoji-picker').emojiPicker('chat-text', {
+        classes: 'border rounded text-center',
+        css: {
+            margin: "1px",
+            background: '#F0F0FF',
+            width: "auto",
+        },
+        emojiCSS: {
+            'font-size': "20px",
+            padding: "1px",
+        },
+        position: 'top-right',        
+    });
+
+
+    // Bootstrap custom tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+//  $("input[data-toggle='tooltip']").mouseout(function(){
+//    $(this).tooltip('hide');
+//  });    
+    
+    
+    $('#audio-player').on('click', function() {
+    
+        if (document.fullscreen) $('#player-toggle-fullscreen-button').trigger('click');
+        
+    });
+    
+
+    
+    
+    loadClock();
+
+    bootbox.alert({
+        centerVertical: true,
+        title: "Welcome to "+AppName+ " v"+AppVersion,
+        message: "You can join the class by pressing the 'Join' button only after the teacher has started it.",
+        callback: () =>  {
+            // Here we create objects needing an user gesture to be created
+
+            // create an audio context and hook up the video/audio element as the source
+            audioCtx = new AudioContext();
+            playerSource = audioCtx.createMediaElementSource($('#audio-player').get(0));
+            //teacherSource = audioCtx.createMediaElementSource($('#teacher-video').get(0));
+            
+
+            // Mixer node and audio destination streaming node used for recording split audio
+            mixerNode = audioCtx.createChannelMerger(2);
+            audioDestinationStreamNode = audioCtx.createMediaStreamDestination();            
+
+
+            // create Player gain node
+            playerGain = audioCtx.createGain();
+            playerGain.gain.value = boothPlayerGainMax * $('#audio-player-volume').val();
+            playerSource.connect(playerGain);
+            
+            // create Teacher gain node
+            //teacherGain = audioCtx.createGain();
+            //teacherGain.gain.value = TeacherGainMax * $('#teacher-volume').val();
+            //teacherSource.connect(teacherGain);
+
+            // Since the Web Audio API does not allow to set a specific audio device
+            // as a destination, we first create a destination node that we will use
+            // it as a source for a dynamic audio element, for which we can set the
+            // sinkId to any device we wish.
+            audioDestinationNode = audioCtx.createMediaStreamDestination();
+
+            StartRecordingEffect = new Tune(SoundStartRecording);
+            BatchOverEffect      = new Tune(SoundBatchOver     );
+            SnapshotEffect       = new Tune(SoundSnapshot      );
+            AudioReadyEffect     = new Tune(SoundAudioReady    );          
+            
+            // connect gain nodes to output destination
+            playerGain.connect(audioDestinationNode);
+            //teacherGain.connect(audioDestinationNode);
+            
+            // Create a dynamic <audio> element
+            audioDestinationElement = new Audio();
+            
+            // Our audio stream becomes the audioDestinationElement srcObject
+            audioDestinationElement.srcObject = audioDestinationNode.stream;
+            
+            // Ensure audio output element uses the choosen output device
+            audioDestinationElement.setSinkId(audioOutputSelect.value).then( () => {
+                audioDestinationElement.play();
+            })
+            
+        }
+    });
+
+    if (DebugMode) {
+        var init  = "[" + (new Date()).toTimeStamp() + "] " + AppName + " " + AppVersion + " booth console log redirection enabled";
+        redirectConsole(init, logToServer);
+    }
+    
+    $('.download-log-link').on('click', function(e) {
+        if (DebugMode) {
+            this.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(console.get()));
+            this.setAttribute('download', 'log.txt');
+        } else {
+            // Debug mode is not enabled
+        }
+    });    
+
+
+    if (DebugLevel >= 2) console.log('Teacher is "' + teacherUserName + '" and my pin is "' + myPin + '"');
+    appendLog('Teacher is "' + teacherUserName + '" and my pin is "' + myPin + '"');
+    
+    recorderChrono = new MyChrono(1000, (t) => {
+        $('#recorder-chrono').text(t.toMMSS());
+    });
+    
+
+    $('#log-board').html("");
+    appendLog("Welcome to " + AppName + " v" + AppVersion);
+    
+    
+    // Set title
+    $('#application-name').html(AppName + ' <span style="font-size: 1em">v' + AppVersion + '</span>');
+
+    
+    if (myPin != null) $("#my-pin").val(myPin);
+    if (teacherUserName != null) $("#teacher-user-name").val(teacherUserName);
+    if (userName != null) $("#student-user-name").val(userName);
+    if (classCode != null) $("#class-code").val(classCode);
+
+
+
+    // Load local camera and microphone selectors
+    setDeviceSelector($('#select-video-source').get(0), 'videoinput');  // select box for video source devices
+    setDeviceSelector($('#select-audio-source').get(0), 'audioinput');  // select box for audio source devices
+    setDeviceSelector($('#select-audio-output').get(0), 'audiooutput'); // select box for audio output devices
+
+
+
+    // Handle chronometer and timeout for batch activities
+    var batchChrono = null;
+    var batchTimeout = null;
+
+
+    function clearBatch() {
+    
+        if (DebugLevel >= 2) console.log("Clearing batch");
+
+        if (batchChrono) batchChrono.clear();
+        if (batchTimeout) {
+            clearTimeout(batchTimeout);
+            BatchOverEffect.play(audioOutputSelect.value);
+        }
+        
+        $('#batch-display').removeClass('hide').addClass('hide');
+        
+        $('#audio-player').off('ended.sim');
+        $('#audio-player').off('ended.con');
+    }
+    
+    function pauseBatch() {
+        if (DebugLevel >= 2) console.log("Pausing batch");
+        if (batchChrono) batchChrono.pause();
+    }
+    
+    function resumeBatch() {
+        if (DebugLevel >= 2) console.log("Resuming batch");
+        if (batchChrono) batchChrono.resume();
+    }
+
+
+
+
+
+
+
+    
+
+
+    me = new Student({
+        videoElement: $('#booth-video')[0],
+        teacherVideoElement: $('#teacher-video')[0],
+        onTeacherMuted: function() {
+            $('#teacher-audio').html('<i class="fas fa-microphone-slash"></i>');
+            if (DebugLevel >= 3) console.log("Teacher wants to be muted");
+        },
+        onTeacherUnmuted: function() {
+            $('#teacher-audio').html('<i class="fas fa-microphone"></i>');
+            if (DebugLevel >= 3) console.log("Teacher wants to be unmuted");            
+        },
+        onScreenShareStream: function(stream) {
+        
+            $('#screen-share-video-container').removeClass('hide');
+            var farScreenElem = $('#screen-share-video')[0];
+
+            farScreenElem.srcObject = stream;
+            farScreenElem.play();
+        },
+        onScreenShareClose: function() {
+            $('#screen-share-video-container').removeClass('hide').addClass('hide');
+            
+            var farScreenElem = $('#screen-share-video')[0];
+
+            if (farScreenElem.srcObject == null) return;
+            
+            let tracks = farScreenElem.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+            farScreenElem.srcObject = null;
+        },
+        onDataReceived: function(data) {
+
+            if (data.sessionToken) {
+                sessionToken = data.sessionToken.value;
+                if (DebugLevel >= 2) console.log("Session token is " + sessionToken);
+            } else if (data.chat) {
+            
+                animateCSS('#send-chat-text', 'heartBeat');
+            
+                // Here we handle the chat
+                let pin = ("pin" in data.chat) ? data.chat.pin : null;
+                let who = ("who" in data.chat) ? data.chat.who : null;
+                
+                //let t = "";
+                if (who) {
+//                  let n = who.indexOf("@");
+//                  if (n > 0) who = who.substr(0, n);
+//                  who = who.trunc(15);
+                    who = who + ""; // cast to string
+                    
+                    //t = "<span style='color: brown'><b>" + who + "</b>&gt; " + data.chat.text + "</span>";
+                } else {
+                    who = "teacher";
+                    //t = "<span style='color: blue'><b>Teacher</b>&gt; " + data.chat.text + "</span>";
+                }
+                
+                writeToChat(data.chat.text, who);
+
+                //$("#chat-board").append(t);
+                //$("#chat-board").scrollToEnd();               
+                
+            } else if (data.flags) {
+                // Here we handle notifications
+                switch (data.flags.value) {
+                    case "clear all flags":
+                        $('#booth-flags').html('');
+                        break;
+                    default:
+                        break;
+                }
+            } else if (data.snapshot) {
+
+                // snapshot might be too large to be transferred
+                // using a single message in the data-channel
+                
+
+
+                if (DebugLevel >= 2) console.log("Snapshot requested");
+                let snapfile = data.snapshot.parameters.filename;
+                takeSnapshotFromMediaStream($('#booth-video').get(0).srcObject, 2).then(r => {
+                    
+                    SnapshotEffect.play(audioOutputSelect.value);
+                    
+                    me.send({
+                        snapshot: {
+                            action: 'ready', 
+                            parameters: {
+                                filename: snapfile,
+                                url: r.url
+                            }
+                        }
+                    });
+
+                    //downloadDataURL(r.url, snapfile);
+                });                   
+/*            */
+            } else if (data.player) {
+               $(document).trigger('teacher-player-commands', {
+                   date: Date.now(),
+                   action: data.player.action,
+                   parameters: data.player.parameters
+               });
+            } else if (data.recorder) {
+               $(document).trigger('teacher-recorder-commands', {
+                   date: Date.now(),
+                   action: data.recorder.action,
+                   parameters: data.recorder.parameters ? data.recorder.parameters : null
+               });
+            } else if (data.info) {
+                switch (data.info.action) {
+                case 'status': 
+
+                    let p = $('#audio-player').get(0);
+                    me.send({
+                        info: {
+                            action: 'status-feedback',
+                            parameters: {
+                                playerStatus: p.paused ? (p.currentTime == 0 ? 'stopped' : 'paused') : 'playing',
+                                playerFile: fileName,
+                                playerFileCRC: fileCRC,
+                                playerTime: p.currentTime,
+                                recorderStatus: me.mediaRecorder ? me.mediaRecorder.status : 'inactive',
+                                recorderTime: recorderChrono.value,
+                            }
+                        }
+                    });
+                    break;
+                case 'set-teacher-label':
+
+                    if (data.info.parameters.value !== false) {
+                        $('#teacher-label').html(data.info.parameters.value);
+                        animateCSS('#teacher-label', 'heartBeat');
+                    } else {
+                        $('#teacher-label').html('');
+                    }
+                
+                    break;
+                default:
+                    break;
+                }
+                
+            } else if (data.profile) {
+                
+                let profile = 'low';
+                if (Object.keys(BandwidthProfiles).includes(data.profile.value)) {
+                    profile = data.profile.value;
+                }
+                if (DebugLevel >= 3) console.log('Changing bandwidth profile to ' + profile);                
+                setBandwidthProfile(profile);
+                setUserMediaConstraints(myMediaConstraints);
+                
+            } else if (data.batch) {
+            
+            
+                let delay = data.batch.parameters.delay;
+                let duration = data.batch.parameters.duration;
+                let file = data.batch.parameters.duration;
+                let crc = data.batch.parameters.crc;
+                
+                if (DebugLevel >= 2) console.log('Teacher has scheduled a ' + data.batch.action + ' batch with these parameters: ' + JSON.stringify(data.batch.parameters));
+                
+            
+                switch (data.batch.action) {
+                case 'clear':
+                    clearBatch();
+                    break;
+
+                case 'simultaneous':
+                    if (DebugLevel >= 2) console.log("Starting SIM translation batch");
+                    appendLog("Starting simultaneous translation session");
+
+
+                    if (DebugLevel >= 2) console.log("Batch in progress: triggering recorder start command");
+                    // Start recorder
+                    $(document).trigger('teacher-recorder-commands', {
+                        date: Date.now(),
+                        action: 'record',
+                        parameters: data.batch.parameters ? data.batch.parameters : null
+                    });
+
+
+                    $('#batch-counter').html('--:--');
+                    
+                    // Setup chrono
+                    batchChrono = new MyChrono(
+                        100,
+                        (t) => {
+                            t = Math.floor(t / 10);
+                            
+                            if (duration <= t) {
+                                //batchChrono.stop();
+                                batchChrono.clear();
+                                t = duration;
+                            }
+                            
+                            $('#batch-counter').html(Math.floor(duration - t).toMMSS());
+                    });
+                    
+                    // Delay 1s audio player
+                    if (DebugLevel >= 2) console.log("Batch in progress: triggering player play command (1s delay)");
+                    setTimeout(() => {
+
+                        // Start audio player
+                        $(document).trigger('teacher-player-commands', {
+                            date: Date.now(),
+                            action: 'play',
+                            parameters: data.batch.parameters ? data.batch.parameters : null
+                        });
+
+                        batchChrono.start()
+                    }, 1000);
+                    
+                    $('#batch-type').html('Simultaneous');
+                    $('#batch-display').removeClass('hide');
+                    
+        
+                    // Append an event handler for the "onended" of the player
+                    if (DebugLevel >= 3) console.log("Batch in progress: appending 'onended' event handler for current track");
+                    $('#audio-player').on('ended.sim', function() {
+                        if (DebugLevel >= 2) console.log("Batch in progress: scheduling recorder stop command after "+delay+"s (+2s delay)");
+                        batchTimeout = setTimeout(() => {
+                            $(document).trigger('teacher-recorder-commands', {
+                                date: Date.now(),
+                                action: 'stop-and-save',
+                                parameters: data.batch.parameters ? data.batch.parameters : null
+                            });
+
+                            BatchOverEffect.play(audioOutputSelect.value);
+
+                        }, (delay + 2)*1000);
+                    });                    
+
+                    break;
+                    
+                    
+                case 'consecutive':
+                    if (DebugLevel >= 2) console.log("Starting CON translation batch");
+                    appendLog("Starting consecutive translation session");
+                    
+
+                    $('#recorder-chrono').text("--:--");
+                    
+                    $('#batch-type').html('Consecutive');
+                    $('#batch-display').removeClass('hide');
+                    
+                    // Start audio player
+                    $(document).trigger('teacher-player-commands', {
+                        date: Date.now(),
+                        action: 'play',
+                        parameters: data.batch.parameters ? data.batch.parameters : null
+                    });
+                    
+                    $('#batch-counter').html(duration.toMMSS());
+                    
+                    batchChrono = new MyChrono(
+                        100,
+                        (t) => {
+                            t = Math.floor(t / 10);
+                            
+                            if (duration <= t) {
+                                //batchChrono.stop();
+                                batchChrono.clear();
+                                t = duration;
+                            }
+                            
+                            $('#batch-counter').html(Math.floor(duration - t).toMMSS());
+                    });
+
+
+                    
+                    // Append an event handler for the "onended" of the player
+                    if (DebugLevel >= 3) console.log("Batch in progress: appending 'onended' event handler for current track");
+                    $('#audio-player').on('ended.con', function() {
+                    
+                        if (DebugLevel >= 3) console.log("ended.con has been called");
+                    
+                        // Delay 1s 
+                        setTimeout(() => {
+                        
+                            batchChrono.start();
+
+                            $(document).trigger('teacher-recorder-commands', {
+                                date: Date.now(),
+                                action: 'record',
+                                parameters: data.batch.parameters ? data.batch.parameters : null
+                            });
+                            
+                            if (DebugLevel >= 2) console.log("Batch in progress: scheduling recorder stop command after "+duration+"s (+2s delay)");                            
+                            batchTimeout = setTimeout(() => {
+                                $(document).trigger('teacher-recorder-commands', {
+                                    date: Date.now(),
+                                    action: 'stop-and-save',
+                                    parameters: data.batch.parameters ? data.batch.parameters : null
+                                });
+                                
+                                BatchOverEffect.play(audioOutputSelect.value);
+                            
+                            }, (duration + 2) * 1000);
+                        
+                        
+                        }, 1000);
+                    
+                    });
+
+
+                    
+                    
+                    break;
+                }
+            }
+        },
+        onDisconnect: function() {
+        
+            if (DebugLevel >= 2) console.log("Teacher disconnected - finalizing GUI");
+            appendLog("Teacher disconnected.");
+            
+            // Clear all flags
+            $('#booth-flags').html('');
+            
+            
+            me.teacherVideoElement.srcObject = null;
+            
+            $('#close-connection,#join-connection').removeClass('disabled');
+            $('#close-connection').addClass('disabled');
+            
+            $('#teacher-label').html('');
+            
+            $('#screen-share-video-container').removeClass('hide').addClass('hide');
+            
+            // Close screen share connection and stop stream
+            if (me.screenConnection && me.screenConnection.open) me.screenConnection.close();   
+            me.screenConnection  = null;
+            var farScreenElem = $('#screen-share-video')[0];
+            if (farScreenElem.srcObject) {
+                let tracks = farScreenElem.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                farScreenElem.srcObject = null;
+            }
+            
+        },
+        onError: function(err) {
+            console.warn(
+                "Booth error handler:",
+                "type: "  + err.type,
+                "msg:"    + err.msg,
+                "cause: " + err.cause,
+                "retry: " + err.retry
+            );
+            
+            appendLog(err.msg, "log-item-error");
+            $('#close-connection,#join-connection').removeClass('disabled');
+            $('#close-connection').addClass('disabled');
+            
+        },
+    });
+
+
+    // ondevicechange event (webcam or headset has been plugged in or out)
+    navigator.mediaDevices.ondevicechange = (e) => {
+        appendLog("Device list change detected");
+        animateCSS('#config-button', 'jello');
+        handleDeviceListChange(e); // io-devices.js
+    }
+
+    // Reload device list when the config button is clicked
+    $('#config-button, #refresh-devices').on('click', function(e) {
+    
+        e.preventDefault();
+        if ($(this).hasClass('disabled')) return;
+        
+        if (DebugLevel >= 2) console.log("enumerating devices");
+        
+        getDevices()
+            .then(() => { 
+                $('#config-panel').modal('show'); 
+            })
+            .catch(handleLocalMediaStreamError);
+
+    });
+
+    $('#select-video-source').on('change', () => {
+        Cookies.set('student-video-source', $('#select-video-source').val(), { expires: 365 });
+        setUserMediaConstraints(myMediaConstraints);
+    });
+    $('#select-audio-source').on('change', () => {
+        Cookies.set('student-audio-source', $('#select-audio-source').val(), { expires: 365 });
+        setUserMediaConstraints(myMediaConstraints);
+    });
+    $('#select-audio-output').on('change', () => {
+        Cookies.set('student-audio-output', $('#select-audio-output').val(), { expires: 365 });
+
+        changeAudioDestination($('#teacher-video')[0]);
+        //changeAudioDestination($('#audio-player')[0]);
+        changeAudioDestination(audioDestinationElement);
+        
+    });
+    
+    
+    //
+    // Volume overboost
+    //
+    boothPlayerGainMax = Cookies.get('volume-overboost') || PlayerGainMax;
+    $('#select-volume-overboost').val(boothPlayerGainMax == PlayerGainMax ? 'default' : boothPlayerGainMax);
+    
+    $('#select-volume-overboost').on('change', function () {
+        boothPlayerGainMax = $(this).val() == 'default' ? PlayerGainMax : $(this).val();
+
+        Cookies.set('volume-overboost', boothPlayerGainMax, { expires: 365 });
+        $('#audio-player-volume').trigger('input');
+    
+    });
+
+
+    getDevices()
+        .then(() => {
+
+            $('#select-video-source').val(Cookies.get('student-video-source') || 'default');
+            $('#select-audio-source').val(Cookies.get('student-audio-source') || 'default');
+            $('#select-audio-output').val(Cookies.get('student-audio-output') || 'default');
+
+            setUserMediaConstraints(myMediaConstraints);
+            changeAudioDestination($('#teacher-video').get(0));
+            //changeAudioDestination($('#audio-player')[0]);
+            changeAudioDestination(audioDestinationElement);
+        })
+        .catch(handleLocalMediaStreamError);
+    
+
+    // log to PeerJS server and get an Id
+    me.logon(
+        userName ? userName : "none",
+        () => { 
+            if (DebugLevel >= 2) console.log("You have successfully logged into the server. You're ready to join the class.");
+            appendLog("You have successfully logged into the server. You're ready to join the class.");
+            
+        },
+        (e) => {
+            console.warn("Error logging into the server");
+            console.warn(e);
+
+            appendLog("Error logging into the server: " + e.msg, "log-item-error")
+            
+            $('#close-connection,#join-connection').removeClass('disabled');
+            $('#close-connection').addClass('disabled');
+        },
+    );
+    
+    
+  
+
+    
+    $('#join-connection').on('click', function(e) {
+    
+        e.preventDefault();
+        
+        if ($(this).hasClass('disabled')) return;
+        
+        if (me.connected()) return;
+        
+        // validate input fields
+
+        let teacher = $("#teacher-user-name").val().trim().toLowerCase();
+        let pin = $("#my-pin").val().trim();
+        let code = $("#class-code").val().trim();
+        let name = $("#student-user-name").val().trim().toLowerCase(); 
+        
+        if (!Student.validateEmail(teacher)) teacher = '';
+        if (!Student.validatePin(pin)) pin = '';
+        if (name == '' && pin != '') {
+            name = pin + "@booth.nn";
+        }
+        if (!Student.validateEmail(name)) name = '';
+        if (code && !Student.validatePin(code)) code = '';
+
+        if (teacher == '' || pin == '' || name == '') {
+            if (teacher == '') animateCSS('#teacher-user-name', 'flash');
+            if (pin == '') animateCSS('#my-pin', 'flash');
+            if (name == '') animateCSS('#student-user-name', 'flash');
+            return;
+        }
+
+        $("#teacher-user-name").val(teacher);
+        $("#student-user-name").val(name);
+        $("#my-pin").val(pin);
+        $("#class-code").val(code);
+        
+        userName = name;
+        me.userName = userName;
+        
+        // Change message for fake webcam to be used when no webcam is available
+        updateFakeWebcam({message: userName});
+        myMediaConstraints.noWebcamMessage = userName;
+
+        
+        myPin = pin;
+        teacherUserName = teacher;
+        classCode = code;
+        
+        $('#close-connection,#join-connection').removeClass('disabled');
+        $('#close-connection,#join-connection').addClass('disabled');
+        appendLog("Trying to join the class. Please, wait&hellip;");
+        
+        // CALL THE TEACHER
+        me.call(
+            teacherUserName,
+            classCode, 
+            myPin, 
+            () => { 
+                if (DebugLevel >= 2) console.log("Data connection established. Waiting for media stream...");
+                appendLog("Data connection established. Waiting for media stream...");
+                $('#close-connection,#join-connection').removeClass('disabled');
+                $('#join-connection').addClass('disabled');
+            }, 
+            (e) => { 
+                console.warn("Error calling the teacher", e);
+                appendLog("Error calling the teacher.", "log-item-error");
+                appendLog(e.msg, "log-item-error");
+                $('#close-connection,#join-connection').removeClass('disabled');                
+                $('#close-connection').addClass('disabled');
+            },
+            (stream) => {             
+                if (DebugLevel >= 2) console.log("Media connection established");
+                appendLog("Media connection established");
+            },
+            (e) => { 
+                console.warn("Error in media connection", e);
+                appendLog(e.msg, "log-item-error");
+            },
+            
+        );
+    });
+ 
+    $('#close-connection').on('click', function(e) {
+        e.preventDefault();
+        if ($(this).hasClass('disabled')) return;
+    
+        // Stop the player
+        $('#audio-player')[0].pause();
+        $('#audio-player')[0].currentTime = 0;
+        
+        // Stop the recorder
+        //if (recorder) recorder.stop().catch(()=>{});
+        if (me.mediaRecorder && me.mediaRecorder.status == 'recording') me.mediaRecorder.stop();
+        
+        $('#join-connection').removeClass('disabled');
+        $(this).addClass('disabled');
+
+        appendLog("Leaving the class&hellip;");
+        $('#screen-share-video-container').removeClass('hide').addClass('hide');
+        me.hangup();
+    });
+   
+
+    $("#chat-text").on("keypress", function(e) {
+        if (e.which == 13) {
+            $('#send-chat-text').trigger('click');
+            return false;
+        }
+    });
+
+    $('#send-chat-text').on('click', function() {
+        let t = $('#chat-text').val().trim();
+        
+        if (t.startsWith('##')) {
+            
+            let n = t.substring(2);
+            
+            if (isNaN(n)) {
+                switch(n) {
+                case 'destroy':
+                    me.peer.destroy();
+                    break;
+                case 'video':
+                    $('#player-container').toggleClass('hide');
+                    break;
+                    
+                }
+                
+            } else {
+                if (n=="0") {
+                    $('body').css('background', 'linear-gradient(180deg, rgba(255,220,172,1) 0%, rgba(175,168,100,1) 33%, rgba(99,103,30,1) 100%)');
+                } else {
+                
+                    $('body').css('background', 'url(' + BoothImageUrlTemplate.replace('{n}', n) + ') no-repeat center center fixed')
+                    $('body').css('background-size', 'cover');
+                }
+            }
+            
+        
+            return;
+        }
+        
+        if (t == "") return;
+
+        me.send({chat: {text: t}});
+        writeToChat(t);
+        
+    });
+    
+    $('#button-raise-hand').on('click', function() {
+        if (!me.connected()) return;
+
+        if ($('#booth-flags').html().length == 0) {
+            $('#booth-flags').html(
+                '<span class="fa-stack fa-4x text-warning">' +
+                '<i class="fas fa-circle fa-stack-2x" style="opacity: 0.8"></i>' +
+                '<i class="fas fa-hand-paper fa-stack-1x fa-inverse"></i>' +
+                '</span>'
+            );
+            me.send({flags: {value: "raise hand"}});
+        } else {
+            $('#booth-flags').html('');
+            me.send({flags: {value: "clear all flags"}});
+        }
+    });
+
+    $('#button-thumbs-up').on('click', function() {
+        if (!me.connected()) return;
+
+        if ($('#booth-flags').html().length == 0) {
+            $('#booth-flags').html(
+                '<span class="fa-stack fa-4x text-success">' +
+                '<i class="fas fa-circle fa-stack-2x" style="opacity: 0.8"></i>' +
+                '<i class="fas fa-thumbs-up fa-stack-1x fa-inverse"></i>' +
+                '</span>'
+            );
+            me.send({flags: {value: "thumbs up"}});
+        } else {
+            $('#booth-flags').html('');
+            me.send({flags: {value: "clear all flags"}});
+        }
+    });
+    $('#button-thumbs-down').on('click', function() {
+        if (!me.connected()) return;
+
+        if ($('#booth-flags').html().length == 0) {
+            $('#booth-flags').html(
+                '<span class="fa-stack fa-4x text-danger">' +
+                '<i class="fas fa-circle fa-stack-2x" style="opacity: 0.8"></i>' +
+                '<i class="fas fa-thumbs-down fa-stack-1x fa-inverse"></i>' +
+                '</span>'
+            );
+            me.send({flags: {value: "thumbs down"}});
+        } else {
+            $('#booth-flags').html('');
+            me.send({flags: {value: "clear all flags"}});
+        }
+    });
+    
+    // Play test sound button on device control panel
+    $('#play-test-sound').on('click', function() {
+        playTestSound({sinkId: audioOutputSelect.value, audioUrl: SoundAudioTest});
+    });
+
+
+    // Handle page close or reload
+    
+    $(window).on('beforeunload', (e) => {
+        return e.originalEvent.returnValue; // Warning
+    });
+    
+    $(window).on('unload', (e) => {
+
+        console.warn("Page has been closed or reloaded");
+        
+        if (me.connected()) {
+            appendLog("Leaving the class&hellip;");
+            $('#screen-share-video-container').removeClass('hide').addClass('hide');
+            me.hangup();
+        }  
+        
+        setTimeout(function() {
+            me.logoff();
+            appendLog("Disconnecting from the server&hellip;");
+        }, 100);
+    });    
+
+
+
+    $(document).on('teacher-recorder-commands', (event, data) => {
+        let timestamp = event.timeStamp;
+        let action = data.action;
+        let params = data.parameters;
+        
+        let teacher = params.teacher; // teacherUserName
+        let student = userName;
+        let session = params.session;
+        
+        
+        $('#recording-indicator').removeClass('spinner-grow');
+        $('#config-button').removeClass('disabled');
+        $('#config-panel').modal('hide');
+        switch (action) {
+        case 'record':
+        
+            if (me.mediaRecorder && me.mediaRecorder.status != 'inactive') {
+                if (DebugLevel >= 2) console.log('rec request discarded: already recording');
+                break; 
+            }
+            
+            StartRecordingEffect.play(audioOutputSelect.value);
+            
+            if (DebugLevel >= 2) console.log("Start recording");
+            
+            $('#download-recording').addClass('disabled');
+            
+            // If the booth was disconnected while recording and did not 
+            // receive a stop recording command we stop it now
+            // if (me.mediaRecorder && me.mediaRecorder.status == 'recording') me.mediaRecorder.stop();
+
+            // Set recording mode (split => player on R channel, booth on L channel )
+            if (params.recordingMode == 'split') {
+            
+                // Setup a double audio track stream for recording
+                if (DebugLevel >= 2) console.log("Setting up split recording mode");
+                
+                if (selfSource != null) selfSource = null
+                selfSource = audioCtx.createMediaStreamSource(me.mediaStream);
+                
+                selfSource.connect(mixerNode, 0, 0);    // Booth: L
+                playerSource.connect(mixerNode, 0, 1);  // Source: R
+                
+                mixerNode.connect(audioDestinationStreamNode);
+                
+                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm'});
+                
+            } else if (params.recordingMode == 'interview') {
+
+                // Setup a double audio track stream for recording
+                if (DebugLevel >= 2) console.log("Setting up interview recording mode");
+                
+                if (selfSource != null) selfSource = null
+                selfSource = audioCtx.createMediaStreamSource(me.mediaStream);
+
+                if (teacherSource != null) teacherSource = null
+                teacherSource = audioCtx.createMediaStreamSource(me.teacherMediaStream);
+                
+                selfSource.connect(mixerNode, 0, 0);    // Booth: L
+                teacherSource.connect(mixerNode, 0, 1);  // Source: R
+                
+                mixerNode.connect(audioDestinationStreamNode);
+                
+                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm'});
+
+            } else if (params.recordingMode == 'video') {
+            
+                if (DebugLevel >= 2) console.log("Setting up video recording mode");
+                
+                // Record booth audio and video (no audio mixing)
+                me.mediaRecorder = new MyRecorder(me.mediaStream, null, {mimeType: 'video/webm'});
+                
+                
+                
+            } else {
+                // Record just the booth track (setup a mono track stream)
+                if (DebugLevel >= 2) console.log("Setting up mono track recording mode");
+                
+                if (selfSource != null) selfSource = null
+                selfSource = audioCtx.createMediaStreamSource(me.mediaStream);
+
+//              const monoNode = audioCtx.createChannelMerger(1);
+//              selfSource.connect(monoNode, 0, 0);    // Booth: mono
+//              monoNode.connect(audioDestinationStreamNode);
+
+                selfSource.connect(audioDestinationStreamNode);
+
+                
+                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm'});
+            }
+            
+            me.mediaRecorder.start();
+            recorderChrono.clear();
+            recorderChrono.start();
+            appendLog("Audio recording has been started");
+            $('#recording-indicator').removeClass('spinner-grow').addClass('spinner-grow');
+            $('#config-button').removeClass('disabled').addClass('disabled');
+            
+            break;
+
+        case 'stop-and-save':
+        
+            if (me.mediaRecorder && me.mediaRecorder.status != 'recording') {
+                if (DebugLevel >= 2) console.log('stop-and-save request discarded: already stopped');
+                break; 
+            }
+
+            // Clear batch async events (if any)
+            clearBatch();
+            
+        
+            if (DebugLevel >= 2) console.log("Stop recording and save");
+            appendLog("Audio recording has been stopped. Your recording will be ready in a few moments.");
+            recorderChrono.stop();
+            
+            
+            // Stop recorder and collect the recording
+            me.mediaRecorder.stop().then((r) => {
+            
+                $('#download-recording')
+                    .attr('href', r.mediaURL)
+                    .attr('download', userName + '-' + recordingCounter + '.webm')
+                    .removeClass('disabled');
+                
+                recordingCounter++;
+                
+                animateCSS('#download-recording', 'heartBeat');            
+            
+                // Upload the blob to the server
+                uploadBlobToServer(
+                    r.mediaBlob, 
+                    {
+                        'teacher':   teacher,
+                        'student':   student,
+                        'session':   session,
+                        'pin':       myPin, 
+                        'token':     sessionToken,
+                        'classCode': classCode
+                    }
+                    , student.substring(0, 3) == 'zzz' //, true // <= debug
+                );
+
+//              return new Promise(resolve => {
+//                  resolve( { mediaURL: r.mediaURL});
+//              });
+                
+            }).catch((e) => {
+            
+                // ERROR IN RECORDING
+
+                console.warn("Error in recording", e); 
+                appendLog(e.msg, "log-item-error");
+                
+                $('#download-recording').addClass('disabled');
+                
+
+            });
+
+            break;
+
+        case 'pause':
+            appendLog("Audio recording has been paused.");
+            recorderChrono.pause();
+            me.mediaRecorder.pause();
+            if (DebugLevel >= 2) console.log("Pause recording");        
+            $('#recording-indicator').addClass('spinner-grow');
+            break;
+
+        case 'resume':
+            appendLog("Audio recording has been resumed.");
+            recorderChrono.resume();
+            me.mediaRecorder.resume();
+            if (DebugLevel >= 2) console.log("Resume recording");
+            $('#recording-indicator').addClass('spinner-grow');
+            break;
+
+        case 'upload':
+            appendLog("Teacher requested to attempt another upload");
+            if (DebugLevel >= 2) console.log("Please upload again");
+            const r = me.mediaRecorder.download();
+
+            if (r) {
+            
+                // Upload the blob to the server
+                uploadBlobToServer(
+                    r.mediaBlob, 
+                    {
+                        'teacher':   teacher,
+                        'student':   student,
+                        'session':   session,
+                        'pin':       myPin, 
+                        'token':     sessionToken,
+                        'classCode': classCode
+                    } 
+                    //, false // <= debug
+                );
+            }
+            break;
+            
+        }
+    });
+
+
+    $('#download-recording').on('click', function(e) {
+        if ($(this).hasClass('disabled')) {
+            e.preventDefault();
+            return;
+        }
+    });
+    
+    
+    
+    $(document).on('fullscreenchange', function() {
+        $('#toggle-fullscreen-button > i').removeClass('fa-compress-arrows-alt fa-expand-arrows-alt');
+        $('#player-toggle-fullscreen-button > i').removeClass('fa-compress-arrows-alt fa-expand-arrows-alt');
+        if (document.fullscreen) {
+            $('#toggle-fullscreen-button > i').addClass('fa-compress-arrows-alt');
+            $('#player-toggle-fullscreen-button > i').addClass('fa-compress-arrows-alt');
+        } else {
+            $('#player-toggle-fullscreen-button > i').addClass('fa-expand-arrows-alt');
+        }
+    });
+    
+    $('#player-toggle-fullscreen-button').on('click', function() {
+        if (document.fullscreen) {
+            closeFullscreen();
+        } else {
+            openFullscreen($('#audio-player').get(0));
+        }
+    });
+    
+
+    $('#toggle-fullscreen-button').on('click', function() {
+        if (document.fullscreen) {
+            closeFullscreen();
+        } else {
+            openFullscreen($('#screen-share-video')[0]);
+        }
+    });
+    
+    $(document).on('enterpictureinpicture', () => { if (DebugLevel >= 2) console.log('enterpictureinpicture'); }); 
+    $(document).on('leavepictureinpicture', () => { if (DebugLevel >= 2) console.log('leavepictureinpicture'); });
+
+    $('#player-toggle-pip-button').on('click', function() {
+        if (document.pictureInPicture) {
+            closePictureInPicture();
+        } else {
+            openPictureInPicture($('#audio-player').get(0));
+        }
+    });
+
+    
+    $('#toggle-pip-button').on('click', function() {
+        if (document.pictureInPicture) {
+            closePictureInPicture();
+        } else {
+            openPictureInPicture($('#screen-share-video')[0]);
+        }
+    });
+
+
+
+
+    // Abort controller to interrupt fetch commands
+    var controller = null;
+    
+    $(document).on('teacher-player-commands', async (event, data) => {
+        // let timestamp = event.timeStamp;
+
+        var params = data.parameters;
+        var teacher = '';
+        var file = '';
+        
+        // Reference to audio player
+
+        
+        switch (data.action) {
+        case 'load':
+            file = params.file;
+            crc = params.crc;
+            teacher = params.teacher;
+            
+            // Skip downloading if the currently loaded file is the same as 
+            // the one the teacher wants us to fetch
+            if (file == fileName && crc == fileCRC) {
+                
+                if (DebugLevel >= 2) console.log("File '" + params.file + "' already loaded");
+                
+                audioPlayer.currentTime = 0;
+                
+                canPlayThrough(); // Proceed like if we have downloaded the file again
+
+                return;
+            }
+            
+            $('#audio-player').off('canplaythrough'); // remove handler, if any
+            audioPlayer.pause();
+
+            $('#audio-player-text').html('Loading&hellip;');
+            $('#audio-player-display').html("00:00:00 / --:--:--");
+
+            fileName = file;// Global
+            
+            if (DebugLevel >= 2) console.log("Teacher wants to load this file: " + params.file);
+
+            mediaFetcherProgress = 0;
+            mediaFetcher.fetch({
+                user: teacher,
+                file: file,
+                pin: myPin,
+                token: sessionToken,
+                classCode: classCode,
+            });
+
+            appendLog("Loading media file '<em>" + baseName(file) + "</em>'&hellip;");
+            
+            break;
+        case 'play':
+            if (DebugLevel >= 2) console.log("Teacher wants to play the loaded file: " + fileName /*params.file*/);
+            await audioPlayer.play();
+            break;
+        case 'pause':
+            audioPlayer.pause();
+            if (DebugLevel >= 2) console.log("Teacher wants to pause the playing file: " + fileName /*params.file*/);
+            break;
+        case 'stop':
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            if (DebugLevel >= 2) console.log("Teacher wants to stop the playing file: " + fileName /*params.file*/);
+            break;
+        }
+    });
+    
+    $('#audio-player-volume').on('input', function() {
+    
+        // playerGain.gain.setValueAtTime(PlayerGainMax * $(this).val(), audioCtx.currentTime);
+        playerGain.gain.value = boothPlayerGainMax * $(this).val();
+        // $('#audio-player').get(0).volume = $(this).val();
+    });
+
+    $('#teacher-volume').on('input', function() {
+        
+        //teacherGain.gain.setValueAtTime(TeacherGainMax * $(this).val(), audioCtx.currentTime);
+        $('#teacher-video').get(0).volume = $(this).val();
+    });
+    
+
+    $('#audio-player').on('play', function() {
+        if (DebugLevel >= 2) console.log("The media file '"+fileName+"' is playing");
+        me.send({
+            player: {
+                action: "started",
+                parameters: {
+                    file: fileName,
+                    crc: fileCRC,
+                    mesg: "media file is playing",
+                }
+            }
+        });     
+    });
+    $('#audio-player').on('pause', function() {
+        if (DebugLevel >= 2) console.log("The media file '"+fileName+"' is paused");
+        me.send({
+            player: {
+                action: "paused",
+                parameters: {
+                    file: fileName,
+                    crc: fileCRC,
+                    mesg: "media file is paused",
+                }
+            }
+        });     
+    });
+    
+    
+    // Quando il player può eseguire il suo contenuto
+    var canPlayThrough = function(a) {
+    
+        if (DebugLevel >= 2) console.log("Media file is loaded and ready to play");
+
+        // Tell the teacher that media file is loaded and ready to play
+        me.send({
+            player: {
+                action: "ready",
+                parameters: {
+                    file: fileName,
+                    crc: fileCRC,
+                    mesg: "media file is loaded and ready to play",
+                }
+            }
+        });
+
+        $('#audio-player-progress').css('width', "100%");
+        let t = "" + Math.floor(audioPlayer.duration);
+        $('#audio-player-display').html("00:00:00 / " + t.toHHMMSS());
+        $('#audio-player-progress').css('width', "0%");
+        
+        // Show the player if there are video tracks
+        if (audioPlayer.captureStream) {
+            n = audioPlayer.captureStream().getVideoTracks().length;
+        } else if (audioPlayer.mozCaptureStream) {
+            n = audioPlayer.mozCaptureStream().getVideoTracks().length;
+        } else {
+            n = 0;
+        }
+        if (n > 0) {
+            $('#player-container').removeClass('hide');
+        } else {
+            $('#player-container').addClass('hide');
+        }
+
+        $('#audio-player-text').html(baseName(fileName));        
+
+        animateCSS('#audio-player-controls', 'rubberBand');
+        AudioReadyEffect.play(audioOutputSelect.value);
+
+    }
+
+
+    
+    
+    
+    // Irrobustiamo il tutto verificando eventuali errori
+    $('#audio-player').on('error', (e) => {    
+        
+        if ($('#audio-player').get(0).src == noSrc) return;        
+        
+        $('#audio-player-text').html("Can't play this file");
+        appendLog("Can't play this media file");
+        console.warn(e);
+    });
+
+    $('#audio-player').on('loadstart', () => { if (DebugLevel >= 2) console.log('Player event: loadstart'); });
+    $('#audio-player').on('pause',	   () => { if (DebugLevel >= 2) console.log('Player event: pause');     });
+    $('#audio-player').on('play',	   () => { if (DebugLevel >= 2) console.log('Player event: play');      });
+    $('#audio-player').on('playing',   () => { if (DebugLevel >= 2) console.log('Player event: playing');   }); 
+    $('#audio-player').on('progress',  () => { if (DebugLevel >= 2) console.log('Player event: progress');  });
+    $('#audio-player').on('seeked',	   () => { if (DebugLevel >= 2) console.log('Player event: seeked');    });
+    $('#audio-player').on('seeking',   () => { if (DebugLevel >= 2) console.log('Player event: seeking');   }); 
+    $('#audio-player').on('stalled',   () => { if (DebugLevel >= 2) console.log('Player event: stalled');   }); 
+    $('#audio-player').on('suspend',   () => { if (DebugLevel >= 2) console.log('Player event: suspend');   }); 
+    $('#audio-player').on('waiting',   () => { if (DebugLevel >= 2) console.log('Player event: waiting');   });    
+    $('#audio-player').on('abort',     () => { if (DebugLevel >= 2) console.log('Player event: abort');     });
+    $('#audio-player').on('emptied',   () => { if (DebugLevel >= 2) console.log('Player event: emptied');   });
+    
+    
+    let pp = 0;
+    $('#audio-player').on('timeupdate', function() {
+        let audio_player = $(this)[0];
+        
+        let p = Math.round(1000 * audio_player.currentTime / audio_player.duration)/10;
+        let t1 = "" + Math.floor(audio_player.currentTime);
+        let t2 = "" + Math.floor(audio_player.duration);
+        
+        if (pp != p && !isNaN(t1)) {
+            $('#audio-player-progress').css('width', p + "%");
+            $('#audio-player-display').html(t1.toHHMMSS() + " / " + t2.toHHMMSS());
+            pp = p;
+        }
+    });
+    
+    $('#audio-player').on('ended', function() {
+    
+        if (DebugLevel >= 2) console.log("The media file '"+fileName+"' is ended");
+        
+        $('#audio-player-progress').css('width', "100%");
+        
+        me.send({
+            player: {
+                action: "ended",
+                parameters: {
+                    file: fileName,
+                    crc: fileCRC,
+                    mesg: "media file is ended",
+                }
+            }
+        });
+        
+    });       
+    
+    
+    // Copy contents of log board to clipboard
+    $('#log-board').on('click', function() {
+        animateCSS('#log-board', "bounce");
+        let t = '';
+        
+        t += "<p><h4>Class info</h4>\n<ul>\n";
+        if (me.connected()) {
+            t += "<li>Connection status: <b>connected</b> (session token: " + sessionToken + ")</li>\n";
+        } else {
+            t += "<li>Connection status: <i>not connected</i></li>\n";
+        }
+        t += "<li>Teacher: <b>" + teacherUserName + "</b></li>\n";
+        t += "<li>Booth user: <b>" + userName + "</b></li>\n";
+        t += "<li>Booth pin: <b>" + myPin + "</b></li>\n";
+        t += "<li>Class code: " + (classCode ? "<b>" + classCode + "</b>": "<i>none</i>") + "</li>\n";
+        t += "</ul></p>\n\n";
+               
+
+        t += "<p><h4>Device setup info</h4>\n<ul>\n";
+        let vs = $("#select-video-source option:selected").text() || $("#select-video-source option:first").text();
+        let as = $("#select-audio-source option:selected").text() || $("#select-audio-source option:first").text();
+        let ao = $("#select-audio-output option:selected").text() || $("#select-audio-output option:first").text();
+        let o  = $("#select-volume-overboost option:selected").text() || $("#select-volume-overboost option:first").text();
+        t += "<li>Video source: </b>" + vs + "</b></li>\n";
+        t += "<li>Audio source: </b>" + as + "</b></li>\n";
+        t += "<li>Audio output: </b>" + ao + "</b></li>\n";
+        t += "<li>Overboost: </b>" + o + "</b></li>\n";
+        t += "</ul></p>\n\n";
+        
+        
+        t += "<p><h4>Session log</h4>\n\n";
+        t += "<pre>";
+        $(this).children().each(function() {
+            t +=  $(this).text() + "\n";
+        });
+        t += "</pre></p>\n\n";
+
+        if (DebugMode) {
+            t += "<p><h4>Developer log</h4>\n\n<pre>"
+            t += console.get();
+            t += "</pre>\n</p>\n";
+        }
+
+        copyTextToClipboard(t, true);
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</head>
+<body>
+
+  <div class="container-fluid" style="">
+    <div class="row mb-2 head-panel">
+    
+      <div class="col-sm-2 d-flex flex-column p-0">
+
+
+        <!--div class="display text-center w-100 align-self-start" id="application-name" style="color: #FFFFD0">ReBooth</div-->
+        
+        <div class="display d-flex align-self-stretch h-100  align-content-center  rounded ml-2 mt-2 mb-2 mr-0" style="background-color: rgba(255,255,255,0.1)">
+          <div class="align-self-center text-center w-100" >  
+            <span style="font-size: 1.3rem; color: #FFFFD0" id="application-name">App</span><br/>
+            <span style="font-size: 2.25rem" id="time">h:mm</span><br/>
+            <span style="font-size: 0.8rem" id="date">day, dd/mm/yyyy</span>
+          </div>
+        </div>
+
+
+      </div>
+      
+      <div class="form-inline col-sm-9">
+        <div style="width: 40rem;min-width:40rem">
+          <div class="form-inline mb-2" >
+            <div data-tooltip="tooltip" title="Teacher email address">
+              <label class="label-small" for="teacher-user-name">Teacher</label>
+              <input type="text" class="form-control  pl-2 pr-2" style="width: 12rem" id="teacher-user-name" placeholder="teacher@example.com">
+            </div>
+            <div data-tooltip="tooltip" title="Your email address">
+              <label class="label-small" for="student-user-name">Student (you)</label>
+              <input type="text" style="width: 10rem" class="form-control ml-1  pl-2 pr-2" id="student-user-name" placeholder="you@example.com">
+            </div>
+            <div data-tooltip="tooltip" title="Your unique PIN">
+              <label class="label-small" for="my-pin">Pin</label>
+              <input type="text" style="width: 5rem" class="form-control ml-1 pl-2 pr-2" id="my-pin" placeholder="your pin">
+            </div>
+            <div data-tooltip="tooltip" title="Class code (empty unless the teacher has started multiple sessions)">
+              <label class="label-small" for="my-pin">Code</label>
+              <input type="text" style="width: 2.5rem" class="form-control ml-1  pl-2 pr-2 text-center  " id="class-code" placeholder="--">
+            </div>
+            <div>
+              <label class="small-label" for="join-connection">&nbsp;</label>
+              <button class="btn btn-primary mb-2 ml-1" style="width: 4.5rem" id="join-connection" data-tooltip="tooltip" title="Join the class (connect)">Join</button>
+            </div>
+            <div>
+              <label class="small-label" for="join-connection">&nbsp;</label>
+              <button class="btn btn-danger mb-2 ml-1 disabled" style="width: 4.5rem" id="close-connection"  data-tooltip="tooltip" title="Leave the class (disconnect)">Leave</button>
+            </div>
+          </div>
+
+          <div id="audio-player-controls" class="rounded border bg-light pl-2 form-inline mb-2 text-dark" style="width: 39.75rem">
+            <div class="form-row unselectable" style="width: 26.5rem">
+              <span class="label-small ellipsis" for="audio-player-bar" id="audio-player-text"
+              style="width: 27rem">none</span>
+              <div class="progress w-100" id="audio-player-bar">
+                <div id="audio-player-progress" class="progress-bar bg-info" role="progressbar" style="width:100%;"></div>
+              </div>
+              <div id="audio-player-display" class="text-center text-dark" style="width:100%">00:00 / 00:00</div>
+            </div>
+            <div class="col-sm-2" style="position: relative; top: -12px">
+                <label  class="label-small" for="audio-player-volume" style="width: 200px!important">Source volume</label>
+                <input 
+                  id="audio-player-volume"
+                  class="range round"
+                  type="range"
+                  step="0.01" value="1" min="0" max="1"
+                  style="width: 192px!important">
+            </div>          
+          </div>
+        </div>
+        
+        <div style="width: 6.5rem" class="ml-2 h-100">
+          <div class="bg-danger form-inline hide mt-4" id="batch-display">
+            <div style="height: 114px;" class="rounded border bg-success text-light w-100">
+               <div class="text-center"><span class="fa-blink" id="batch-type">Simultaneous</span></div>
+               <div class="text-center mt-3"><span style="font-size: 2rem"  id="batch-counter">00:00</span></div>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div>
+      
+      
+      
+      <div class="col-sm-1 text-right p-0">
+        <div class="w-100 mt-2 pr-2">
+          <button id="config-button" class="btn btn-lg btn-info" data-to-ggle="modal" data-ta-rget="#config-panel" data-tooltip="tooltip" title="Setup your media devices"><i class="fas fa-cogs"></i></button>
+        </div>
+         
+      </div>
+    </div>  
+
+
+
+    <div class="row" style="">
+      <div class="col-sm-8 d-flex flex-column pl-1 pr-1 pt-0 pb-0" >
+
+        <div class="h-100">
+
+          <div class="d-flex flex-wrap">
+            <!-- BEGIN: TEACHER VIDEO DIV -->
+            <div class="card connection connection-wide border rounded m-1" >
+              <div class="card-header text-white bg-primary" id="teacher-header">Teacher</div>
+              <div class="card-body bg-light">
+                <div class="d-flex justify-content-center position-relative" style="margin-top: 0.5px">
+                
+                  <div class="teacher-video-controls d-flex justify-content-between a-lign-items-center mb-1 absolute" style="background: transparent">
+                  
+                    <div id="booth-flags"></div>
+                    
+                    <div id="teacher-audio" class="text-center" style="position: absolute; width: 1.25rem; margin: 0; padding: 0; top:5px;right:5px"></div>
+                    
+                    <div class="booth-vertical-slider-container mr-1">
+                        <input 
+                          title="Teacher volume"
+                          data-tooltip="tooltip"
+                          id="teacher-volume"
+                          type="range"
+                          class="vertical-slider booth-vertical-slider"
+                          step="0.01" value="1" min="0" max="1">
+                    </div>  
+
+                  </div>
+                  <video class="video-normal" id="teacher-video" poster="images/teacher-poster.jpg" width="240" height="180" ></video>
+                  
+                  <div id="teacher-label" class="text-center ellipsis label-small ml-auto mr-auto" style="position: absolute; bottom: 1px;"></div>
+            
+                </div>
+              </div>
+              <div class="card-footer text-left">
+                  <button class="btn btn-lg  btn-warning" id="button-raise-hand" data-tooltip="tooltip" title="Raise your hand"><i class="far fa-hand-paper"></i></button>
+                  <button class="btn btn-lg btn-success" id="button-thumbs-up" data-tooltip="tooltip" title="Thumbs up"><i class="far fa-thumbs-up"></i></button>
+                  <button class="btn btn-lg btn-danger" id="button-thumbs-down" data-tooltip="tooltip" title="Thumbs down"><i class="far fa-thumbs-down"></i></button>
+              </div>
+            </div>
+            <!-- END: TEACHER VIDEO DIV -->
+            
+            <!-- BEGIN: STUDENT VIDEO DIV --> 
+            <div class="card connection border rounded m-1">
+              <div class="card-header text-light bg-info">
+                You
+                <div class="float-right">
+                  rec time:&nbsp;<span id="recorder-chrono">00:00</span>
+                </div>
+              </div>
+              <div class="card-body bg-light">
+                <div class="d-flex justify-content-center position-relative">
+                  <div id="recording-indicator" class="text-brightred" style="z-index:10;position: absolute; top: 2px; right: 2px;" role="status"></div>
+                  <div class="student-video-controls d-flex justify-content-center align-items-center mb- absolute" style="background: transparent">            
+                  </div>
+                  <video class="video-normal mirrored" id="booth-video" width="240" height="180"></video>
+                </div>
+              </div>
+              <div class="card-footer d-flex align-items-center">
+                <div class="mr-auto" id="upload-percentage"></div>
+                <a id="download-recording" data-tooltip="tooltip" title="Click here to download your recording" class="disabled btn btn-lg btn-success ml-auto"><i class="fas fa-save"></i></a>
+              </div>
+            </div>
+            <!-- END: STUDENT VIDEO DIV --> 
+            
+            
+            
+            <!-- BEGIN: SCREEN SHARE DIV -->
+            <div id="screen-share-video-container" class="hide card connection  border rounded m-1" style="width: 316px;">
+            
+              <div class="card-header text-white bg-dark" id="teacher-header">Shared media</div>
+              <div class="card-body bg-dark">
+                <div class="d-flex justify-content-center position-relative bg-danger">
+                
+                  <video class="" width="307" height="230" id="screen-share-video" class="align-self-center"></video>
+                  <div style="position: absolute; right: 2px; bottom: 2px;">
+                    <button 
+                      id="toggle-pip-button"
+                      title="full screeen mode on/off"
+                      class="btn btn-outline-light btn-sm"><i class="fas">PiP</i></button>                  
+                    <button 
+                      id="toggle-fullscreen-button"
+                      title="full screeen mode on/off"
+                      class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END: SCREEN SHARE DIV -->
+            
+            <!-- BEGIN: MEDIA PLAYER DIV -->
+            <div id="player-container" class="hide card connection border rounded m-1" style="width: 316px;">
+            
+              <div class="card-header text-white bg-dark" id="teacher-header">Media player</div>
+              <div class="card-body bg-dark">
+                <div class="d-flex justify-content-center position-relative bg-success">
+                
+                  <video class="" width="307" height="230" id="audio-player" class="align-self-center"></video>
+                  <div style="position: absolute; right: 2px; bottom: 2px;">
+                    <!--button 
+                      id="player-toggle-pip-button"
+                      title="full screeen mode on/off"
+                      class="btn btn-outline-light btn-sm"><i class="fas">PiP</i></button-->
+                    <button 
+                      id="player-toggle-fullscreen-button"
+                      title="full screeen mode on/off"
+                      class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END: MEDIA PLAYER DIV -->            
+                          
+        
+          </div>
+        
+        </div>
+        
+        
+          
+        <div id="log-board" class="pb-0 pt-0 pr-1 pl-1 cursor-pointer unselectable alert alert-primary w-100 align-self-baseline mb-0 ml-1" style="height: 148px;overflow-y: scroll;"
+        role="alert" title="click to copy log to the clipboard"></div>
+      </div>
+    
+      <div class="col-sm-4 pl-1 pr-2">
+        <div class="card" style="padding: 0px; opacity: 0.90">
+          <div class="card-header">Chat</div>
+          <div class="card-body p-1" style="overflow-y: scroll; max-height: calc(100vh - 250px); height: calc(100vh - 250px); background:transparent" id="chat-board"></div>
+          
+          <div class="card-footer border-top-0 p-0">
+          
+            <div class="form-inline" >
+
+              <div class="input-group w-100">
+              
+                <div class="input-group-prepend">
+                    <div class="input-group-text cursor-pointer unselectable p-1" id="emoji-picker"><i class="far fa-smile"></i></div>
+                </div>
+                <input type="text"  class="form-control" id="chat-text" placeholder="Type text here...">
+                <div class="input-group-append">
+                  <button  id="send-chat-text" class="bg-primary text-light input-group-text pl-2 pr-2"><i class="far fa-paper-plane"></i></button>
+                </div>
+                
+                
+              </div>
+            
+
+              
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+<!-- Config dialog: begin -->
+<!-- Modal -->
+<div class="modal fade" id="config-panel" tabindex="-1" role="dialog" aria-labelledby="config-panelTitle" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Configuration</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+    <form class="form">
+
+      <div class="form-group">
+        <label for="select-video-source">Select camera:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fas fa-video"></i></div>
+          </div>
+          <select class="form-control" id="select-video-source"></select>
+        </div>
+      </div>
+      <hr/>
+  
+      <div class="form-group">
+        <label for="select-audio-source">Select microphone:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i style="width:1em" class="fas fa-microphone"></i></div>
+          </div>
+          <select class="form-control" id="select-audio-source"></select>
+        </div>
+      </div>
+      <div class="d-flex">
+        <span class="">Microphone volume meter:</span>
+        <canvas class="border rounded mr-1 align-self-center ml-auto p-0" style="width:calc(100% - 13rem); height:24px" height="24" width="258" id="vumeter"></canvas>
+      </div>
+      
+      <hr/>
+      
+      <div class="form-group">
+        <label for="select-audio-output">Select audio output:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i style="width:1em"   class="fas fa-headphones-alt"></i></div>
+          </div>
+          <select class="form-control" id="select-audio-output"></select>&nbsp;
+          <div title="Play a test sound" class="btn btn-outline-success" id="play-test-sound"><i style="margin-top: 4px" class="fas fa-music"></i></div>
+        </div>      
+      </div>
+      
+
+      <div class="form-group" data-tooltip="tooltip" title="Warning: too loud volume may damage your hearing">
+        <label for="select-volume-overboost">Player volume overboost:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i style="width:1em" class="fas fa-volume-up"></i></div>
+          </div>
+          <select class="form-control" id="select-volume-overboost">
+            <option value="default">default</option>
+            <option value="1">1x</option>
+            <option value="2">2x</option>
+            <option value="3">3x</option>
+            <option value="4">4x</option>
+            <option value="5">5x</option>
+            <option value="6">6x</option>
+            <option value="7">7x</option>
+            <option value="8">8x</option>
+            <option value="9">9x</option>
+            <option value="10">10x</option>
+          </select>
+          
+        </div>      
+      </div>      
+      
+      
+      
+    </form>
+    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info mr-auto" id="refresh-devices">Refresh device list</button>      
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+  
+</div> 
+<!-- Config dialog: end -->  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+</body>
+</html>

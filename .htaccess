@@ -1,0 +1,19 @@
+# Remove .php and .html extension (with priority to .php)
+
+RewriteEngine on 
+
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_FILENAME}\.php -f 
+RewriteRule ^(.*)$ $1.php
+
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_FILENAME}\.html -f 
+RewriteRule ^(.*)$ $1.html
+
+# Settings for handling many multiple uploads
+
+php_value upload_max_filesize 256M
+php_value post_max_size 272M
+php_value max_input_time 600
+php_value max_execution_time 600
+php_value memory_limit 256M
