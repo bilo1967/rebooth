@@ -1,8 +1,8 @@
 // The only thing you need to change is the peerjs server (PeerJSConfig constant below)
 // Avoid editing the rest if you don't know what you are doing
 
-const DebugMode = false;
-const DebugToServer = false;
+const DebugMode = false; // Enable console log redirect
+const DebugToServer = false; // DebugMode must be true to take effect
 const DebugLevel = 1; // 0=errors, 1=warnings, 2=info, 3=details
 const BetaFeatures = false;
 
