@@ -17,6 +17,8 @@ To reduce the risk of compromising student activity, ReBooth:
 2) Records the student's audio with two separate procedures: on the one hand, it records the audio streaming the instructor receives on their computer and, on the other, it records the student's audio locally on their computer and then sends this audio to the server where ReBooth is hosted.
 3) Students can save their recordings and eventually send them to the instructor by other means.
 
+Student audio recordings, both those saved locally and those on the server, are collected in [webm format](https://en.wikipedia.org/wiki/WebM). This royalty-free format is used internally by all modern browsers and is supported by most multimedia applications. Unfortunately, the MediaStream recording API used by javascript does not currently produce seekable files. You will therefore have to convert them into a more convenient format with some audio editor, e.g. Audacity.
+
 ## Prerequisites
 
 - A working [PeerJS server](https://github.com/peers/peerjs-server). See [README-PEERJS.md](/README-PEERJS.md) for a hint.
