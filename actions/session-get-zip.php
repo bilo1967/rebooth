@@ -26,7 +26,7 @@ try {
         throw new Exception("400"); // Bad request
     }     
     
-    $workDirectory = $CONFIG['data_path'] . "/$teacher";
+    $workDirectory = $CONFIG['data_path'] . "/$teacher/" . $CONFIG['temp_folder'];
     $sessionDirectory = $CONFIG['data_path'] . "/$teacher/" . $CONFIG['session_folder'] . "/$session";
     // Directory must exist and be readable
     if (!is_dir($sessionDirectory)) throw new Exception("404"); // not found

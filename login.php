@@ -104,14 +104,13 @@ if (isset($_POST['login']) && !empty($_POST['login'])) {
             @mkdir($temp, 0777, true);
             if (!is_dir($temp)) throw new Exception("Can't create temp directory for $user");
             if (!is_writable($temp)) throw new Exception("$user temp directory is not writable");
-
-            //$files = glob($temp); // get all file names
-            //foreach($files as $file){ // iterate files
-            //    if(is_file($file)) {
-            //        $ok = @unlink($file); // delete file
-            //        if (!$ok) throw new Exception("Can't delete files in $user's temp directory");
-            //    }
-            //} 
+            $files = glob($temp . '/*'); // get all file names
+            foreach($files as $file){ // iterate files
+                if(is_file($file)) {
+                    $ok = @unlink($file); // delete file
+                    if (!$ok) throw new Exception("Can't delete files in $user's temp directory");
+                }
+            } 
 
             $errMsg = 'ok';
 
