@@ -476,12 +476,17 @@ $(document).ready(function() {
             
             // Our audio stream becomes the audioDestinationElement srcObject
             audioDestinationElement.srcObject = audioDestinationNode.stream;
-            
-            // Ensure audio output element uses the choosen output device
-            audioDestinationElement.setSinkId(audioOutputSelect.value).then( () => {
-                audioDestinationElement.play();
-            })
 
+            // Start the audioDestinationElement
+            if (typeof audioDestinationElement.setSinkId === 'function') {
+                // Ensure audio output element uses the choosen output device
+                audioDestinationElement.setSinkId(audioOutputSelect.value).then( () => {
+                    audioDestinationElement.play();
+                });
+            } else {
+                // We are likely on a mobile device, setSinkId is not available
+                audioDestinationElement.play();
+            }
 
             // Load the audio mode cookie and override the default by
             // triggering a change in the select box

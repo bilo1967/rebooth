@@ -568,17 +568,18 @@ $(document).ready(function() {
             
             // Our audio stream becomes the audioDestinationElement srcObject
             audioDestinationElement.srcObject = audioDestinationNode.stream;
-           
+          
+            // Start the audioDestinationElement
             if (typeof audioDestinationElement.setSinkId === 'function') {
                 // Ensure audio output element uses the choosen output device
                 audioDestinationElement.setSinkId(audioOutputSelect.value).then( () => {
                     audioDestinationElement.play();
                 });
             } else {
-                // We are likely on a mobile device
+                // We are likely on a mobile device, setSinkId is not available
                 audioDestinationElement.play();
             }
-            
+
         }
     });
 
