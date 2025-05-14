@@ -84,24 +84,28 @@ if (isset($_POST['login']) && !empty($_POST['login'])) {
             $_SESSION['login'] = true;
             $_SESSION['user']  = strtolower($user);
 
+            // Want to use actual folder_mode as defined in config
+            umask(0);
+
             // User is authenticated: we create a personal
             // working directory (if it does not exist) with
             // session and temp subdirectories
+            $perm = isset($CONFIG['folder_mode']) ? $CONFIG['folder_mode'] : 0777; // Folder permissions
 
             $home = $CONFIG['data_path'] . "/$user/" . $CONFIG['session_folder'];
-            @mkdir($home, 0777, true);
+            @mkdir($home, $perm, true);
             if (!is_dir($home)) throw new Exception("Can't create working directory '$home' for $user");
             if (!is_writable($home)) throw new Exception("$user working directory is not writable"); 
 
             // We also create the log directory
             $log = $CONFIG['data_path'] . "/$user/" . $CONFIG['log_folder'];
-            @mkdir($log, 0777, true);
+            @mkdir($log, $perm, true);
             if (!is_dir($log)) throw new Exception("Can't create log directory for $user");
             if (!is_writable($log)) throw new Exception("$user log directory is not writable");
 
             // We also create temp directory and delete all files
             $temp = $CONFIG['data_path'] . "/$user/" . $CONFIG['temp_folder'];
-            @mkdir($temp, 0777, true);
+            @mkdir($temp, $perm, true);
             if (!is_dir($temp)) throw new Exception("Can't create temp directory for $user");
             if (!is_writable($temp)) throw new Exception("$user temp directory is not writable");
             $files = glob($temp . '/*'); // get all file names

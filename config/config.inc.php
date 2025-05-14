@@ -31,6 +31,7 @@
         "session_folder"       => "sessions",   // Teacher's sessions subdirectory directory
         "temp_folder"          => "tmp",        // Teacher's temp subdirectory directory
         "log_folder"           => "log",        // Javascript console debug log folder (in Teachers profile folder)
+        "folder_mode"          => 0770,         // Folder mode (octal). Default is 0777
         "session_prefix"       => "rs-",
 
         "valid_extensions"     => array( 'wav', 'mp3', 'ogg', 'mkv', 'mpeg3', 'm4a', 'm4v', 'mp4'),
