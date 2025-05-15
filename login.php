@@ -84,13 +84,13 @@ if (isset($_POST['login']) && !empty($_POST['login'])) {
             $_SESSION['login'] = true;
             $_SESSION['user']  = strtolower($user);
 
-            // Want to use actual folder_mode as defined in config
-            umask(0);
+            // File and directory creation mask
+            umask($CONFIG['umask'] ?? 00007);
 
             // User is authenticated: we create a personal
             // working directory (if it does not exist) with
             // session and temp subdirectories
-            $perm = isset($CONFIG['folder_mode']) ? $CONFIG['folder_mode'] : 0777; // Folder permissions
+            $perm = $CONFIG['folder_mode'] ?? 00777; // Folder permissions
 
             $home = $CONFIG['data_path'] . "/$user/" . $CONFIG['session_folder'];
             @mkdir($home, $perm, true);

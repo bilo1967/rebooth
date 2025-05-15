@@ -31,7 +31,8 @@
         "session_folder"       => "sessions",   // Teacher's sessions subdirectory directory
         "temp_folder"          => "tmp",        // Teacher's temp subdirectory directory
         "log_folder"           => "log",        // Javascript console debug log folder (in Teachers profile folder)
-        "folder_mode"          => 0770,         // Folder mode (octal). Default is 0777
+        "umask"                => 00007,        // File and directory create mask (no rwx for others)
+        "folder_mode"          => 00770,        // Folder mode (octal).
         "session_prefix"       => "rs-",
 
         "valid_extensions"     => array( 'wav', 'mp3', 'ogg', 'mkv', 'mpeg3', 'm4a', 'm4v', 'mp4'),
@@ -68,9 +69,9 @@
         // 'auth_username_placeholder' and 'auth_password_placeholder' are the hints which
         // will be placed inside the the user name and password fields on the login form
 
-        "auth_module"               => 'local-dit-auth.inc.php',
+        "auth_module"               => 'your-institution-auth.inc.php',
         "auth_function"             => 'localAuth',
-        "auth_description"          => 'Login with your Bologna University credentials (or write to <a href="mailto:rebooth@dipintra.it?Subject=Guest account request">rebooth@dipintra.it</a> to get a guest account)',
+        "auth_description"          => 'Login with your institution credentials (or write to <a href="mailto:rebooth@your.institution.edu?Subject=Guest account request">rebooth@your.institution.edu</a> to get a guest account)',
         "auth_username_placeholder" => 'Insert your email address as a username',
         "auth_password_placeholder" => 'Type your password',
 
@@ -119,7 +120,14 @@
         "php_session_timeout"         => 60*60,   // PHP Session Timeout in seconds, 0=default
 
 
-        // Do not change anything below this line
+        // Do not change any setting below this line
         "end_of_list"      => true
     );
+
+    /*
+     * DO NOT MODIFY ANYTHING BELOW THIS LINE
+     */
+
+    // Common initializations 
+    umask($CONFIG['umask'] ?? 00007);    // Set file and directory creation mask
 ?>
