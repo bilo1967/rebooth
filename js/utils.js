@@ -442,10 +442,16 @@ async function _playTestSound({duration = 2, gain = 0.333, sinkId = 'default'} =
     audioElement.srcObject = mediaStreamDestination.stream;
 
     // Ensure audio element uses the same output device as the video element
-    try {
-        await audioElement.setSinkId(sinkId);
-    } catch (error) {
-        console.error('Error setting sink ID:', error);
+    if (typeof audioElement.setSinkId === 'function') {
+        // Set output device for audioElement
+        try {
+            await audioElement.setSinkId(sinkId);
+        } catch (error) {
+            console.error('Error setting sink ID:', error);
+        }
+    } else {
+        // setSinkId unsupported
+        console.warn('Browser does not support setSinkId on this device');
     }
 
     // Play the test sound
@@ -477,11 +483,17 @@ async function playTestSound({
     const audioElement = new Audio(audioUrl);
     audioElement.volume = gain;
 
-    // Set output device
-    try {
-        await audioElement.setSinkId(sinkId || 'default');
-    } catch (error) {
-        console.error('Error setting sink ID:', error);
+    // Ensure audio element uses the same output device as the video element
+    if (typeof audioElement.setSinkId === 'function') {
+        // Set output device for audioElement
+        try {
+            await audioElement.setSinkId(sinkId || 'default');
+        } catch (error) {
+            console.error('Error setting sink ID:', error);
+        }
+    } else {
+        // setSinkId unsupported
+        console.warn('Browser does not support setSinkId on this device');
     }
 
     // Play audio
