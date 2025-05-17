@@ -41,6 +41,8 @@ const SoundAudioTest       = 'sounds/whistle.mp3';
 // Customize images
 const BoothImageUrlTemplate = 'images/booth-{n}.png'; // {n} will be replaced with 1, 2, ...
 
+// Recording audio sample rate
+const RecordingAudioSampleRate = 44100; 
 
 
 // Teacher PC has to handle several upstream and downstream connections

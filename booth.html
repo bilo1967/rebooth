@@ -52,11 +52,11 @@
 
   <!-- ReBooth -->
   <link rel="stylesheet" href="css/rebooth.css?v0.11">
-  <script src="config/config.js?0.03"></script>
+  <script src="config/config.js?0.04"></script>
   <script src="js/common.js?0.02"></script>
   <script src="js/utils.js?0.05"></script>
   <script src="js/tune.js?0.00"></script>
-  <script src="js/myrecorder.js?0.02"></script>
+  <script src="js/myrecorder.js?0.04"></script>
   <script src="js/mychrono.js"></script>
   <script src="js/log.js?0.0"></script>
   <script src="js/emojiPicker.js"></script>
@@ -528,7 +528,7 @@ $(document).ready(function() {
             // Here we create objects needing an user gesture to be created
 
             // create an audio context and hook up the video/audio element as the source
-            audioCtx = new AudioContext();
+            audioCtx = new AudioContext({ sampleRate: RecordingAudioSampleRate, });
             playerSource = audioCtx.createMediaElementSource($('#audio-player').get(0));
             //teacherSource = audioCtx.createMediaElementSource($('#teacher-video').get(0));
             
@@ -1383,12 +1383,18 @@ $(document).ready(function() {
             
                 // Setup a double audio track stream for recording
                 if (DebugLevel >= 2) console.log("Setting up split recording mode");
+
                 
                 if (selfSource != null) selfSource = null
                 selfSource = audioCtx.createMediaStreamSource(me.mediaStream);
                 
                 selfSource.connect(mixerNode, 0, 0);    // Booth: L
                 playerSource.connect(mixerNode, 0, 1);  // Source: R
+                
+
+console.log("Microphone sample rate:", me.mediaStream.getAudioTracks()[0].getSettings().sampleRate);
+console.log("Media element sample rate:", $('#audio-player').get(0).sampleRate);
+                
                 
                 mixerNode.connect(audioDestinationStreamNode);
                 

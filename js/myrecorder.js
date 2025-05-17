@@ -75,7 +75,9 @@ class MyRecorder {
 
         this.getBlobOnStop = getBlobOnStop;
 
-        this.type = { mimeType: type };
+        this.type = { mimeType: type, audioBitsPerSecond: RecordingAudioSampleRate, };
+        
+        //{ mimeType: 'audio/webm; codecs=opus' }
 
         this.initializeStream(stream);
 
