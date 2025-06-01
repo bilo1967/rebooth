@@ -1,5 +1,6 @@
 // This should work either on Chrome and Firefox
 
+
 /*
 const mimeTypes = [
       "video/webm",
@@ -49,8 +50,13 @@ const mimeTypes = [
 ];
 */
 
-// By default we get only audio
-const defaultType = 'audio/webm';
+
+
+// Module constants
+const DEFAULT_MIME_TYPE = 'audio/webm';        // By default we get only audio
+const DEFAULT_AUDIO_BITS_PER_SECOND = 64000;
+const DEFAULT_AUDIO_BITRATE_MODE = 'variable';
+
 
 class MyRecorder {
 
@@ -63,21 +69,43 @@ class MyRecorder {
 
     // if no getBlobOnStop callback is passed, then the stop() method will
     // return a promise with the recorded blob and an objectURL to download it
-    constructor(stream, getBlobOnStop = null, type = defaultType) {
-
+   
+    constructor(stream, getBlobOnStop = null, type = DEFAULT_MIME_TYPE) {
+        
         if (!(stream instanceof MediaStream)) throw Error("stream is not a MediaStream");
 
-        if (typeof type === 'object' && 'mimeType' in type) type = type.mimeType;
+        // console.log(stream.getAudioTracks()[0].getSettings());
 
-        if (!MediaRecorder.isTypeSupported(type)) throw Error("Your browser does not support " + type);
+        // Normalizzazione del parametro 'type'
+        let mimeType, audioBitsPerSecond, audioBitrateMode;
+
+        if (typeof type === 'string') {
+            // Caso 1: type è una stringa (solo mimeType)
+            mimeType = type;
+            audioBitsPerSecond = DEFAULT_AUDIO_BITS_PER_SECOND;
+            audioBitrateMode = DEFAULT_AUDIO_BITRATE_MODE;
+        } else if (typeof type === 'object' && type !== null) {
+            // Caso 2: type è un oggetto (configurazione completa)
+            mimeType = type.mimeType || DEFAULT_MIME_TYPE;
+            audioBitsPerSecond = type.audioBitsPerSecond ?? DEFAULT_AUDIO_BITS_PER_SECOND;
+            audioBitrateMode = type.audioBitrateMode ?? DEFAULT_AUDIO_BITRATE_MODE;
+        } else {
+            throw new Error("Invalid type parameter: must be string or object");
+        }        
+
+        // Verifica supporto del codec
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+            throw new Error(`Unsupported media type: ${mimeType}`);
+        }        
 
         if (getBlobOnStop != null && typeof getBlobOnStop !== 'function') throw Error("getBlobOnStop is not a function");
 
         this.getBlobOnStop = getBlobOnStop;
-
-        this.type = { mimeType: type, audioBitsPerSecond: RecordingAudioSampleRate, };
-        
-        //{ mimeType: 'audio/webm; codecs=opus' }
+        this.type = {
+            mimeType,
+            audioBitsPerSecond,
+            audioBitrateMode,
+        };        
 
         this.initializeStream(stream);
 
@@ -166,16 +194,70 @@ class MyRecorder {
                 this.mediaRecorder.requestData();
                 this.mediaRecorder.stop();
                 reject("You set a callback. Use the callback function to get your blob.");
-            } else {
-                this.mediaRecorder.onstop = async () => {
-                    const mediaBlob = new Blob(this.recordedChunks, this.type);
-                    const mediaURL = URL.createObjectURL(mediaBlob);
-                    resolve({ mediaBlob, mediaURL });
-                };
+            }   
 
-                this.mediaRecorder.requestData();
-                this.mediaRecorder.stop();
-            }
+            // When calling stop() on a MediaRecorder, it may or may not
+            // automatically flush the final chunk of recorded data depending
+            // on the browser and timing.
+            // To ensure we always get the final piece of the recording,
+            // we call mediaRecorder.requestData() just before stopping.
+            // However, we also need to safely capture that final data chunk.
+            // To avoid data duplication or race conditions, we use a 
+            // temporary buffer (localChunks) and temporary event listeners,
+            // which we remove as soon as we receive the 'stop' event.
+
+            // Make a copy of the current recorded data into a temporary buffer
+            // This avoids modifying the main this.recordedChunks array directly
+            const localChunks = [...this.recordedChunks];
+
+            // Temporary handler for the 'dataavailable' event
+            // It will catch the final chunk emitted after requestData()
+            const handleData = (e) => {
+                if (e.data && e.data.size > 0) {
+                    localChunks.push(e.data); // Add the new chunk to our local buffer
+                }
+            };
+
+            // Temporary handler for the 'stop' event
+            // This is called after the recorder has been stopped and all data is collected
+            const handleStop = () => {
+                // Remove the temporary event listeners to avoid memory leaks
+                this.mediaRecorder.removeEventListener('dataavailable', handleData);
+                this.mediaRecorder.removeEventListener('stop', handleStop);
+
+                // Create a Blob from all collected chunks
+                const mediaBlob = new Blob(localChunks, this.type);
+
+                // Create an object URL for downloading or playback
+                const mediaURL = URL.createObjectURL(mediaBlob);
+
+                // Resolve the promise with the blob and URL
+                resolve({ mediaBlob, mediaURL });
+            };
+
+            // Attach the temporary event listeners
+            this.mediaRecorder.addEventListener('dataavailable', handleData);
+            this.mediaRecorder.addEventListener('stop', handleStop);
+
+            // Explicitly request any remaining data chunk from the encoder
+            this.mediaRecorder.requestData();
+
+            // Now stop the recording; this will trigger the 'stop' event
+            this.mediaRecorder.stop();
+         
+            
+/*            
+            // Logica precedente
+            
+            this.mediaRecorder.onstop = async () => {
+                const mediaBlob = new Blob(this.recordedChunks, this.type);
+                const mediaURL = URL.createObjectURL(mediaBlob);
+                resolve({ mediaBlob, mediaURL });
+            };
+
+            this.mediaRecorder.requestData();
+            this.mediaRecorder.stop();
+*/
         });
     }
 
@@ -234,3 +316,9 @@ class MyRecorder {
 
 
 
+export default MyRecorder;
+
+// Global loading, if this is not included by a module
+if (typeof window !== 'undefined' && !window.MyRecorder) {
+    window.MyRecorder = MyRecorder;
+}
