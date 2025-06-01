@@ -36,7 +36,7 @@ class MyChrono {
         if (this.onUpdateFunction) this.onUpdateFunction(0);
     }
     
-    intervalFunction = () => {
+    intervalFunction() {
         let t = (new Date()).getTime() - this.startTime;
         if (Math.floor(t/this.resolution) == Math.floor(this.elapsed/this.resolution)) return;
         this.elapsed = t;
@@ -61,7 +61,7 @@ class MyChrono {
         if (this.intervalId) clearInterval(this.intervalId);
         if (this.onUpdateFunction) this.onUpdateFunction(0);
         
-        this.intervalId = setInterval(this.intervalFunction, this.intervalValue);
+        this.intervalId = setInterval(this.intervalFunction.bind(this), this.intervalValue);
         this.status = 'running';
     }
     
@@ -113,16 +113,19 @@ class MyChrono {
         
         if (this.onUpdateFunction) this.onUpdateFunction(this.value);
         
-        this.intervalId = setInterval(this.intervalFunction, this.intervalValue);
+        this.intervalId = setInterval(this.intervalFunction.bind(this), this.intervalValue);
         
         this.status = 'running';
     }
 };
 
 
+export default MyChrono;
 
-
-
+// Global loading, if this is not included by a module
+if (typeof globalThis !== 'undefined' && !globalThis.MyChrono) {
+    globalThis.MyChrono = MyChrono;
+}
 
 
 
