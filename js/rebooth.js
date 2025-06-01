@@ -1575,7 +1575,7 @@ function setUserMediaConstraints({onOk, onError, noWebcamMessage}) {
     const audioSource = $('#select-audio-source').val();
 
   
-    var constraints = LocalCameraConstraints;
+    var constraints = LocalMediaConstraints;
 
 
     //if (constraints.video == true && videoSource) constraints.video = {};

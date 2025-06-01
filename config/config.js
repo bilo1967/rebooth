@@ -41,9 +41,10 @@ const SoundAudioTest       = 'sounds/whistle.mp3';
 // Customize images
 const BoothImageUrlTemplate = 'images/booth-{n}.png'; // {n} will be replaced with 1, 2, ...
 
-// Recording audio sample rate
-const RecordingAudioSampleRate = 44100; 
-
+// Recording format settings
+const RecordingAudioSampleRate = 44100;  // Recording audio sample rate
+const RecordingAudioMimeType   = 'audio/webm;codecs=opus';
+const RecordingVideoMimeType   = 'video/webm;codecs=vp8,opus';
 
 // Teacher PC has to handle several upstream and downstream connections
 // Tipically downstream band is larger than upstream so it make sense to
@@ -96,24 +97,54 @@ const BandwidthProfiles = {
 };
 BandwidthProfiles.default = BandwidthProfiles.low;
 
-const LocalCameraConstraints = {
-/*    
+
+/*
+ *
+ *  IMPORTANT: Behavior of modern audio constraints
+ *  
+ *  1. voiceIsolation:
+ *     - May force stereo audio even with channelCount:1
+ *     - May be very aggressive (not recommended unless needed)
+ *     - Designed for devices with dual microphones
+ *  
+ *  2. echoCancellation:
+ *     - Some implementations may force stereo
+ *     - Quality varies across devices
+ *  
+ *  3. noiseSuppression:
+ *     - Generally safe for mono audio
+ *     - Preserves original quality better than other options
+ *  
+ *  Audio performance heavily depends on hardware. Budget devices, often
+ *  claim support for advanced features while they actually use poor
+ *  quality software processing.
+ *  
+ *  Recommended configuration, for my personal experience is:
+ *
+ *  audio: {
+ *      channelCount: 1, 
+ *      noiseSuppression: true,
+ *      echoCancellation: false,
+ *      voiceIsolation: false,
+ *  }
+ *  
+ *  See also: https://www.webrtc-developers.com/getusermedia-constraints-explained/
+ *
+**/
+
+const LocalMediaConstraints = {
     video: {
         frameRate: {ideal: 15, max: 30},
 //      width: {ideal: 160 },
-        height: {ideal: 120, max: 480 }
+//      height: {ideal: 120, max: 480 },
+        backgroundBlur: true,  // if your webcam supports it
     },
-*/    
-    video: {
-        frameRate: {ideal: 15, max: 30},
-    },
-    audio: true,
-/*
     audio: {
+        channelCount: 1, 
+        noiseSuppression: true,
         echoCancellation: false,
-        noiseSuppression: false,
+        voiceIsolation: false,
     }
-*/
 };
 
 // A few emojis to be used as avatars in the chat

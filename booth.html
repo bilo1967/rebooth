@@ -61,7 +61,7 @@
   <script src="js/log.js?0.0"></script>
   <script src="js/emojiPicker.js"></script>
   <script src="js/io-devices.js?0.02"></script>
-  <script src="js/rebooth.js?0.09"></script>
+  <script src="js/rebooth.js?0.10"></script>
 
 <style>
 
@@ -1390,11 +1390,6 @@ $(document).ready(function() {
                 
                 selfSource.connect(mixerNode, 0, 0);    // Booth: L
                 playerSource.connect(mixerNode, 0, 1);  // Source: R
-                
-
-console.log("Microphone sample rate:", me.mediaStream.getAudioTracks()[0].getSettings().sampleRate);
-console.log("Media element sample rate:", $('#audio-player').get(0).sampleRate);
-                
                 
                 mixerNode.connect(audioDestinationStreamNode);
                 
