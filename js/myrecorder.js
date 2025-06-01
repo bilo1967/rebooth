@@ -319,6 +319,7 @@ class MyRecorder {
 export default MyRecorder;
 
 // Global loading, if this is not included by a module
-if (typeof window !== 'undefined' && !window.MyRecorder) {
-    window.MyRecorder = MyRecorder;
+if (typeof globalThis !== 'undefined' && !globalThis.MyRecorder) {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    globalThis.MyRecorder = MyRecorder;
 }
