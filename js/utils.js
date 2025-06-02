@@ -171,17 +171,15 @@ function stopProcessingEvent(e) {
  *     Scrive: "00201"
  *
  */ 
-String.prototype.lpad =
-    function(digits, fill)
-    {
-        var str, pad;
-        
-        fill = fill == null ? '0' : fill;
-        str  = '' + this;
-        pad = fill.repeat(digits);
+String.prototype.lpad = String.prototype.lpad || function(digits, fill) {
+    var str, pad;
 
-        return pad.substring(0, pad.length - str.length) + str;
-    }
+    fill = fill == null ? '0' : fill;
+    str  = '' + this;
+    pad = fill.repeat(digits);
+
+    return pad.substring(0, pad.length - str.length) + str;
+};
 
 /*
  * Estensione di String
@@ -219,17 +217,17 @@ String.prototype.hash64 = function() {
   return "0x" + ((hash1 >>> 0) * 4096 + (hash2 >>> 0)).toString(16);
 }
 
-Date.prototype.toTimeStamp = function() {
+Date.prototype.toTimeStamp = Date.prototype.toTimeStamp || function() {
     return String(this.getDate()).lpad(2)
-    + '/' + String(this.getMonth() + 1).lpad(2) 
-    + '/' + this.getFullYear() 
+    + '/' + String(this.getMonth() + 1).lpad(2)
+    + '/' + this.getFullYear()
     + ' ' + String(this.getHours()).lpad(2)
     + ':' + String(this.getMinutes()).lpad(2)
     + ':' + String(this.getSeconds()).lpad(2)
     ;
 };
 
-Date.prototype.toLogTimeStamp = function() {
+Date.prototype.toLogTimeStamp = Date.prototype.toLogTimeStamp || function() {
     return this.getFullYear() +
            String(this.getMonth() + 1).lpad(2) +
            String(this.getDate()).lpad(2) +
