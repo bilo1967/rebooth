@@ -42,7 +42,7 @@ const SoundAudioTest       = 'sounds/whistle.mp3';
 const BoothImageUrlTemplate = 'images/booth-{n}.png'; // {n} will be replaced with 1, 2, ...
 
 // Recording format settings
-const RecordingAudioSampleRate = 44100;  // Recording audio sample rate
+const RecordingAudioSampleRate = 44100; // Recording audio sample rate
 const RecordingAudioMimeType   = 'audio/webm;codecs=opus';
 const RecordingVideoMimeType   = 'video/webm;codecs=vp8,opus';
 
