@@ -6,10 +6,10 @@ const originalConsole = window.console; // reference to console.log function
 
 // Console methods mapping
 const consoleMethods = {
-  log: originalConsole.log,
-  warn: originalConsole.warn,
-  error: originalConsole.error,
-  syserr: () => {},
+    log: originalConsole.log,
+    warn: originalConsole.warn,
+    error: originalConsole.error,
+    syserr: () => {},
 };
 
 
@@ -55,6 +55,31 @@ window.onerror = function(message, source, lineno, colno, error) {
 }
 
 
+// Error stack format may vary for different browsers.
+// The following lines should work for chrome and derivatives,
+// firefox and safari. It has not been tested with other browsers
+function parseErrorStack(errObject) {
+
+    // Get caller line from stack
+    let stack = errObject.stack.split("\n");
+    let caller = stack[0] == "Error" ? stack[2] : stack[1];
+
+    // parse the column
+    let p = caller.lastIndexOf(":");
+    let col = parseInt(caller.substring(p + 1));
+    caller = caller.slice(0, p)
+
+    // parse the line number
+    p = caller.lastIndexOf(":");
+    let line = caller.substring(p + 1);
+    caller = caller.slice(0, p)
+
+    // parse the file name
+    let match = /[a-z]+:\/\//.exec(caller); // match anyprotocol://
+    let file = caller.substring(match.index + match[0].length);
+
+    return {script: file, line: line, column: col};
+}
 
 
 function redirectConsole(init = '', sendToServer = () => {} ) {
@@ -104,29 +129,3 @@ function restoreConsole() {
     window.console = originalConsole;
 };
 
-
-// Error stack format may vary for different browsers.
-// The following lines should work for chrome and derivatives,
-// firefox and safari. It has not been tested with other browsers
-function parseErrorStack(errObject) {
-
-    // Get caller line from stack
-    let stack = errObject.stack.split("\n");
-    let caller = stack[0] == "Error" ? stack[2] : stack[1];
-
-    // parse the column
-    let p = caller.lastIndexOf(":");
-    let col = parseInt(caller.substring(p + 1));
-    caller = caller.slice(0, p)
-
-    // parse the line number
-    p = caller.lastIndexOf(":");
-    let line = caller.substring(p + 1);
-    caller = caller.slice(0, p)
-
-    // parse the file name
-    let match = /[a-z]+:\/\//.exec(caller); // match anyprotocol://
-    let file = caller.substring(match.index + match[0].length);
-
-    return {script: file, line: line, column: col};
-}
