@@ -265,12 +265,10 @@ function copyTextToClipboard(t, asText = true, onCopied = () => {}) {
     if (asText) {
         navigator.clipboard.writeText(t).then(() => {
             onCopied();
-            console.log('x');
         });
     } else {
         navigator.clipboard.write(t).then(() => {
             onCopied();
-            console.log('x');
         });
     }
 }
