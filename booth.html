@@ -17,7 +17,6 @@
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/fontawesome.min.js" integrity="sha256-NP9NujdEzS5m4ZxvNqkcbxyHB0dTRy9hG13RwTVBGwo=" crossorigin="anonymous"></script>  
-
   <!-- JQuery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -55,14 +54,14 @@
   <script src="js/mychrono.js" type="module"></script>
   
   <link rel="stylesheet" href="css/rebooth.css?v0.11">
-  <script src="config/config.js?0.04"></script>
+  <script src="config/config.js?0.05"></script>
   <script src="js/common.js?0.02"></script>
   <script src="js/utils.js?0.05"></script>
   <script src="js/tune.js?0.00"></script>
-  <script src="js/log.js?0.0"></script>
+  <script src="js/log.js?0.1"></script>
   <script src="js/emojiPicker.js"></script>
   <script src="js/io-devices.js?0.02"></script>
-  <script src="js/rebooth.js?0.10"></script>
+  <script src="js/rebooth.js?0.11"></script>
 
 <style>
 
@@ -1394,7 +1393,7 @@ $(document).ready(function() {
                 
                 mixerNode.connect(audioDestinationStreamNode);
                 
-                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm'});
+                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm', audioBitsPerSecond: RecordingAudioSampleRate,});
                 
             } else if (params.recordingMode == 'interview') {
 
@@ -1412,14 +1411,14 @@ $(document).ready(function() {
                 
                 mixerNode.connect(audioDestinationStreamNode);
                 
-                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm'});
+                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm', audioBitsPerSecond: RecordingAudioSampleRate,});
 
             } else if (params.recordingMode == 'video') {
             
                 if (DebugLevel >= 2) console.log("Setting up video recording mode");
                 
                 // Record booth audio and video (no audio mixing)
-                me.mediaRecorder = new MyRecorder(me.mediaStream, null, {mimeType: 'video/webm'});
+                me.mediaRecorder = new MyRecorder(me.mediaStream, null, {mimeType: 'video/webm', audioBitsPerSecond: RecordingAudioSampleRate,});
                 
                 
                 
@@ -1437,7 +1436,7 @@ $(document).ready(function() {
                 selfSource.connect(audioDestinationStreamNode);
 
                 
-                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm'});
+                me.mediaRecorder = new MyRecorder(audioDestinationStreamNode.stream, null, {mimeType: 'audio/webm', audioBitsPerSecond: RecordingAudioSampleRate,});
             }
             
             me.mediaRecorder.start();
