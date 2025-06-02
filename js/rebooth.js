@@ -867,7 +867,7 @@ class Booth {
         this.videoElement.srcObject = stream;
         this.mediaStream = stream;
       
-        this.mediaRecorder = new MyRecorder(this.mediaStream, null, {mimeType: 'audio/webm'});
+        this.mediaRecorder = new MyRecorder(this.mediaStream, null, {mimeType: 'audio/webm', audioBitsPerSecond: RecordingAudioSampleRate, });
 
 
         // When a booth joins the class it is muted by default
