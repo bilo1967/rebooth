@@ -1,27 +1,30 @@
-var saveLog = '';
-var originalConsole = window.console; // reference to console.log function
+const originalConsole = window.console; // reference to console.log function
 
 // PolyFill
-Date.prototype.toTimeStamp = Date.prototype.toTimeStamp || function() {
-    return String(this.getDate()).lpad(2)
-    + '/' + String(this.getMonth() + 1).lpad(2) 
-    + '/' + this.getFullYear() 
-    + ' ' + String(this.getHours()).lpad(2)
-    + ':' + String(this.getMinutes()).lpad(2)
-    + ':' + String(this.getSeconds()).lpad(2)
-    ;
-};
 
-String.prototype.lpad = String.prototype.lpad || function(digits, fill) {
-    var str, pad;
-    
-    fill = fill == null ? '0' : fill;
-    str  = '' + this;
-    pad = fill.repeat(digits);
+if (! Date.prototype.toTimeStamp) {
+    Date.prototype.toTimeStamp = Date.prototype.toTimeStamp || function() {
+        return String(this.getDate()).lpad(2)
+        + '/' + String(this.getMonth() + 1).lpad(2) 
+        + '/' + this.getFullYear() 
+        + ' ' + String(this.getHours()).lpad(2)
+        + ':' + String(this.getMinutes()).lpad(2)
+        + ':' + String(this.getSeconds()).lpad(2)
+        ;
+    };
+}
 
-    return pad.substring(0, pad.length - str.length) + str;
-};
+if (! String.prototype.lpad) {
+    String.prototype.lpad = String.prototype.lpad || function(digits, fill) {
+        var str, pad;
+        
+        fill = fill == null ? '0' : fill;
+        str  = '' + this;
+        pad = fill.repeat(digits);
 
+        return pad.substring(0, pad.length - str.length) + str;
+    };
+}
 
 const loopReplacer = () => {
     const seen = new WeakSet();
