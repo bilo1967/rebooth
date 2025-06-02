@@ -1,30 +1,23 @@
+//
+//
+//
+
 const originalConsole = window.console; // reference to console.log function
 
-// PolyFill
+// Console methods mapping
+const consoleMethods = {
+  log: originalConsole.log,
+  warn: originalConsole.warn,
+  error: originalConsole.error,
+  syserr: () => {},
+};
 
-if (! Date.prototype.toTimeStamp) {
-    Date.prototype.toTimeStamp = Date.prototype.toTimeStamp || function() {
-        return String(this.getDate()).lpad(2)
-        + '/' + String(this.getMonth() + 1).lpad(2) 
-        + '/' + this.getFullYear() 
-        + ' ' + String(this.getHours()).lpad(2)
-        + ':' + String(this.getMinutes()).lpad(2)
-        + ':' + String(this.getSeconds()).lpad(2)
-        ;
-    };
-}
 
-if (! String.prototype.lpad) {
-    String.prototype.lpad = String.prototype.lpad || function(digits, fill) {
-        var str, pad;
-        
-        fill = fill == null ? '0' : fill;
-        str  = '' + this;
-        pad = fill.repeat(digits);
-
-        return pad.substring(0, pad.length - str.length) + str;
-    };
-}
+function logTimeStamp(date) {
+    const pad = (num) => String(num).padStart(2, '0');
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ` +
+           `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+};
 
 const loopReplacer = () => {
     const seen = new WeakSet();
@@ -63,102 +56,42 @@ window.onerror = function(message, source, lineno, colno, error) {
 
 
 
+
 function redirectConsole(init = '', sendToServer = () => {} ) {
     
     window.console = {
+
         saveLog: init,
-        log: function(msg) {
-            
-            var err = new Error;
-            var d = new Date();
-            
-            var args = Array.from(arguments);
-            if (Number.isInteger(args[0])) {
-                if (args[0] > DebugLevel) return;
-                args.shift();
-            }
 
-            var {script, line, column} = parseErrorStack(err);
-            script = script ? script.replace(/.*\//, '').replace(/\?.*/, '') : '';
+        _log: function(type, ...args) {
+            const err = new Error();
+            const d = new Date();
 
-            var t = _dump(args)
-            var mark = '[' + d.toTimeStamp() + " - log - " + script + ":" + line + "]";
-            
+            const { script, line, column } = parseErrorStack(err);
+            const cleanScript = script ? script.replace(/.*\//, '').replace(/\?.*/, '') : '';
+
+            const t = _dump(args);
+            const mark = `[${logTimeStamp(d)} - ${type} - ${cleanScript}:${line}]`;
+
             args.unshift(mark);
 
-            this.saveLog += mark + " " + t + "\n";
-            
-            originalConsole.log.apply(originalConsole, args);
+            this.saveLog += `${mark} ${t}\n`;
 
-            sendToServer(d.toTimeStamp(), 'log', script, line, column, t);
+            // Chiama il metodo corretto di console in base al tipo
+            consoleMethods[type].apply(originalConsole, args);
+
+            sendToServer(logTimeStamp(d), type, cleanScript, line, column, t);
         },
-        warn: function(msg) {
-            var err = new Error;
-            var d = new Date();
-            
-            var args = Array.from(arguments);
 
-            var {script, line, column} = parseErrorStack(err);
-            script = script ? script.replace(/.*\//, '').replace(/\?.*/, '') : '';
+        log:    function(...args) { this._log('log',    ...args); },
+        warn:   function(...args) { this._log('warn',   ...args); },
+        error:  function(...args) { this._log('error',  ...args); },
+        syserr: function(...args) { this._log('syserr', ...args); },            
 
-            var t = _dump(args)
-            var mark = '[' + d.toTimeStamp() + " - warn - " + script + ":" + line + "]";
-            
-            args.unshift(mark);
+        olog:   function(...args) { originalConsole.log.apply(originalConsole, args); },        
+        owarn:  function(...args) { originalConsole.warn.apply(originalConsole, args); },
+        oerror: function(...args) { originalConsole.error.apply(originalConsole, args); },
 
-            this.saveLog += mark + " " + t + "\n";
-            
-            originalConsole.warn.apply(originalConsole, args);
-
-            sendToServer(d.toTimeStamp(), 'warn', script, line, column, t);
-
-        },
-        error: function(msg){
-            var err = new Error;
-            var d = new Date();
-            
-            var args = Array.from(arguments);
-
-            var {script, line, column} = parseErrorStack(err);
-            script = script ? script.replace(/.*\//, '').replace(/\?.*/, '') : '';
-
-            var t = _dump(args)
-            var mark = '[' + d.toTimeStamp() + " - error - " + script + ":" + line + "]";
-            
-            args.unshift(mark);
-
-            this.saveLog += mark + " " + t + "\n";
-            
-            originalConsole.error.apply(originalConsole, args);
-
-            sendToServer(d.toTimeStamp(), 'error', script, line, column, t);
-        },
-        syserr: function(msg){
-            var err = new Error;
-            var d = new Date();
-            
-            var args = Array.from(arguments);
-
-            var {script, line, column} = parseErrorStack(err);
-            script = script ? script.replace(/.*\//, '').replace(/\?.*/, '') : '';
-
-            var t = _dump(args)
-            var mark = '[' + d.toTimeStamp() + " - syserr - " + script + ":" + line + "]";
-            
-            this.saveLog += mark + " " + t + "\n";
-            
-            sendToServer(d.toTimeStamp(), 'syserr', script, line, column, t);
-
-        },
-        olog: function() {
-            originalConsole.log.apply(originalConsole, arguments);
-        },        
-        owarn: function() {
-            originalConsole.warn.apply(originalConsole, arguments);
-        },
-        oerror: function() {
-            originalConsole.error.apply(originalConsole, arguments);
-        },
         get: function() {
             return this.saveLog;
         },
@@ -197,8 +130,3 @@ function parseErrorStack(errObject) {
 
     return {script: file, line: line, column: col};
 }
-
-
-
-
-
