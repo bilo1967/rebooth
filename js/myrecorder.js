@@ -184,7 +184,7 @@ class MyRecorder {
    
 
     stop() {
-        console.log("MyRecorder: STOP");
+
         return new Promise((resolve, reject) => {
             if (!(this.mediaRecorder instanceof MediaRecorder)) {
                 reject('MediaRecorder is not set');
@@ -320,6 +320,5 @@ export default MyRecorder;
 
 // Global loading, if this is not included by a module
 if (typeof globalThis !== 'undefined' && !globalThis.MyRecorder) {
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     globalThis.MyRecorder = MyRecorder;
 }
