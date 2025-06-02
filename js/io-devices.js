@@ -165,10 +165,11 @@ async function updateDeviceList(deviceList = null, deviceSelector, kind = 'video
 }
 
 
-
 // Attach audio output device to video element using device/sink ID.
 function attachSinkId(element, sinkId) {
+    
     if (typeof element.sinkId !== 'undefined') {
+        
         element.setSinkId(sinkId)
             .then(() => {
                 if (DebugLevel >= 3) console.log(`Success, audio output device attached: ${sinkId}`);
@@ -183,6 +184,7 @@ function attachSinkId(element, sinkId) {
                 // Jump back to first output device in the list as it's the default.
                 //audioOutputSelect.selectedIndex = 0;
             });
+
     } else {
         console.warn('Browser does not support output device selection.');
     }
@@ -192,7 +194,11 @@ function attachSinkId(element, sinkId) {
 function changeAudioDestination(elem) {
   
   if (!elem) return;
-    
+
+  // Hack to force sinkId change on DOM <video> objects
+  // if (typeof elem.src !== 'undefined') elem.src = elem.src;
+  // if (typeof elem.srcObject  !== 'undefined') elem.srcObject = elem.srcObject;
+  
   const audioDestination = audioOutputSelect.value;
   attachSinkId(elem, audioDestination);
 }
