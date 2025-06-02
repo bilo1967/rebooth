@@ -1261,7 +1261,6 @@ $(document).ready(function() {
                     if (DebugLevel >= 2) console.log("Batch in progress: triggering recorder start command");
                     $('#recorder-start').trigger('click');
 
-
                     if (DebugLevel >= 2) console.log("Batch in progress: scheduling the batch on all booths");
                     me.sendToAll({
                         batch: {
