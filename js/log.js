@@ -102,7 +102,7 @@ function redirectConsole(init = '', sendToServer = () => {} ) {
 
             this.saveLog += `${mark} ${t}\n`;
 
-            // Chiama il metodo corretto di console in base al tipo
+            // Apply the right method
             consoleMethods[type].apply(originalConsole, args);
 
             sendToServer(logTimeStamp(d), type, cleanScript, line, column, t);
