@@ -273,4 +273,4 @@ console.log('b: ' + b);
         
 		return this;
 	};
-})(jQuery);        
+})(jQuery);
