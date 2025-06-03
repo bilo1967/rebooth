@@ -129,3 +129,13 @@ function restoreConsole() {
     window.console = originalConsole;
 };
 
+
+
+// Module exports
+export { redirectConsole, restoreConsole };
+
+// Global loading, if this is not included by a module
+if (typeof globalThis !== 'undefined') {
+    if (!globalThis.redirectConsole) globalThis.redirectConsole = redirectConsole;
+    if (!globalThis.restoreConsole) globalThis.restoreConsole = restoreConsole;
+}
