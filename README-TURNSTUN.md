@@ -18,7 +18,7 @@ eturnal:
 
   # In this example, the server is listening on port 443, which may 
   # mitigate firewall problems with some particularly security 
-  # restrictive institutions
+  # restrictive institutions. Default port for TLS/DTLS is 5349.
   listen:
     -
       ip: "10.0.1.7"
