@@ -44,12 +44,6 @@ Now we need to configure an apache virtual host. This is our /etc/apache2/sites-
   RewriteCond %{HTTP:Upgrade} !=websocket [NC]
   RewriteRule /(.*)           http://localhost:9000/$1 [P,L]
 
-  # Optional: route all traffic at / to port 9000
-# ProxyPass "/" "http://localhost:9000/"
-# ProxyPassReverse "/" "http://localhost:9000/"
-# ProxyPass "/" "ws://localhost:9000/peerjs"
-# ProxyPassReverse "/" "ws://localhost:9000/peerjs"
-
   SSLCertificateFile /etc/letsencrypt/live/mypeerjs.host.tld/fullchain.pem
   SSLCertificateKeyFile /etc/letsencrypt/live/mypeerjs.host.tld/privkey.pem
   Include /etc/letsencrypt/options-ssl-apache.conf

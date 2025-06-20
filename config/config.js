@@ -128,7 +128,9 @@ BandwidthProfiles.default = BandwidthProfiles.low;
  *      voiceIsolation: false,
  *  }
  *  
- *  See also: https://www.webrtc-developers.com/getusermedia-constraints-explained/
+ *  See also:
+ *      https://www.webrtc-developers.com/getusermedia-constraints-explained/
+ *      https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackSupportedConstraints
  *
 **/
 
