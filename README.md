@@ -280,3 +280,84 @@ proc-group=turnserver
 # CLI access password
 cli-password=onemorepassword
 ```
+
+### PeerJS server configuration ###
+
+#### Starting PeerJS with SystemCtl ####
+After deploying PeerJS (in /opt, in this example) you may want to run it automatically at system boot.
+Adjust the following service script, save it as `peerjs-server.service` and copy it to `/etc/systemd/system`.
+
+```service
+[Unit]
+Description=PeerJS Server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+ExecStart=/usr/bin/node /opt/peerjs-server/node_modules/peer/bin/peerjs \
+                        --port 9000 \
+                        --timeout 2500 \
+                        --key peerjs \
+                        --path / \
+                        --proxied
+Restart=on-failure
+KillSignal=SIGKILL
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then, enable the service and start it with:
+
+```bash
+systemctl enable peerjs-server.service
+systemctl start peerjs-server.service
+```
+
+
+#### Accessing PeerJs through an Apache virtualhost proxy ####
+The following Apache2 modules are needed:
+- mod_ssl
+- mod_rewrite
+- mod_proxy
+- mod_proxy_http
+- mod_proxy_wstunnel
+
+```apache
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+
+  ServerName peerjs.your.doma.in
+
+  ServerAdmin webmaster@your.doma.in
+
+  ErrorLog /var/log/apache2/peerjs.your.doma.in.error_log
+  CustomLog /var/log/apache2/peerjs.your.doma.in.access_log combined
+
+
+  ProxyPreserveHost On
+  ProxyRequests Off
+
+  # allow for upgrading to websockets
+  RewriteEngine On
+  RewriteCond %{HTTP:Upgrade} =websocket [NC]
+  RewriteRule /(.*)           ws://localhost:9000/$1 [P,L]
+  RewriteCond %{HTTP:Upgrade} !=websocket [NC]
+  RewriteRule /(.*)           http://localhost:9000/$1 [P,L]
+
+  SSLCertificateFile /etc/letsencrypt/live/peerjs.your.doma.in/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/peerjs.your.doma.in/privkey.pem
+  Include /etc/letsencrypt/options-ssl-apache.conf
+
+</VirtualHost>
+</IfModule>
+```
+
+Then, enable the virtualhost and reload apache: 
+
+```bash
+a2ensite peerjs.your.doma.in
+systemctl reload apache2.service
+```
+
