@@ -1,4 +1,11 @@
-#### Example /etc/eturnal.yml configuration file (eturnal STUN/TURN server)
+#### eturnal STUN/TURN server ####
+
+[eturnal](https://eturnal.net/) is a clean, scalable STUN and TURN server, available either for Unix-like operating systems and Microsoft Windows. 
+
+You can either build it from source or install the binary packages you can find on [https://eturnal.net/](https://eturnal.net/).
+
+Here is an example `/etc/eturnal.yml` configuration file for the eturnal TURN/STUN server.
+
 ```yml
 eturnal:
   # Default settings are omitted
@@ -54,7 +61,16 @@ eturnal:
     rebooth: anotherpassword
 ```
 
-#### Example /etc/turnserver.conf configuration file (CoTURN STUN/TURN server)
+#### CoTURN STUN/TURN server
+
+CoTURN is a well known and stable STUN/TURN server and is present in almost any linux server distribution. On Ubuntu, you can install it with:
+
+```bash
+apt install coturn
+```
+
+Here is an example `/etc/turnserver.conf` configuration file for the CoTURN server.
+
 ```cnf
 # No connections on plain text port
 # Connect only through TLS/TCP and DTLS/UDP port
