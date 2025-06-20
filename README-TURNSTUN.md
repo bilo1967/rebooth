@@ -66,7 +66,7 @@ eturnal:
 CoTURN is a well known and stable STUN/TURN server and is present in almost any linux server distribution. On Ubuntu, you can install it with:
 
 ```bash
-apt install coturn
+sudo apt install coturn
 ```
 
 Here is an example `/etc/turnserver.conf` configuration file for the CoTURN server.
