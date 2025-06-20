@@ -324,6 +324,8 @@ The following Apache2 modules are needed:
 - mod_proxy_http
 - mod_proxy_wstunnel
 
+This is an example of working (for me!) apache virtual host proxy to PeerJS.
+
 ```apache
 <IfModule mod_ssl.c>
 <VirtualHost *:443>
