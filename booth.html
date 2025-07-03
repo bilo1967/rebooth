@@ -55,7 +55,7 @@
   <script src="js/log.js?0.2" type="module"></script>
 
   <link rel="stylesheet" href="css/rebooth.css?v0.11">
-  <script src="config/config.js?0.06"></script>
+  <script src="config/config.js?0.08"></script>
   <script src="js/common.js?0.02"></script>
   <script src="js/utils.js?0.05"></script>
   <script src="js/tune.js?0.00"></script>
@@ -237,8 +237,11 @@ function logToServer(timeStamp, logLevel, script, line, column, log) {
 function uploadBlobToServer(blob, fields = {teacher, student, session, pin, token, classCode}, debug = false) {
 
     const fd = new FormData();
-
     const session = fields.session;
+    
+    let lastProgressTime = Date.now(); // AAA
+    let progressCheckInterval = null;  // AAA 
+    let idleTimeout = false;           // AAA
 
     for (const field in fields) {
         const value = fields[field];
@@ -250,100 +253,122 @@ function uploadBlobToServer(blob, fields = {teacher, student, session, pin, toke
 
     $('#upload-percentage').text('');
 
-        $.ajax({
-            type: 'POST',
-            url: debug ? '/actions/debug' : '/actions/session-put-blob',
-            data: fd,
-            processData: false,
-            contentType: false,
-            dataType: "json",
-            timeout: 8000, //UploadTimeout,    // in milliseconds
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        var percentComplete = Math.round(evt.loaded / evt.total * 1000)/10;
-                        $('#upload-percentage').text('Upload ' + percentComplete + '%');
-                        // Update progress bar or other UI elements here
-                    }
-                }, false);
-                return xhr;
-            },
+    $.ajax({
+        type: 'POST',
+        url: debug ? '/actions/debug' : '/actions/session-put-blob',
+        data: fd,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        timeout: UploadTimeout, //UploadTimeout,    // in milliseconds
+        xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = Math.round(evt.loaded / evt.total * 1000)/10;
+                    $('#upload-percentage').text('Upload ' + percentComplete + '%');
+                    // Update progress bar or other UI elements here
+                }
+            }, false);
+            
+            // AAA
+            
+            //
+            // Idle Timeout Timer
+            // Abort if idle for more than UploadIdleTimeout
+            //            
+            xhr.upload.addEventListener("progress", () => lastProgressTime = Date.now());
+            progressCheckInterval = setInterval(() => {
+                if (Date.now() - lastProgressTime > UploadIdleTimeout) {
+                    idleTimeout = true;
+                    xhr.abort();
+                    clearInterval(progressCheckInterval);
+                }
+            }, 1000);            
 
-        }).done((d) => {
+            
+            return xhr;
+        },
 
-            if (d.Result == "OK") {
+    }).done((d) => {
+    
+        clearInterval(progressCheckInterval);
 
-                me.send({
-                    recorder: {
-                        action: "rec-ready",
-                        parameters: {
-                            session: session,
-                            file: d.File,
-                            mesg: "Recording '" + d.File + "' has been uploaded to session '" + session + "'",
-                        }
-                    }
-                });
-                appendLog("Recording uploaded");
-                if (DebugLevel >= 2) console.log("Recording uploaded");
-
-            } else {
-
-                // Error in upload processing by the server
-
-                me.send({
-                    recorder: {
-                        action: 'rec-upload-failed',
-                        parameters: {
-                            session: session,
-                            file: d.File,
-                            mesg: "Could not upload '" + d.File + "' to session '" + session + "'",
-                        }
-                    }
-                });
-
-                // ERROR
-                appendLog(d.Message, "log-item-error");
-                console.warn("Upload FAILED: " + d.Message);
-
-            }
-
-        }).fail( (jqXHR, textStatus, errorThrown) => {
-
-            // Upload error
-            var msg = '';
-
-            if (jqXHR.status == 404) {
-                msg = 'Page not found [404]';
-            }  else if (jqXHR.status == 401) {
-                msg = 'Session expired [401]';
-            } else if (jqXHR.status == 500) {
-                msg = 'Internal Server Error [500]';
-            } else if (errorThrown === 'parsererror') {
-                msg = 'Requested JSON parse failed';
-            } else if (errorThrown === 'timeout') {
-                msg = 'Timeout';
-            } else if (errorThrown === 'abort') {
-                msg = 'Ajax request aborted';
-            } else {
-                msg = 'Unknown error occured';
-            }
+        if (d.Result == "OK") {
 
             me.send({
                 recorder: {
-                    action: 'rec-upload-error',
+                    action: "rec-ready",
                     parameters: {
                         session: session,
-                        mesg: "Error uploading recording to session " + session + ": " + msg,
+                        file: d.File,
+                        mesg: "Recording '" + d.File + "' has been uploaded to session '" + session + "'",
+                    }
+                }
+            });
+            appendLog("Recording uploaded");
+            if (DebugLevel >= 2) console.log("Recording uploaded");
+
+        } else {
+
+            // Error in upload processing by the server
+
+            me.send({
+                recorder: {
+                    action: 'rec-upload-failed',
+                    parameters: {
+                        session: session,
+                        file: d.File,
+                        mesg: "Could not upload '" + d.File + "' to session '" + session + "'",
                     }
                 }
             });
 
-            appendLog("Error uploading audio: " + msg, "log-item-error");
-            console.warn(jqXHR, textStatus, errorThrown);
-        }).always(() => {
-            $('#upload-percentage').text('');
+            // ERROR
+            appendLog(d.Message, "log-item-error");
+            console.warn("Upload FAILED: " + d.Message);
+
+        }
+
+    }).fail( (jqXHR, textStatus, errorThrown) => {
+
+        // Upload error
+        var msg = '';
+
+        if (jqXHR.status == 404) {
+            msg = 'Page not found [404]';
+        }  else if (jqXHR.status == 401) {
+            msg = 'Session expired [401]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500]';
+        } else if (errorThrown === 'parsererror') {
+            msg = 'Requested JSON parse failed';
+        } else if (errorThrown === 'timeout') {
+            msg = 'Timeout';
+        } else if (errorThrown === 'abort') {
+            msg = 'Ajax request aborted';
+        } else if (idleTimeout) {
+            msg = 'idle timeout';
+            errorThrown = msg;
+        } else {
+            msg = 'Unknown error occured';
+        }
+
+        me.send({
+            recorder: {
+                action: 'rec-upload-error',
+                parameters: {
+                    session: session,
+                    mesg: "Error uploading recording to session " + session + ": " + msg,
+                }
+            }
         });
+
+        appendLog("Error uploading audio: " + msg, "log-item-error");
+        console.warn(jqXHR, textStatus, errorThrown);
+    }).always(() => {
+        $('#upload-percentage').text('');
+    });
 
 }
 
@@ -1492,7 +1517,7 @@ $(document).ready(function() {
                         'token':     sessionToken,
                         'classCode': classCode
                     }
-                    , student.substring(0, 3) == 'zzz' //, true // <= debug
+                    , student.substring(0, 3) == 'zzz' // if student email is zzz*@something <= debug
                 );
 
 //              return new Promise(resolve => {
