@@ -106,7 +106,11 @@ try {
     // Move temporary file path to student jobs directory    
     $done = @move_uploaded_file($tmpName, $sessionDirectory . "/" . $fileName);
     
-    if (!$done) throw new Exception("Can't copy '$fileName' in the student jobs directory");
+    if (!$done) {
+        throw new Exception("Can't copy '$fileName' in the student jobs directory");
+    } else {
+        error_log("Booth $student/$pin recording moved from '$tmpName' to '$sessionDirectory/$fileName'" );
+    }
     
     $result['Result'] = "OK";
     $result['File'] =  $fileName;
