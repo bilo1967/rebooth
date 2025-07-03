@@ -12,7 +12,8 @@ const SimultaneousBatchDefaultDelay = 15;
 const ConsecutiveBatchDefaultDelay  = 0;
 
 // Upload timeout for booth recordings
-const UploadTimeout = 180000;
+const UploadTimeout = 90000;
+const UploadIdleTimeout = 4999; // AAAA
 
 // Maximum gain values (1=100%)
 // WARNING: overboosting audio volume may cause damage to your hearing
@@ -25,7 +26,7 @@ const BoothPollingInterval = 3210;
 
 
 // Allowed uploadable media files
-const AllowedMediaFileExtensions = ['wav','mp3','mpeg3','ogg','m4a','mp4','m4v'];
+const AllowedMediaFileExtensions = ['wav','mp3','mpeg3','ogg','m4a','mp4','m4v','mkv'];
 
 // Prefix to use to name booths added at class time (will prefix a number)
 const classTimeBoothNamePrefix = "student@booth.n";
@@ -36,7 +37,7 @@ const SoundSnapshot        = "sounds/shutter.wav";
 const SoundStartRecording  = "sounds/bell.wav";
 const SoundAudioReady      = "sounds/click.wav";
 const SoundHandRaised      = "sounds/boing.wav";
-const SoundAudioTest       = 'sounds/whistle.mp3';
+const SoundAudioTest       = 'sounds/mictest.mp3';
 
 // Customize images
 const BoothImageUrlTemplate = 'images/booth-{n}.png'; // {n} will be replaced with 1, 2, ...
