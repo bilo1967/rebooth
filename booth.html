@@ -331,6 +331,9 @@ function uploadBlobToServer(blob, fields = {teacher, student, session, pin, toke
         }
 
     }).fail( (jqXHR, textStatus, errorThrown) => {
+    
+        // Idle timer cleanup
+        clearInterval(progressCheckInterval);
 
         // Upload error
         var msg = '';
@@ -348,7 +351,7 @@ function uploadBlobToServer(blob, fields = {teacher, student, session, pin, toke
         } else if (errorThrown === 'abort') {
             msg = 'Ajax request aborted';
         } else if (idleTimeout) {
-            msg = 'idle timeout';
+            msg = 'Idle timeout (no progress for ' + UploadIdleTimeout + 'ms)';
             errorThrown = msg;
         } else {
             msg = 'Unknown error occured';
