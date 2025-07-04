@@ -61,7 +61,7 @@
   <script src="js/tune.js?0.00"></script>
   <script src="js/emojiPicker.js"></script>
   <script src="js/io-devices.js?0.02"></script>
-  <script src="js/rebooth.js?0.11"></script>
+  <script src="js/rebooth.js?0.10.0"></script>
 
 <style>
 
@@ -239,9 +239,9 @@ function uploadBlobToServer(blob, fields = {teacher, student, session, pin, toke
     const fd = new FormData();
     const session = fields.session;
     
-    let lastProgressTime = Date.now(); // AAA
-    let progressCheckInterval = null;  // AAA 
-    let idleTimeout = false;           // AAA
+    let lastProgressTime = Date.now();
+    let progressCheckInterval = null;
+    let idleTimeout = false;
 
     for (const field in fields) {
         const value = fields[field];
@@ -263,15 +263,27 @@ function uploadBlobToServer(blob, fields = {teacher, student, session, pin, toke
         timeout: UploadTimeout, //UploadTimeout,    // in milliseconds
         xhr: function() {
             var xhr = new window.XMLHttpRequest();
+            
+            var pct = 0;
             xhr.upload.addEventListener("progress", function(evt) {
                 if (evt.lengthComputable) {
-                    var percentComplete = Math.round(evt.loaded / evt.total * 1000)/10;
-                    $('#upload-percentage').text('Upload ' + percentComplete + '%');
-                    // Update progress bar or other UI elements here
+                    const percentComplete = Math.round(100 * evt.loaded / evt.total);
+                    if (pct != percentComplete) {
+                        $('#upload-percentage').text('Upload ' + percentComplete + '%');
+                        // Update progress bar or other UI elements here
+                        me.send({
+                            uploading: {
+                                action: 'upload-feedback',
+                                parameters: {
+                                    percentage: percentComplete,
+                                }
+                            }
+                        });
+                        console.log(percentComplete);
+                        pct = percentComplete;
+                    }
                 }
             }, false);
-            
-            // AAA
             
             //
             // Idle Timeout Timer
@@ -791,7 +803,7 @@ $(document).ready(function() {
 
                     //downloadDataURL(r.url, snapfile);
                 });
-/*            */
+
             } else if (data.player) {
                $(document).trigger('teacher-player-commands', {
                    date: Date.now(),
@@ -1230,22 +1242,45 @@ $(document).ready(function() {
 
     $('#close-connection').on('click', function(e) {
         e.preventDefault();
+        
         if ($(this).hasClass('disabled')) return;
+        
 
-        // Stop the player
-        $('#audio-player')[0].pause();
-        $('#audio-player')[0].currentTime = 0;
+        bootbox.confirm({
+            title: "Do you really want to leave this class?",
+            message: "If you leave the class now any recording in progress will be lost. Do you really want to continue?",
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-success'
+                }
+            },           
+            callback: (r) => {
+                if (!r) return;
 
-        // Stop the recorder
-        //if (recorder) recorder.stop().catch(()=>{});
-        if (me.mediaRecorder && me.mediaRecorder.status == 'recording') me.mediaRecorder.stop();
+                // Stop the player
+                $('#audio-player')[0].pause();
+                $('#audio-player')[0].currentTime = 0;
 
-        $('#join-connection').removeClass('disabled');
-        $(this).addClass('disabled');
+                // Stop the recorder
+                //if (recorder) recorder.stop().catch(()=>{});
+                if (me.mediaRecorder && me.mediaRecorder.status == 'recording') me.mediaRecorder.stop();
 
-        appendLog("Leaving the class&hellip;");
-        $('#screen-share-video-container').removeClass('hide').addClass('hide');
-        me.hangup();
+                $('#join-connection').removeClass('disabled');
+                $(this).addClass('disabled');
+
+                appendLog("Leaving the class&hellip;");
+                $('#screen-share-video-container').removeClass('hide').addClass('hide');
+                me.hangup();
+                
+            }
+        });
+
     });
 
 
@@ -2277,8 +2312,6 @@ $(document).ready(function() {
         </div>
       </div>
 
-
-
     </form>
 
       </div>
@@ -2292,16 +2325,6 @@ $(document).ready(function() {
 
 </div>
 <!-- Config dialog: end -->
-
-
-
-
-
-
-
-
-
-
 
 
 </body>
