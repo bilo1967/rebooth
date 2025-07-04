@@ -2,6 +2,7 @@
 <?php
     /*
      * Use this php script via command line to handle guest-auth module accounts
+     *
      * Example: php guest.php --list
      */
 
