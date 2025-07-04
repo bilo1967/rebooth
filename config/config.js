@@ -13,7 +13,7 @@ const ConsecutiveBatchDefaultDelay  = 0;
 
 // Upload timeout for booth recordings
 const UploadTimeout = 90000;
-const UploadIdleTimeout = 4999; // AAAA
+const UploadIdleTimeout = 4999;
 
 // Maximum gain values (1=100%)
 // WARNING: overboosting audio volume may cause damage to your hearing
