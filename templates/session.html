@@ -63,7 +63,7 @@
   <script src="js/utils.js?0.04"></script>
   <script src="js/emojiPicker.js"></script>
   <script src="js/io-devices.js"></script>
-  <script src="js/rebooth.js?0.11"></script>
+  <script src="js/rebooth.js?0.10.0"></script>
   <script src="js/rebooth-file-manager.js?0.01"></script>
 
 <style>
@@ -194,6 +194,10 @@ body {
 }
 
 
+.booth-upload-status {
+    background: rgba(56,121,56,0.33);
+    color: white;
+}
 
 </style>
   
@@ -719,6 +723,7 @@ $(document).ready(function() {
         $('#booth-'+pin+" .kick-out").prop('id', 'kick-out-' + pin);
         $('#booth-'+pin+" .talk-to-booth").prop('id', 'talk-to-booth-' + pin);
         $('#booth-'+pin+" .download-booth-recording").prop('id', 'download-booth-recording-' + pin);
+        $('#booth-'+pin+" .booth-upload-status").prop('id', 'booth-upload-status-' + pin);
         
         
         // Add a row to the booths status log table (see status-dialog)
@@ -810,7 +815,7 @@ $(document).ready(function() {
                     if (DebugLevel >= 2) console.log(pin + " " + who + " has joined the class");
                     appendLog(who + " has joined the class (" + d.toTimeStamp() + ")");
                     
-                    $('#booth-header-' + pin).removeClass('bg-info').addClass('bg-primary');
+                    $('#booth-header-' + pin).removeClass('bg-info bg-danger').addClass('bg-primary');
                     $('#booth-name-'+pin).html(who).tooltip({html: true, title: who, placement: 'top' });
                     
                     $('#booth-'+pin+" .take-snapshot").addClass('cursor-pointer');
@@ -855,7 +860,7 @@ $(document).ready(function() {
                         me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
                     }
                     
-                    $('#booth-header-' + pin).removeClass('bg-primary').addClass('bg-info');
+                    $('#booth-header-' + pin).removeClass('bg-danger bg-primary').addClass('bg-info');
                     $('booth-name-'+pin).html("Booth n&#186; " + $('#booth-header-' + pin).data('ord')).tooltip({html: true, title: who, placement: 'top' });
                     $('#booth-'+pin+' .booth-mini-log').html('');
                     $('#booth-'+pin+' .take-snapshot').removeClass('cursor-pointer');
@@ -959,6 +964,15 @@ $(document).ready(function() {
                             action: data.info.action,
                             parameters: data.info.parameters
                         });
+                    } else if (data.uploading) {
+                        // Booth upload status
+                        $(document).trigger('upload-feedback', {
+                            date: Date.now(),
+                            pin: pin,
+                            who: who,
+                            action: data.uploading.action,
+                            parameters: data.uploading.parameters
+                        });
                     } else if (data.snapshot) {
                     
                         console.log("Snapshot ready (" + data.snapshot.parameters.filename + ")");
@@ -981,6 +995,17 @@ $(document).ready(function() {
         );
     } // End of init teacher function
 
+
+    // Booth upload status
+    $(document).on('upload-feedback', (event, data) => {
+        const pin = data.pin;
+        const params = data.parameters;
+        $('#booth-'+pin+' .booth-upload-status').html(`Upload ${params.percentage}%`);
+    });
+    
+    
+
+    // Update booth status
     var boothPRS = {};
     $(document).on('info-feedback', (event, data) => {
         //let timestamp = data.timeStamp;
@@ -1598,6 +1623,10 @@ $(document).ready(function() {
                 .off('click')
                 .addClass('btn-success disabled')
                 .removeClass('btn-warning');
+                
+            // Clear upload percentage indicators
+            $('.booth-upload-status').html('');
+            
             
             // Here we send a new session id
             me.sendToAll({recorder: {action: "record",        parameters: parameters}});
@@ -1653,6 +1682,14 @@ $(document).ready(function() {
                             .removeClass('disabled btn-warning')
                             .addClass('btn-success')
                             .attr('data-original-title', "Download audio recording of this booth from the server"); // <= FORCE TOOLTIP
+                            
+                        // Clear upload percentage indicator
+                        const $indicator = $('#booth-upload-status-'+pin);
+                        $indicator.fadeOut(1000).promise().then( () => {
+                            $indicator.text('');
+                            $indicator.fadeIn();
+                        }) ;
+                            
                     } else {
                         // WE SHOULD NEVER GET HERE
                         // The booth has sent the "blob ready" message, but we couldn't
@@ -1688,6 +1725,14 @@ $(document).ready(function() {
                 .addClass('btn-warning')
                 .attr('data-original-title', "Booth couldn't upload its recording to the server. Click to try again."); // <= FORCE TOOLTIP
                 //.tooltip({title: });
+                
+            // Clear upload percentage indicator
+            const $indicator = $('#booth-upload-status-'+pin);
+            $indicator.fadeOut(1000).promise().then( () => {
+                $indicator.text('');
+                $indicator.fadeIn();
+            }) ;                
+
             $('#download-booth-recording-'+pin)
                 .one('click', () => {
                     me.send(pin, {
@@ -1922,6 +1967,7 @@ $(document).ready(function() {
         let boothsRecording = [];
         me.forEachBooth(booth => {
             if (booth.recorderStatus == 'recording') boothsRecording.push(booth.pin);
+            $('#booth-header-' + booth.pin).removeClass('bg-danger bg-info').addClass('bg-primary');
         });
         
         
@@ -2028,11 +2074,11 @@ $(document).ready(function() {
             parameters: { recordingMode: sessionRecordingMode, },
 //          parameters: { session: null }
         });    
-        
 
         let alive = 0;
         me.forEachConnectedBooth(booth => { 
             booth.startRecording();
+            $('#booth-header-' + booth.pin).removeClass('bg-primary bg-info').addClass('bg-danger');
             alive++;
         }, true);
 
@@ -3096,6 +3142,7 @@ function logToServer(timeStamp, logLevel, script, line, column, log) {
           <div class="booth-connection "></div>
           <div class="booth-signal absolute-middle"></div>
           <div class="booth-flags absolute-middle" ></div>
+          <div class="booth-upload-status absolute-middle text-center"></div>
           <div class="listen-to-booth-indicator text-brightred" style="position: absolute; top: 2px; right: 2px;" role="status"></div>
           <div class="talk-to-booth-indicator text-warning" style="position: absolute; top: 2px; left: 2px;" role="status"></div>
           <div class="booth-mini-log ellipsis label-small m-l-1 m-r-1" style="position: absolute; bottom: 1px; left: 1px; right: 1px"></div>
