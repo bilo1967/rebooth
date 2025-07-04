@@ -1,3 +1,13 @@
+## [v0.10.0]
+Upload percentage: as the booths upload recordings to the server, an indicator appears in the teacher's application showing the upload percentage, booth by booth.
+
+Recording indicator: when the booths are recording, the blue header of the active booths turns red in the teacher's application. The indicator only appears during actual recording. For example, in a consecutive recording, the booths "turn red" only after the song has been played, when recording starts.
+
+Confirmation request for booth disconnection: when the student clicks on "leave" a confirmation is now requested, indicating that any recording in progress would be lost.
+
+Improved management of timeouts (idle timeout and upload timeout): now, if the upload of the recording to the server does not proceed, due to network congestion problems, i.e. when no data is transferred in a certain time (idle timeout) the student application stops the upload and reports the problem to the teacher's desk, who can then request a new upload by clicking on the orange diskette. Previously, this functionality was only enabled if the entire upload took longer than a certain time (upload timeout). 
+The idle timeout is set to 8 seconds and the upload timeout to 5 minutes. Thus, the transfer is stopped if it does not take place within 5 minutes, or if no data is transferred in 8 seconds.
+
 ## [v0.9.0]
 Media files are now loaded via XMLHttpRequest instead of Fetch (see new MediaFetcher class in utils.js).  
 Implemented loading completion percentage.  
