@@ -197,7 +197,6 @@ function setVuMeter(stream, elem, options = {type: 'dbmeter', bars: 20, barSepWi
     if (! stream instanceof MediaStream) throw Error("stream is not a MediaStream");
     if (! elem instanceof HTMLCanvasElement) throw Error("elem parameter is not a canvas");
     
-    if (typeof close === 'function') 
 
     // Check options consistency
     if (options.bars == 0) options.bars = 1
@@ -216,21 +215,23 @@ function setVuMeter(stream, elem, options = {type: 'dbmeter', bars: 20, barSepWi
     var dataArray = [];
     
     if (options.type == 'waveform') {
-        analyser.fftSize = 2048;
-        analyser.minDecibels = -90; 
+        analyser.fftSize = 1024;
+        analyser.minDecibels = -80; 
         analyser.maxDecibels = -10;
         bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
     } else if (options.type == 'dbmeter') {
-        //analyser.smoothingTimeConstant = .5;
-        analyser.minDecibels = -90;
-        analyser.maxDecibels = -35;
+        analyser.fftSize = 64;
+        analyser.smoothingTimeConstant = .3;
+        analyser.minDecibels = -80;
+        analyser.maxDecibels = -20;
         analyser.frequencyBinCount = 16;
         dataArray = new Uint8Array(1);
     } else {
-        //analyser.smoothingTimeConstant = .5;
-        analyser.minDecibels = -90;
-        analyser.maxDecibels = -35;
+        analyser.fftSize = 64;
+        analyser.smoothingTimeConstant = .3;
+        analyser.minDecibels = -80;
+        analyser.maxDecibels = -20;
         analyser.frequencyBinCount = 16;
         dataArray = new Uint8Array(1);        
     }
