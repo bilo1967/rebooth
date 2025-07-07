@@ -14,6 +14,7 @@
  *         ...
  *     });
  * });
+ *
  */
 
 const DefaultPolynomial = 0x04C11DB7;
