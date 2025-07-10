@@ -9,7 +9,7 @@
 
 
 const AppName              = 'ReBooth';
-const AppVersion           = '0.10.0';
+const AppVersion           = '0.10.1';
 const AppAuthor            = 'Gabriele Carioli';
 const AppContributors      = 'Nicoletta Spinolo';
 const AppCompany           = 'Department of Interpretation and Translation at the University of Bologna';
