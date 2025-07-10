@@ -47,21 +47,21 @@
   <script src="js/anchorme.min.js"></script>
 
   <!-- PeerJS -->
-  <script src="js/peerjs.min.js?0.5"></script>
+  <script src="js/peerjs.min.js?0.0"></script>
 
   <!-- ReBooth -->
-  <script src="js/myrecorder.js?0.02" type="module"></script>
-  <script src="js/mychrono.js?0.02" type="module"></script>
-  <script src="js/log.js?0.2" type="module"></script>
+  <script src="js/myrecorder.js?0.0" type="module"></script>
+  <script src="js/mychrono.js?0.0" type="module"></script>
+  <script src="js/log.js?0.0" type="module"></script>
 
-  <link rel="stylesheet" href="css/rebooth.css?v0.11">
-  <script src="config/config.js?0.08"></script>
-  <script src="js/common.js?0.00"></script>
-  <script src="js/utils.js?0.05"></script>
-  <script src="js/tune.js?0.00"></script>
+  <link rel="stylesheet" href="css/rebooth.css?0.0">
+  <script src="config/config.js?0.0"></script>
+  <script src="js/common.js?0.0"></script>
+  <script src="js/utils.js?0.0"></script>
+  <script src="js/tune.js?0.0"></script>
   <script src="js/emojiPicker.js"></script>
-  <script src="js/io-devices.js?0.02"></script>
-  <script src="js/rebooth.js?0.10.0"></script>
+  <script src="js/io-devices.js?0.0"></script>
+  <script src="js/rebooth.js?0.0"></script>
 
 <style>
 
@@ -86,12 +86,7 @@ body {
 }
 
 .teacher-video-controls {
-    position: absolute;
-    top:0;
-    left:0;
-    width: 100%;
-    background: transparent;
-    height: var(--video-height);
+    height: var(--default-video-height);
 }
 
 .log-item-info {
@@ -105,7 +100,7 @@ body {
 
 .log-item-error {
     color: brown;
-    //font-weight: bold;
+    _font-weight: bold;
 }
 
 .log-board-item {
@@ -131,6 +126,22 @@ body {
     transform: translate(-50%, -50%); /* bring your own prefixes */
 }
 
+#teacher-video {
+    height: calc( var( --default-video-height ) );
+    width: calc( var( --default-video-height ) );
+}
+
+#booth-video {
+    height: calc( var( --default-video-height ) );
+    width: calc( var( --default-video-height ) );
+
+}
+#teacher-label {
+    line-height: 1.5;
+    
+    background: rgba(0,0,0,0.5);
+    color: white;
+}
 </style>
 
 <script>
@@ -188,7 +199,7 @@ var mediaFetcherProgress = 0;
 const myMediaConstraints = {
     onOk: handleMediaSuccess,
     onError: handleMediaErrors,
-    noWebcamMessage: 'Unusable or unavailable webcam',  // We don't know if the username is ok
+    noWebcamMessage: 'No webcam',  // We don't know if the username is ok
 };
 
 // fake webcam customizations
@@ -408,7 +419,7 @@ $(document).ready(function() {
 
     // When no webcam is available we get a fake video stream from a canvas element...
     initFakeWebcam({
-        message: 'Unusable or unavailable webcam',
+        message: 'No webcam available',
         background: fakeWebcamBackground,
         color: fakeWebcamColor,
         onStart: (msg) => {
@@ -651,7 +662,8 @@ $(document).ready(function() {
 
 
     // Set title
-    $('#application-name').html(AppName + ' <span style="font-size: 1em">v' + AppVersion + '</span>');
+    $('#application-name').html(`${AppName}`);
+    $('#application-version').html(`${AppVersion}`);
 
 
     if (myPin != null) $("#my-pin").val(myPin);
@@ -839,9 +851,11 @@ $(document).ready(function() {
 
                     if (data.info.parameters.value !== false) {
                         $('#teacher-label').html(data.info.parameters.value);
-                        animateCSS('#teacher-label', 'heartBeat');
+                        $('#teacher-label').fadeIn();
+                        //animateCSS('#teacher-label', 'pulse');
+                        
                     } else {
-                        $('#teacher-label').html('');
+                        $('#teacher-label').fadeOut(() => { $('#teacher-label').html('') });
                     }
 
                     break;
@@ -1033,7 +1047,9 @@ $(document).ready(function() {
             $('#close-connection,#join-connection').removeClass('disabled');
             $('#close-connection').addClass('disabled');
 
+            $('#teacher-label').fadeOut();
             $('#teacher-label').html('');
+            
 
             $('#screen-share-video-container').removeClass('hide').addClass('hide');
 
@@ -1227,6 +1243,12 @@ $(document).ready(function() {
                 appendLog(e.msg, "log-item-error");
                 $('#close-connection,#join-connection').removeClass('disabled');
                 $('#close-connection').addClass('disabled');
+                
+                bootbox.alert({
+                    centerVertical: true,
+                    title: "Can't join the class",
+                    message: e.msg,
+                });                
             },
             (stream) => {
                 if (DebugLevel >= 2) console.log("Media connection established");
@@ -1961,27 +1983,20 @@ $(document).ready(function() {
 </head>
 <body>
 
-  <div class="container-fluid" style="">
-    <div class="row mb-2 head-panel">
+  <div class="container-fluid p-0 m-0" style="">
+    <div class="w-100 d-flex mr-0 ml-0 p-0 mb-2 round head-panel position-relative">
 
-      <div class="col-sm-2 d-flex flex-column p-0">
-
-
-        <!--div class="display text-center w-100 align-self-start" id="application-name" style="color: #FFFFD0">ReBooth</div-->
-
-        <div class="display d-flex align-self-stretch h-100  align-content-center  rounded ml-2 mt-2 mb-2 mr-0" style="background-color: rgba(255,255,255,0.1)">
-          <div class="align-self-center text-center w-100" >
+      <div id="app-info" class="hide-on-narrow-display  d-flex flex-column align-items-center justify-content-center mt-2 ml-2 mb-2 mr-0 rounded app-info" style="width:10rem; min-width: 10rem;">
+          <div class="text-center w-100" >  
             <span style="font-size: 1.3rem; color: #FFFFD0" id="application-name">App</span><br/>
-            <span style="font-size: 2.25rem" id="time">h:mm</span><br/>
-            <span style="font-size: 0.8rem" id="date">day, dd/mm/yyyy</span>
+            <span style="font-size: 0.8rem; color: #FFFFD0" id="application-version">Ver</span><br/>
+            <span style="font-size: 2rem" id="time">h:mm</span><br/>
+            <span style="font-size: 0.75rem" id="date">day, dd/mm/yyyy</span>
           </div>
-        </div>
-
-
       </div>
 
-      <div class="form-inline col-sm-9">
-        <div style="width: 40rem;min-width:40rem">
+      <div class="form-inline d-flex ml-2">
+        <div style="width: 40rem; min-width:40rem">
           <div class="form-inline mb-2" >
             <div data-tooltip="tooltip" title="Teacher email address">
               <label class="label-small" for="teacher-user-name">Teacher</label>
@@ -1999,13 +2014,15 @@ $(document).ready(function() {
               <label class="label-small" for="my-pin">Code</label>
               <input type="text" style="width: 2.5rem" class="form-control ml-1  pl-2 pr-2 text-center  " id="class-code" placeholder="--">
             </div>
-            <div>
-              <label class="small-label" for="join-connection">&nbsp;</label>
-              <button class="btn btn-primary mb-2 ml-1" style="width: 4.5rem" id="join-connection" data-tooltip="tooltip" title="Join the class (connect)">Join</button>
-            </div>
-            <div>
-              <label class="small-label" for="join-connection">&nbsp;</label>
-              <button class="btn btn-danger mb-2 ml-1 disabled" style="width: 4.5rem" id="close-connection"  data-tooltip="tooltip" title="Leave the class (disconnect)">Leave</button>
+            <div class="d-flex flex-nowrap">
+                <div>
+                  <label class="small-label" for="join-connection">&nbsp;</label>
+                  <button class="btn btn-primary mb-2 ml-1" style="width: 4.5rem" id="join-connection" data-tooltip="tooltip" title="Join the class (connect)">Join</button>
+                </div>
+                <div>
+                  <label class="small-label" for="join-connection">&nbsp;</label>
+                  <button class="btn btn-danger mb-2 ml-1 disabled" style="width: 4.5rem" id="close-connection"  data-tooltip="tooltip" title="Leave the class (disconnect)">Leave</button>
+                </div>
             </div>
           </div>
 
@@ -2044,149 +2061,157 @@ $(document).ready(function() {
 
 
 
-      <div class="col-sm-1 text-right p-0">
+      <!--div class="d-flex ml-auto text-right p-0"-->
+      <div class="position-absolute" style="right:0;top:0">
         <div class="w-100 mt-2 pr-2">
-          <button id="config-button" class="btn btn-lg btn-info" data-to-ggle="modal" data-ta-rget="#config-panel" data-tooltip="tooltip" title="Setup your media devices"><i class="fas fa-cogs"></i></button>
+          <button id="config-button" class="btn btn-sm btn-success" data-tooltip="tooltip" title="Setup your media devices"><i class="fas fa-cogs"></i></button>
         </div>
-
       </div>
     </div>
 
 
+    <!-- CONNECTION AND CHAT ROW --> 
+    <div class="d-flex flex-row w-100 m-0 pl-2 pr-2" style="-max-height: calc(100vh - 170px); height: calc(100vh - 170px)!important;">
+      <div class="d-flex w-100 h-100 align-self-stretch flex-column mr-2 mb-0 mt-0 p-0" >
 
-    <div class="row" style="">
-      <div class="col-sm-8 d-flex flex-column pl-1 pr-1 pt-0 pb-0" >
-
-        <div class="h-100">
-
-          <div class="d-flex flex-wrap">
-            <!-- BEGIN: TEACHER VIDEO DIV -->
-            <div class="card connection connection-wide border rounded m-1" >
-              <div class="card-header text-white bg-primary" id="teacher-header">Teacher</div>
-              <div class="card-body bg-light">
-                <div class="d-flex justify-content-center position-relative" style="margin-top: 0.5px">
-
-                  <div class="teacher-video-controls d-flex justify-content-between a-lign-items-center mb-1 absolute" style="background: transparent">
-
-                    <div id="booth-flags"></div>
-
-                    <div id="teacher-audio" class="text-center" style="position: absolute; width: 1.25rem; margin: 0; padding: 0; top:5px;right:5px"></div>
-
-                    <div class="booth-vertical-slider-container mr-1">
-                        <input
-                          title="Teacher volume"
-                          data-tooltip="tooltip"
-                          id="teacher-volume"
-                          type="range"
-                          class="vertical-slider booth-vertical-slider"
-                          step="0.01" value="1" min="0" max="1">
-                    </div>
-
+        <div class="d-flex flex-wrap">
+          
+          <!-- BEGIN: TEACHER VIDEO DIV -->
+          <div class="card connection connection-wide border border-dark rounded mr-1 mb-1">
+            <div class="card-header text-white bg-primary" id="teacher-header">Teacher</div>
+            <div class="card-body d-flex">
+        
+               <div class="ml-1 mt-1 mb-1 position-relative d-flex">
+                   <div id="booth-flags" class="absolute-middle"></div>
+                   
+                   <div id="teacher-label" class="absolute-bottom text-center ellipsis _label-small w-100 hide" ></div>
+                   
+                   <video 
+                      class="video-normal crop-stream"
+                      id="teacher-video"
+                      disablePictureInPicture
+                      poster="images/teacher-poster.jpg"  >
+                   </video>
+               </div>
+              
+               <div class="teacher-video-controls d-flex justify-content-center align-items-center flex-column w-100">
+                   
+                  <!-- Teacher audio icon -->
+                  <div id="teacher-audio" class="text-center mt-2"></div>
+                  
+                  <div class="flex-fill"></div>
+        
+                  <!-- Teacher volume slider -->
+                  <div class="d-flex justify-content-center align-items-center">
+                    <input 
+                      id="teacher-volume"
+                      type="range" 
+                      data-tooltip="tooltip"
+                      class="vertical booth-vertical-slider"
+                      title="Teacher volume"
+                      step="0.01" value="1" min="0" max="1">
                   </div>
-                  <video class="video-normal" id="teacher-video" poster="images/teacher-poster.jpg" width="240" height="180" ></video>
-
-                  <div id="teacher-label" class="text-center ellipsis label-small ml-auto mr-auto" style="position: absolute; bottom: 1px;"></div>
-
+        
                 </div>
-              </div>
-              <div class="card-footer text-left">
-                  <button class="btn btn-lg  btn-warning" id="button-raise-hand" data-tooltip="tooltip" title="Raise your hand"><i class="far fa-hand-paper"></i></button>
-                  <button class="btn btn-lg btn-success" id="button-thumbs-up" data-tooltip="tooltip" title="Thumbs up"><i class="far fa-thumbs-up"></i></button>
-                  <button class="btn btn-lg btn-danger" id="button-thumbs-down" data-tooltip="tooltip" title="Thumbs down"><i class="far fa-thumbs-down"></i></button>
-              </div>
+        
+        
+                
+        
             </div>
-            <!-- END: TEACHER VIDEO DIV -->
-
-            <!-- BEGIN: STUDENT VIDEO DIV -->
-            <div class="card connection border rounded m-1">
-              <div class="card-header text-light bg-info">
-                You
-                <div class="float-right">
-                  rec time:&nbsp;<span id="recorder-chrono">00:00</span>
-                </div>
-              </div>
-              <div class="card-body bg-light">
-                <div class="d-flex justify-content-center position-relative">
-                  <div id="recording-indicator" class="text-brightred" style="z-index:10;position: absolute; top: 2px; right: 2px;" role="status"></div>
-                  <div class="student-video-controls d-flex justify-content-center align-items-center mb- absolute" style="background: transparent">
-                  </div>
-                  <video class="video-normal mirrored" id="booth-video" width="240" height="180"></video>
-                </div>
-              </div>
-              <div class="card-footer d-flex align-items-center">
-                <div class="mr-auto" id="upload-percentage"></div>
-                <a id="download-recording" data-tooltip="tooltip" title="Click here to download your recording" class="disabled btn btn-lg btn-success ml-auto"><i class="fas fa-save"></i></a>
-              </div>
+            <div class="card-footer text-left p-1 text-center">
+                <button class="btn btn-lg  btn-warning" id="button-raise-hand" data-tooltip="tooltip" title="Raise your hand"><i class="far fa-hand-paper"></i></button>
+                <button class="btn btn-lg btn-success" id="button-thumbs-up" data-tooltip="tooltip" title="Thumbs up"><i class="far fa-thumbs-up"></i></button>
+                <button class="btn btn-lg btn-danger" id="button-thumbs-down" data-tooltip="tooltip" title="Thumbs down"><i class="far fa-thumbs-down"></i></button>
             </div>
-            <!-- END: STUDENT VIDEO DIV -->
-
-
-
-            <!-- BEGIN: SCREEN SHARE DIV -->
-            <div id="screen-share-video-container" class="hide card connection  border rounded m-1" style="width: 316px;">
-
-              <div class="card-header text-white bg-dark" id="teacher-header">Shared media</div>
-              <div class="card-body bg-dark">
-                <div class="d-flex justify-content-center position-relative bg-danger">
-
-                  <video class="" width="307" height="230" id="screen-share-video" class="align-self-center"></video>
-                  <div style="position: absolute; right: 2px; bottom: 2px;">
-                    <button
-                      id="toggle-pip-button"
-                      title="full screeen mode on/off"
-                      class="btn btn-outline-light btn-sm"><i class="fas">PiP</i></button>
-                    <button
-                      id="toggle-fullscreen-button"
-                      title="full screeen mode on/off"
-                      class="btn btn-outline-light btn-sm">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- END: SCREEN SHARE DIV -->
-
-            <!-- BEGIN: MEDIA PLAYER DIV -->
-            <div id="player-container" class="hide card connection border rounded m-1" style="width: 316px;">
-
-              <div class="card-header text-white bg-dark" id="teacher-header">Media player</div>
-              <div class="card-body bg-dark">
-                <div class="d-flex justify-content-center position-relative bg-success">
-
-                  <video class="" width="307" height="230" id="audio-player" class="align-self-center"></video>
-                  <div style="position: absolute; right: 2px; bottom: 2px;">
-                    <!--button
-                      id="player-toggle-pip-button"
-                      title="full screeen mode on/off"
-                      class="btn btn-outline-light btn-sm"><i class="fas">PiP</i></button-->
-                    <button
-                      id="player-toggle-fullscreen-button"
-                      title="full screeen mode on/off"
-                      class="btn btn-outline-light btn-sm">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- END: MEDIA PLAYER DIV -->
-
-
           </div>
-
+          <!-- END: TEACHER VIDEO DIV -->
+        
+          <!-- BEGIN: STUDENT VIDEO DIV -->
+          <div class="card connection border border-dark rounded mr-1 mb-1">
+            <div class="card-header text-light bg-info">
+              You
+              <div class="float-right">
+                rec time:&nbsp;<span id="recorder-chrono">00:00</span>
+              </div>
+            </div>
+            <div class="card-body bg-light">
+              <div class="d-flex justify-content-center position-relative p-1">
+                <div id="recording-indicator" class="text-brightred" style="z-index:10;position: absolute; top: 2px; right: 2px;" role="status"></div>
+                <div class="student-video-controls d-flex justify-content-center align-items-center mb- absolute" style="background: transparent">
+                </div>
+                <video class="video-normal crop-stream mirrored" id="booth-video" disablePictureInPicture></video>
+              </div>
+            </div>
+            <div class="card-footer d-flex align-items-center p-1">
+              <div class="mr-auto" id="upload-percentage"></div>
+              <a id="download-recording" data-tooltip="tooltip" title="Click here to download your recording" class="disabled btn btn-lg btn-success ml-auto"><i class="fas fa-save"></i></a>
+            </div>
+          </div>
+          <!-- END: STUDENT VIDEO DIV -->
+        
+          <!-- BEGIN: SCREEN SHARE DIV -->
+          <div id="screen-share-video-container" class="hide card connection  border rounded m-1" style="width: 316px;">
+        
+            <div class="card-header text-white bg-dark" id="shared-header">Shared media</div>
+            <div class="card-body bg-dark">
+              <div class="d-flex justify-content-center position-relative bg-danger">
+        
+                <video class="" width="307" height="230" id="screen-share-video" class="align-self-center"></video>
+                <div style="position: absolute; right: 2px; bottom: 2px;">
+                  <button
+                    id="toggle-pip-button"
+                    title="full screeen mode on/off"
+                    class="btn btn-outline-light btn-sm"><i class="fas">PiP</i></button>
+                  <button
+                    id="toggle-fullscreen-button"
+                    title="full screeen mode on/off"
+                    class="btn btn-outline-light btn-sm">
+                      <i class="fas fa-expand-arrows-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END: SCREEN SHARE DIV -->
+        
+          <!-- BEGIN: MEDIA PLAYER DIV -->
+          <div id="player-container" class="hide card connection border rounded m-1" style="width: 316px;">
+        
+            <div class="card-header text-white bg-dark" id="media-header">Media player</div>
+            <div class="card-body bg-dark">
+              <div class="d-flex justify-content-center position-relative bg-success">
+        
+                <video class="" width="307" height="230" id="audio-player" class="align-self-center"></video>
+                <div style="position: absolute; right: 2px; bottom: 2px;">
+                  <!--button
+                    id="player-toggle-pip-button"
+                    title="full screeen mode on/off"
+                    class="btn btn-outline-light btn-sm"><i class="fas">PiP</i></button-->
+                  <button
+                    id="player-toggle-fullscreen-button"
+                    title="full screeen mode on/off"
+                    class="btn btn-outline-light btn-sm">
+                      <i class="fas fa-expand-arrows-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END: MEDIA PLAYER DIV -->
+        
+        </div>
+        
+        <div class="hide-on-narrow-display mt-auto align-self-shrink"> 
+           <div id="log-board" class="cursor-pointer unselectable alert-primary border rounded  mt-auto p-1" style="height: 148px;overflow-y: scroll;" title="click to copy log to the clipboard"></div>
         </div>
 
-
-
-        <div id="log-board" class="pb-0 pt-0 pr-1 pl-1 cursor-pointer unselectable alert alert-primary w-100 align-self-baseline mb-0 ml-1" style="height: 148px;overflow-y: scroll;"
-        role="alert" title="click to copy log to the clipboard"></div>
       </div>
 
-      <div class="col-sm-4 pl-1 pr-2">
-        <div class="card" style="padding: 0px; opacity: 0.90">
+      <div class="d-flex ml-auto m-0  p-0" style="width: 20rem">
+
+        <div class="card p-0 m-0" style="opacity: 0.90">
           <div class="card-header">Chat</div>
-          <div class="card-body p-1" style="overflow-y: scroll; max-height: calc(100vh - 250px); height: calc(100vh - 250px); background:transparent" id="chat-board"></div>
+          <div class="card-body p-1" style="overflow-y: scroll; _max-height: calc(100vh - 250px); _height: calc(100vh - 250px); background:transparent" id="chat-board"></div>
 
           <div class="card-footer border-top-0 p-0">
 
@@ -2201,17 +2226,13 @@ $(document).ready(function() {
                 <div class="input-group-append">
                   <button  id="send-chat-text" class="bg-primary text-light input-group-text pl-2 pr-2"><i class="far fa-paper-plane"></i></button>
                 </div>
-
-
               </div>
-
-
-
-
             </div>
-
           </div>
         </div>
+
+        
+        
       </div>
     </div>
 
