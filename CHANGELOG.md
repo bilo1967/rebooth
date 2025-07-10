@@ -1,3 +1,10 @@
+## [v0.10.1]
+Revised and cleaned HTML structure of both student and teacher interface for better responsiveness. The video feed of students now completely fills the booth layout, which is more compact. The page resizing algorithm has been simplified. 
+
+Fixed a bug when starting/joining the class was denied for credential clashes. Now a dialog box explicitly reports the error.
+
+Now the vertical sliders are implemented with the new standard features.
+
 ## [v0.10.0]
 Upload percentage: as the booths upload recordings to the server, an indicator appears in the teacher's application showing the upload percentage, booth by booth.
 
