@@ -50,23 +50,33 @@
   <script src="js/anchorme.min.js"></script>
 
   <!-- PeerJS -->
-  <script src="js/peerjs.min.js?0.05"></script>
+  <script src="js/peerjs.min.js?0.0"></script>
   
   <!-- ReBooth -->
-  <script src="js/myrecorder.js?0.02" type="module"></script>
-  <script src="js/mychrono.js?0.02" type="module"></script>
-  <script src="js/log.js?0.2" type="module"></script>
+  <script src="js/myrecorder.js?0.0" type="module"></script>
+  <script src="js/mychrono.js?0.0" type="module"></script>
+  <script src="js/log.js?0.0" type="module"></script>
 
-  <link rel="stylesheet" href="css/rebooth.css?0.11">
-  <script src="config/config.js?0.06"></script>
-  <script src="js/common.js?0.02"></script>
-  <script src="js/utils.js?0.04"></script>
+  <link rel="stylesheet" href="css/rebooth.css?0.0">
+  <script src="config/config.js?0.0"></script>
+  <script src="js/common.js?0.0"></script>
+  <script src="js/utils.js?0.0"></script>
   <script src="js/emojiPicker.js"></script>
   <script src="js/io-devices.js"></script>
-  <script src="js/rebooth.js?0.10.0"></script>
-  <script src="js/rebooth-file-manager.js?0.01"></script>
+  <script src="js/rebooth.js?0.0"></script>
+  <script src="js/rebooth-file-manager.js?0.0"></script>
 
 <style>
+
+body {
+    background: #0F1F3F;
+}
+
+
+#activity-panel {
+    min-width: 400px;
+
+}
 
 #shrink-booths:hover, #enlarge-booths:hover {
     opacity: 1;
@@ -119,6 +129,13 @@
 
 
 .booth-header {
+    font-size: 0.9rem;
+    height: var( --booth-header-height );
+}
+.booth-footer {
+    height: var( --booth-footer-height );
+}
+.booth-header- {
     height: 24px !important;
     font-size: 0.9rem !important;
     padding-top: 1px !important;
@@ -136,11 +153,6 @@
 
 
 
-body {
-
-    background: #0F1F3F;
-
-}
 
 
 
@@ -149,29 +161,23 @@ body {
     color: white;
 }
 
-.booth-video-container {
-    position: absolute;
-    background: transparent;
-    width: 100%;
-    height: var(--video-height);
-}
 
 /* vertical overflow scroller at left */
 #log-board-container {
-    height: 153px;
-    max-height: 153px;
+    height: 147px;
+    max-height: 147px;
     overflow-y: scroll;
     direction: rtl; 
-    padding-left: 4px;
+    -padding-left: 4px;
 }
 #log-board-container:hover {
     z-index: 10;
-   
 }
 
 
 #log-board {
-    direction: ltr; 
+    direction: ltr;
+    margin-left: 4px;
 }
 
 
@@ -197,6 +203,26 @@ body {
 .booth-upload-status {
     background: rgba(56,121,56,0.33);
     color: white;
+}
+
+.p-2px  { padding: 2px; }
+.pt-2px { padding-top: 2px; }
+.pb-2px { padding-bottom: 2px; }
+.pl-2px { padding-left: 2px; }
+.pr-2px { padding-right: 2px; }
+.m-2px  { margin: 2px; }
+.mt-2px { margin-top: 2px; }
+.mb-2px { margin-bottom: 2px; }
+.ml-2px { margin-left: 2px; }
+.mr-2px { margin-right: 2px; }
+
+
+.booth-discrete-listening:hover {
+    background: rgba(255,255,128,0.1);
+}
+
+.btn-main-toolbar { 
+    width: 40px;
 }
 
 </style>
@@ -592,100 +618,77 @@ $(document).ready(function() {
     //$('.player-control').prop('disabled', 'disabled');
 
     // Set title
-    $('#application-name').html(AppName + " v" + AppVersion);
+    $('#application-name').html(AppName);
+    $('#application-version').html(`v${AppVersion}`);
 
 
     sessionToken = new SessionToken();
 
-/*    
-    function viewportHeight($el) {
-        var elH = $el.outerHeight(),
-            H   = $(window).height(),
-            r   = $el[0].getBoundingClientRect(), t=r.top, b=r.bottom;
-        return Math.max(0, t>0? Math.min(elH, H-t) : Math.min(b, H));
-    }
-*/
     $('#enlarge-booths').on('click', function() {
-        const defaultWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--default-video-width'));
-        const defaultHeight = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--default-video-height'));
-        const aspectRatio = defaultWidth / defaultHeight;
-        const largeWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--large-video-width'));
-
     
-        var w = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--video-width')) + 10;
-        var h = parseInt(w / aspectRatio);
+        const maxWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--large-video-width'));
         
-        if (w > largeWidth) return;
-        
-        $("body").get(0).style.setProperty("--video-width", w );
-        $("body").get(0).style.setProperty("--video-height", h );
-    
+        const matches = $('.booth-side').css('--booth-side').match(/([0-9.]+)([a-zA-Z]+)/);
+        const w = parseInt(matches[1]) + 8;
+        const u = matches[2];
+        if (w > maxWidth) return;
+        console.log(w + u);
+        $('.booth-side').css('--booth-side', w + u);
     });
+
     $('#shrink-booths').on('click', function() {
     
-        const defaultWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--default-video-width'));
-        const defaultHeight = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--default-video-height'));
-        const aspectRatio = defaultWidth / defaultHeight;
         const minWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--tiny-video-width'));
-    
-        var w = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--video-width')) - 10;
-        var h = parseInt(w / aspectRatio);
         
+        const matches = $('.booth-side').css('--booth-side').match(/([0-9.]+)([a-zA-Z]+)/);
+        const w = parseInt(matches[1]) - 8;
+        const u = matches[2];
         if (w < minWidth) return;
-        
-        $("body").get(0).style.setProperty("--video-width", w );
-        $("body").get(0).style.setProperty("--video-height", h );
+        console.log(w + u);
+        $('.booth-side').css('--booth-side', w + u);
     });
     
     function resizeBooths() {
-    
-        const defaultWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--default-video-width'));
-        const defaultHeight = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--default-video-height'));
-        const aspectRatio = defaultWidth / defaultHeight;
+        // Minimum booth width
         const minWidth = parseInt(getComputedStyle($("body").get(0)).getPropertyValue('--tiny-video-width'));
         
         // number of booths to display
-        var count = invitations.length;
-    
+        const count = invitations.length;
 
         // current booth element width and margins
-        var boothWidth = $('.connection').outerWidth();
-        var boothHMargin = $('.connection').outerWidth(true) - boothWidth;
-        var boothHeight = $('.connection').outerHeight();
-        var boothVMargin = $('.connection').outerHeight(true) - boothHeight;
-
-
-        // visible client area of booths container
-        var w = $('#booths').width();
-        var h = $('#booths').height();
-
-        // given current booth size the booth container can display a c*r grid of booths without scrolling
-        var c = parseInt(w / (boothWidth  + boothHMargin));
-        var r = parseInt(h / (boothHeight + boothVMargin));
-        var maxCount =  c * r;
-
-        if (count > c * r) {
-            // we have more booths than those we can display without scrolling, so we need to resize 
-            // we add one column, keeping the same rows and resize booths accordingly
+        const boothWidth = $('.connection').outerWidth();
+        const boothHeight = $('.connection').outerHeight();
+        const boothWMargin = $('.connection').outerWidth(true) - boothWidth;
+        const boothHMargin = $('.connection').outerHeight(true) - boothHeight;
         
-            var newBoothWidth = parseInt(w / (c + 1)) - boothHMargin;
+        // size of visible client area of booths container
+        const w = $('#booths').width();
+        const h = $('#booths').height();
+        
+        // given current booth size, the booth container can
+        // display a maximum of c*r booths without scrolling
+        const c = parseInt(w / (boothWidth + boothWMargin));
+        const r = parseInt(h / (boothHeight + boothHMargin));
+        
+        // If we have more booths than those we can display
+        // without scrolling, we need to resize. 
+        if (count > c * r) {
+        
+            // We add one column, keeping the same rows, and 
+            // resize booths accordingly. 
+            const newBoothWidth = parseInt(w / (c + 1)) - boothWMargin;
             
-            if (newBoothWidth < minWidth) return;
+            // If the new booth width is below minimum, we don't resize
+            if (newBoothWidth < minWidth) return; 
             
-            var videoHeight = parseInt($('.video-normal').height());
-            
-            // we resize only the video part of the booth, since header and footer are fixed
-            var newVideoHeight = parseInt(newBoothWidth / aspectRatio);
-            
-            $("body").get(0).style.setProperty("--video-width", newBoothWidth );
-            $("body").get(0).style.setProperty("--video-height", newVideoHeight );
-            
-            resizeBooths();
+            // Resize
+            $('.booth-side').css('--booth-side', newBoothWidth + 'px');
         } 
     }
 
     $( window ).resize(function() {
         resizeBooths();
+        //console.log($("body").outerWidth());
     });
     
    
@@ -711,7 +714,7 @@ $(document).ready(function() {
         $('#booth-'+pin+" video").prop('poster', BoothImageUrlTemplate.replace('{n}', n));
 
 
-        $('#booth-'+pin+" .card-header").prop('id', 'booth-header-' + pin).data('ord', n);
+        $('#booth-'+pin+" .booth-header").prop('id', 'booth-header-' + pin).data('ord', n);
         $('#booth-'+pin+" .booth-name").prop('id', 'booth-name-' + pin).html("Booth n&#186; " + n).tooltip({title: email, placement: 'top'});
         
         $('#booth-'+pin+" .invitation-link")
@@ -724,6 +727,8 @@ $(document).ready(function() {
         $('#booth-'+pin+" .talk-to-booth").prop('id', 'talk-to-booth-' + pin);
         $('#booth-'+pin+" .download-booth-recording").prop('id', 'download-booth-recording-' + pin);
         $('#booth-'+pin+" .booth-upload-status").prop('id', 'booth-upload-status-' + pin);
+        $('#booth-'+pin+" .booth-discrete-listening").prop('id', 'booth-discrete-listening-' + pin);
+        
         
         
         // Add a row to the booths status log table (see status-dialog)
@@ -815,7 +820,10 @@ $(document).ready(function() {
                     if (DebugLevel >= 2) console.log(pin + " " + who + " has joined the class");
                     appendLog(who + " has joined the class (" + d.toTimeStamp() + ")");
                     
-                    $('#booth-header-' + pin).removeClass('bg-info bg-danger').addClass('bg-primary');
+                    $('#booth-header-' + pin).removeClass('bg-disconnected bg-recording').addClass('bg-connected');
+                    $('#booth-discrete-listening-' + pin).removeClass('disabled');
+                    
+                    
                     $('#booth-name-'+pin).html(who).tooltip({html: true, title: who, placement: 'top' });
                     
                     $('#booth-'+pin+" .take-snapshot").addClass('cursor-pointer');
@@ -860,7 +868,9 @@ $(document).ready(function() {
                         me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
                     }
                     
-                    $('#booth-header-' + pin).removeClass('bg-danger bg-primary').addClass('bg-info');
+                    $('#booth-header-' + pin).removeClass('bg-connected bg-recording').addClass('bg-disconnected');
+                    $('#booth-discrete-listening-' + pin).addClass('disabled');
+                    
                     $('booth-name-'+pin).html("Booth n&#186; " + $('#booth-header-' + pin).data('ord')).tooltip({html: true, title: who, placement: 'top' });
                     $('#booth-'+pin+' .booth-mini-log').html('');
                     $('#booth-'+pin+' .take-snapshot').removeClass('cursor-pointer');
@@ -1000,7 +1010,7 @@ $(document).ready(function() {
     $(document).on('upload-feedback', (event, data) => {
         const pin = data.pin;
         const params = data.parameters;
-        $('#booth-'+pin+' .booth-upload-status').html(`Upload ${params.percentage}%`);
+        $('#booth-'+pin+' .booth-upload-status').text(`Upload ${params.percentage}%`);
     });
     
     
@@ -1053,8 +1063,6 @@ $(document).ready(function() {
 
 
     $('#share-audio-button').on('click', () => {
-    
-        
     
         if (me.sharingScreen()) {
             if (DebugLevel >= 2) console.log("Teacher asked to stop sharing the screen");
@@ -1802,8 +1810,17 @@ $(document).ready(function() {
             },
             (err) => { 
                 appendLog(err);
-                console.warn("Logon error: " + err);
+                console.log(JSON.stringify(err));
+                console.warn("Logon error: " + err.msg);
+                
+                bootbox.alert({
+                    centerVertical: true,
+                    title: "Class start error",
+                    message: err.msg,
+                });                
+                
                 $('#logoff').addClass('disabled');
+                $('#logon').removeClass('disabled');
             }
         );
         
@@ -1966,8 +1983,10 @@ $(document).ready(function() {
         // (they might not be actually connected at the moment)
         let boothsRecording = [];
         me.forEachBooth(booth => {
-            if (booth.recorderStatus == 'recording') boothsRecording.push(booth.pin);
-            $('#booth-header-' + booth.pin).removeClass('bg-danger bg-info').addClass('bg-primary');
+            if (booth.recorderStatus == 'recording') {
+                boothsRecording.push(booth.pin);
+                $('#booth-header-' + booth.pin).removeClass('bg-recording bg-disconnected').addClass('bg-connected');
+            }
         });
         
         
@@ -2025,7 +2044,7 @@ $(document).ready(function() {
                     $("#recorder-save").removeClass("disabled");
                     $("#recorder-save > i").removeClass("fa-sync fa-cog fa-spin").addClass("fa-save");
                     
-                    $("label[for='recorder-save']").html("Ready&hellip;");
+                    $("label[for='recorder-save']").html("Rec. ready");
                     
                     recordingIds.next(); // consume current recording session 
                    
@@ -2078,7 +2097,7 @@ $(document).ready(function() {
         let alive = 0;
         me.forEachConnectedBooth(booth => { 
             booth.startRecording();
-            $('#booth-header-' + booth.pin).removeClass('bg-primary bg-info').addClass('bg-danger');
+            $('#booth-header-' + booth.pin).removeClass('bg-connected bg-disconnected').addClass('bg-recording');
             alive++;
         }, true);
 
@@ -2098,7 +2117,7 @@ $(document).ready(function() {
         $("#recorder-save").addClass("disabled");
         $("#recorder-save > i").removeClass("fa-save").addClass("fa-cog fa-spin");
 
-        $("label[for='recorder-save']").html("Recording&hellip;");
+        $("label[for='recorder-save']").html("Recording");
             
     });
     
@@ -2223,7 +2242,7 @@ $(".booth-signal").html('<i class="fas fa-bullhorn fa-2x" style="color: yellow">
             me.unmuteSelf();
             if (DebugLevel >= 2) console.log('Class call activated');
             classCall = true;
-            $('.booth-video').css('pointer-events', 'none');
+            $('.booth-discrete-listening').css('pointer-events', 'none');
 //          $('.talk-to-booth').addClass('disabled');            
         } else {
         
@@ -2238,7 +2257,7 @@ $(".booth-signal").html("");
             me.muteSelf();
             if (DebugLevel >= 2) console.log('Class call ended');
             classCall = false;
-            $('.booth-video').css('pointer-events', 'auto');
+            $('.booth-discrete-listening').css('pointer-events', 'auto');
 //          $('.talk-to-booth').removeClass('disabled');
         }
     });
@@ -2479,7 +2498,7 @@ $(".booth-signal").html("");
     //
     // Discrete listening
     //
-    $('#booths').on('click', '.booth-video', function(e) {
+    $('#booths').on('click', '.booth-discrete-listening', function(e) {
 
         let pin = $(this).closest('.connection').data('pin');
         
@@ -2516,17 +2535,16 @@ $(".booth-signal").html("");
     $('#booths').on('click', '.talk-to-booth', function() {
     
         // Get pin from data-pin attribute of ancestor
-        let pin = $(this).closest('.connection').data('pin');
-        let who = $(this).closest('.connection').data('who');
+        const pin = $(this).closest('.connection').data('pin');
+        const who = $(this).closest('.connection').data('who');
         
         
         // Return if this booth is not connected or, for some reason, the button has been disabled
         if ($(this).hasClass('disabled') || !me.isBoothConnected(pin)) return;
     
         // Check if we're already listening and/or talking
-        let listening = $('#booth-'+pin+' .listen-to-booth-indicator').hasClass('spinner-grow');
-        let talking = $('#booth-'+pin+' .talk-to-booth-indicator').hasClass('spinner-grow');
-        
+        const listening = $('#booth-'+pin+' .listen-to-booth-indicator').hasClass('spinner-grow');
+        const talking = $('#booth-'+pin+' .talk-to-booth-indicator').hasClass('spinner-grow');
 
         // Stop broadcasting anyone if in class call mode
         if (classCall) {
@@ -2538,23 +2556,25 @@ $(".booth-signal").html("");
         me.sendToAll({ info: { action: 'set-teacher-label', parameters: { value: false }}});
         me.muteAllBooths();
         
-        // Re-enable booth audio if we were listening
-        if (listening) me.unmuteBooth(pin);
         
-        
-        // If we were already talking then we've clicked to stop talking
+        // If we were already talking then we've clicked the button to stop talking
         if (talking) {
-            // We don't mute ourselves if we are in class call mode
-            if (! classCall) {
-                me.muteSelf();
-            } else {
+console.log('here');        
+            $('.listen-to-booth-indicator').removeClass('spinner-grow');
+            if (classCall) {
+                // We continue the class call if we are in class call mode
                 me.sendToAll({info: { action: 'set-teacher-label', parameters: { value: 'class call' }} });
+            } else {
+                // ... otherwise we mute ourselves
+                me.muteSelf();
             }
             return;
         }
         
-        
-        if (!listening) $('#booth-video-' + pin).trigger('click');
+        // Re-enable booth audio if we were listening
+        if (listening) me.unmuteBooth(pin);
+
+        if (!listening) $('#booth-discrete-listening-' + pin).trigger('click');        
         $('#booth-'+pin+' .talk-to-booth-indicator').addClass('spinner-grow');
         me.unmuteSelfForBooth(pin);
         
@@ -2788,270 +2808,272 @@ function logToServer(timeStamp, logLevel, script, line, column, log) {
 
 
   <div class="container-fluid" style="">
+  
     <div class="row mb-2 head-panel">
 
-
-      <div class="col-sm-9 d-flex justify-content-between">
-      
-        <div class="d-flex flex-column mr-4" style="width: 18rem">
-          <div class="display d-flex align-self-stretch h-100  align-content-center rounded ml-1 mt-2 mb-2" style="background-color: rgba(255,255,255,0.05)">
+      <div class="col-md-9 col-12 d-flex justify-content-between pr-2 pl-0">
+<!--      
+        <div id="app-info" class="hide-on-narrow-display d-flex flex-column mr-2" style="width: 11rem">
+          <div class="d-flex align-self-shrink align-content-center h-100   rounded ml-1 mt-2 mb-2" style="background-color: rgba(255,255,255,0.05)">
             <div class="align-self-center text-center w-100" >  
               <span style="font-size: 1.3rem; color: #FFFFD0" id="application-name">App</span><br/>
+              <span style="font-size: 0.8rem; color: #FFFFD0" id="application-version">Ver</span><br/>
               <span style="font-size: 2.25rem" id="time">h:mm</span><br/>
-              <span style="font-size: 0.8rem" id="date">day, dd/mm/yyyy</span>
+              <span style="font-size: 0.75rem" id="date">day, dd/mm/yyyy</span>
             </div>
-          </div>      
+          </div>
         </div>
-  
-        
-        <!-- TOOLBAR: BEGIN -->
-        <div class="align-self-stretch w-100">
-              <div class="mt-2 mb-2 w-100">
-              <button  id="logon"  class="btn btn-sm btn-primary mr-1">Start the class</button>
-              <button  id="logoff" class="btn btn-sm btn-warning mr-1">End the class</button>
-              <button  id="quit"   class="btn btn-sm btn-danger mr-1">Quit and create another class</button>
-              
-              
-              <button id="config-button" class="ml-1 float-right btn btn-info" data-tooltip="tooltip" title="Show configuration panel"><i class="fas fa-cogs"></i></button>
-
-              <button id="add-booth"     class="ml-1 float-right btn btn-secondary" data-tooltip="tooltip" title="Add another booth"><i class="fas fa-plus-circle"></i></button>
-
-              
+-->
+        <div id="app-info" class="app-info hide-on-narrow-display d-flex flex-column align-items-center justify-content-center mr-2 ml-1 mt-2 mb-2 rounded " style="width: 10rem; background-color: rgba(255,255,255,0.05);">
+            <div class="text-center w-100" >  
+              <span style="font-size: 1.3rem; color: #FFFFD0" id="application-name">App</span><br/>
+              <span style="font-size: 0.8rem; color: #FFFFD0" id="application-version">Ver</span><br/>
+              <span style="font-size: 2rem" id="time">h:mm</span><br/>
+              <span style="font-size: 0.75rem" id="date">day, dd/mm/yyyy</span>
             </div>
-            
-            <div class="rounded border bg-light p-1 form-inline mb-2 unselectable">
-            
-              <div class="float-left form-inline align-items-start ">
-              
-                
-                <!-- Player: begin -->
-                <div id="player-controls" class="d-flex flex-row" style="">
-                
-                  <!-- Buttons and progress bar -->
-                  <div>
-                    <!-- Buttons -->
-                    <div class="d-flex">
-                      <div class="mr-1">
-                        <label for="open-file-manager-button" class="label-tiny text-dark">Load</label>
-                        <button  id="open-file-manager-button" class="player-control btn btn-success btn-main-toolbar" data-toggle="modal" data-target="#file-manager" >
-                          <i data-html="true" data-tooltip="tooltip" title="Open the file manager and send a media file to connected booths.<br>It won't be played until you press play or start a sim/cons" class="fas fa-folder-open"></i>
-                        </button>
-                      </div>
-                      
-                      <div class="mr-1">
-                        <label for="audio-player-play" class="label-tiny text-dark">Play</label>
-                        <button  id="audio-player-play" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-play"></i></button>
-                      </div>
-                      
-                      <div class="mr-1">
-                        <label for="audio-player-pause" class="label-tiny text-dark">Pause</label>
-                        <button  id="audio-player-pause" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-pause"></i></button>
-                      </div>
-                      
-                      <div class="mr-0">
-                        <label for="audio-player-stop" class="label-tiny text-dark">Stop</label> 
-                        <button  id="audio-player-stop" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-stop"></i></button>
-                      </div>
-                    </div>
-                    
-                    <!-- Progress bar -->
-                    <div class="mt-auto">
-                      <label class="label-small text-dark" for="audio-player-bar" id="audio-player-text">none</label>
-                      <div class="progress" style="" id="audio-player-bar">
-                        <div id="audio-player-progress" class="progress-bar bg-info" role="progressbar" style="width:100%;"></div>
-                      </div>
-                      <div id="audio-player-display" class="text-center text-dark" style="">00:00 / 00:00</div>
-                    </div>
-
-                  </div>
-  
-
-
-                  <!-- Volume slider -->
-                  <div class="ml-0 teacher-vertical-slider-container" _style="position:relative; width: 20px; background: yellow"  >
-                    <input 
-                      title="Player volume"
-                      data-tooltip="tooltip"
-                      id="audio-player-volume"
-                      type="range"
-                      _style="height: 100px"
-                      class="teacher-vertical-slider vertical-slider"
-                      step="0.01" value="1" min="0" max="1">
-                  </div>
-  
-  
-                  <!-- Booth slider -->
-                  <div class="ml-2 teacher-vertical-slider-container" _style="position:relative; width: 21px;     background: yellow">
-                    <input 
-                      title="Booth volume"
-                      data-tooltip="tooltip"
-                      id="booth-volume"
-                      type="range"
-                      _style="height: 100px"
-                      class="teacher-vertical-slider vertical-slider"
-                      step="0.01" value="1" min="0" max="1">
-                  </div>   
-
-                </div>
-                <!-- Player: end -->
-
-
-  
-                <!-- Share audio   -->
-                <div class="ml-3 mr-1 d-flex align-self-stretch align-items-center hidden" 
-                     id="share-audio-div">
-                  <div>
-                    <label for="share-audio" class="label-tiny text-dark">Sharing</label>
-                    <button id="share-audio" style="font-size: 1.5rem;" class="btn disabled"> 
-                        <i class="fa fa-volume-up" data-tooltip="tooltip" title="You're sharing your PCs audio"></i>
-                    </button>    
-                  </div>
-                </div>
-  
-                <!-- Screen share button -->
-                <div class="ml-3 mr-1 d-flex align-self-stretch align-items-center beta-features">
-                  <div>
-                      <label for="share-screen" class="label-tiny text-dark">Share screen</label>
-                      <button id="share-screen" style="font-size: 1.5rem;" class="btn btn-secondary">
-                        <i class="fas fa-desktop" style="color: white" data-tooltip="tooltip" title="Share screen"></i>  
-                      </button>
-                  </div>
-                </div>
-
-                <!-- Audio share button -->
-                <div class="beta-features ml-3 mr-1 d-flex align-self-stretch align-items-center">
-                        <i class="fa fa-volume-up" color="black" data-tooltip="tooltip" title="Share audio"></i>  
-                </div>
-  
-  
-  
-                <!-- Recorder: begin -->
-                <div id="recorder-controls" class="d-flex flex-column ml-2 align-self-stretch" style="">
-                  
-                  <div class="d-flex">
-                    <div class="mr-1">
-                      <label for="recorder-start" class="label-tiny text-dark">Record</label>
-                      <a id="recorder-start" class="btn btn-danger btn-main-toolbar" data-toggle="button" aria-pressed="false" ><i class="fas fa-circle" data-tooltip="tooltip" title="Start recording"></i>
-                      </a>
-                    </div>
-  
-                    <div class="mr-1">
-                      <label for="recorder-stop" class="label-tiny text-dark">Stop Rec.</label>
-                      <a id="recorder-stop" class="btn btn-danger btn-main-toolbar" data-toggle="button" aria-pressed="false" ><i class="fas fa-stop" data-tooltip="tooltip" title="Stop recording"></i>
-                      </a>            
-                    </div>
-                    
-                    <div class="mr-0">
-                        <label for="recorder-save" class="label-tiny text-dark">Save audio</label>
-                        <a id="recorder-save" class="btn btn-success btn-main-toolbar disabled" href="" >
-                          <i class="fas fa-save" data-tooltip="tooltip" title="Collect and save streaming audio files"></i>
-                        </a>
-                    </div>
-                  </div>
-                  
-                  <div class="text-dark text-center">
-                     <span class="ml-auto mr-auto text-dark" id="recorder-chrono">00:00</span>
-                  </div>
-                  
-                  
-                  <div class="mt-2 text-dark mt-auto w-100">
-                     <button id="get-sessions" class="btn btn-small btn-outline-secondary w-100 p-0 m-0" style="height: 22px; font-size: 0.8rem" data-tooltip="tooltip" title="Download booth recording sessions from server">Sessions</button>
-                  </div>
-  
-                </div>
-                <!-- Recorder: end -->
-  
-  
-                <!-- Batch controls: begin -->
-                <div id="batch-controls" class="d-flex flex-column ml-3 align-self-stretch" style="position: relative; width: 110px">
-  
-                  <div class="">
-                    <label for="simultaneous-batch" class="label-tiny text-dark">Sim. session</label>
-                    <a id="simultaneous-batch" style="wiadth: 6.5rem" class="w-100 btn btn-success  btn-sm" href="" data-tooltip="tooltip" title="Start a simultaneous interpreting session and automatically record booth outputs">Start sim.</a>
-                  </div>
-                  
-                  <div class="mt-auto">
-                    <label for="consecutive-batch" class="label-tiny text-dark ">Cons. session</label>
-                    <a id="consecutive-batch" style="wiadth: 6.5rem" class="w-100 btn btn-sm btn-success" href="" data-tooltip="tooltip" title="Start a consecutive interpreting session and automatically record booth outputs">Start cons.</a>
-                  </div>
-  
-                  <div class="rounded border bg-success text-light w-100 h-100 hide" style="position: absolute; left: 0; top: 0" id="batch-display">
-                    <div class="text-center"><span class="fa-blink" id="batch-type">Simultaneous</span></div>
-                    <div class="text-center mt-2"><span style="font-size: 2rem"  id="batch-counter">00:00</span></div>
-                  </div>
-                  
-                </div>
-                <!-- Batch controls: end -->
-  
-  
-  
+        </div>
+        
+        <!-- MAIN PANEL: BEGIN -->
+        <div class="align-self-shrink  w-100">
+        
+            <!-- CLASS CONTROL BUTTONS: BEGIN -->
+            <div class="mt-1 mb-1 w-100 d-flex">
+              <div class="flex-nowrap mt-1 mb-1">
+                <button  id="logon"  class="btn btn-sm btn-primary mr-1">Start the class</button>
+                <button  id="logoff" class="btn btn-sm btn-warning mr-1">End the class</button>
+                <button  id="quit"   class="btn btn-sm btn-danger mr-1">Quit and create another class</button>
               </div>
               
-  
-              <!-- -->
-              <div class="ml-auto d-flex align-self-stretch align-items-center" style="">
+              <div class="ml-auto flex-nowrap mt-1 mb-1">
+                <button id="config-button" class="ml-1 float-right btn btn-info" data-tooltip="tooltip" title="Show configuration panel"><i class="fas fa-cogs"></i></button>
+                <button id="add-booth" class="ml-1 float-right btn btn-secondary" data-tooltip="tooltip" title="Add another booth"><i class="fas fa-plus-circle"></i></button>
+              </div>
+            </div>
+            <!-- CLASS CONTROL BUTTONS: END -->
+            
+            <!-- ACTIVITY PANEL: BEGIN -->
+            <div id="activity-panel" class="d-flex mb-2 unselectable border rounded bg-light flex-wrap p-1">
+
+                              
+              <!-- PLAYER: BEGIN -->
+              <div id="player-controls" class="d-flex form-inline flex-nowrap border-right pr-1">
+              
+                <!-- Buttons and progress bar -->
                 <div>
+                  <!-- Buttons -->
+                  <div class="d-flex ">
+                    <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                      <label for="open-file-manager-button" class="label-tiny text-dark">Load</label>
+                      <button  id="open-file-manager-button" class="player-control btn btn-success btn-main-toolbar" data-toggle="modal" data-target="#file-manager" >
+                        <i data-html="true" data-tooltip="tooltip" title="Open the file manager and send a media file to connected booths.<br>It won't be played until you press play or start a sim/cons" class="fas fa-folder-open"></i>
+                      </button>
+                    </div>
+                    
+                    <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                      <label for="audio-player-play" class="label-tiny text-dark">Play</label>
+                      <button  id="audio-player-play" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-play"></i></button>
+                    </div>
+                    
+                    <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                      <label for="audio-player-pause" class="label-tiny text-dark">Pause</label>
+                      <button  id="audio-player-pause" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-pause"></i></button>
+                    </div>
+                    
+                    <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                      <label for="audio-player-stop" class="label-tiny text-dark">Stop</label> 
+                      <button  id="audio-player-stop" class="player-control btn btn-primary btn-main-toolbar"><i class="fas fa-stop"></i></button>
+                    </div>
+                  </div>
+                  
+                  <!-- Progress bar -->
+                  <div class="mt-auto text-center mb-0 p-0">
+                    <label class="label-small text-dark" for="audio-player-bar" id="audio-player-text">none</label>
+                    <div class="progress" style="" id="audio-player-bar">
+                      <div id="audio-player-progress" class="progress-bar bg-info" role="progressbar" style="width:100%;"></div>
+                    </div>
+                    <div id="audio-player-display" class="text-center text-dark" style="">00:00 / 00:00</div>
+                  </div>
+       
+                </div>
+       
+       
+                <!-- Volume slider -->
+                <div class="ml-1 d-flex align-items-center justify-content-center text-dark" >
+                  <!--<i class="fa fa-volume-up"></i><br>-->
+                  <input 
+                    title="Player volume"
+                    list="gains"
+                    data-tooltip="tooltip"
+                    id="audio-player-volume"
+                    type="range"
+                    class="vertical teacher-vertical-slider"
+                    step="0.01" value="1" min="0" max="1">
+                </div>
+       
+       
+                <!-- Booth slider -->
+                <div class="ml-3 d-flex  align-items-center justify-content-center text-dark">
+                  <!--<i class="fa fa-volume-up"></i><br>-->
+                  <input 
+                    title="Booth volume"
+                    data-tooltip="tooltip"
+                    list="gains"
+                    id="booth-volume"
+                    type="range"
+                    class="vertical teacher-vertical-slider"
+                    step="0.01" value="1" min="0" max="1">
+                </div>   
+       
+              </div>
+              <!-- PLAYER: END -->
+
+  
+              <!-- Share audio   -->
+              <div class="beta-features  ml-2 d-flex align-self-shrink align-items-center form-inline border-right pr-2 " 
+                   id="share-audio-div">
+                <div>
+                  <label for="share-audio" class="label-tiny text-dark">Sharing</label>
+                  <button id="share-audio" style="font-size: 1.5rem;" class="btn _disabled"> 
+                      <i class="fa fa-volume-up" data-tooltip="tooltip" title="You're sharing your PCs audio"></i>
+                  </button>    
+                </div>
+              </div>
+  
+              <!-- Screen share button -->
+              <div class="beta-features ml-2 d-flex align-self-shrink align-items-center form-inline border-right pr-2 ">
+                <div>
+                    <label for="share-screen" class="label-tiny text-dark">Share screen</label>
+                    <button id="share-screen" style="font-size: 1.5rem;" class="btn btn-secondary">
+                      <i class="fas fa-desktop" style="color: white" data-tooltip="tooltip" title="Share screen"></i>  
+                    </button>
+                </div>
+              </div>
+
+
+              <!--
+              <div class="beta-features ml-2 d-flex align-self-shrink align-items-center form-inline border-right pr-2">
+                  <div class="btn" data-tooltip="tooltip" title="Share audio"><i class="fa fa-volume-up"  ></i></div>
+              </div>
+              -->
+  
+              <!-- Recorder: begin -->
+              <div id="recorder-controls" class="d-flex form-inline flex-column justify-content-start ml-2 align-self-shrink border-right pr-2">
+                
+                <div class="d-flex ">
+                  <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                    <label for="recorder-start" class="label-tiny text-dark">Record</label>
+                    <a id="recorder-start" class="btn btn-danger btn-main-toolbar" data-toggle="button" aria-pressed="false" ><i class="fas fa-circle" data-tooltip="tooltip" title="Start recording"></i>
+                    </a>
+                  </div>
+             
+                  <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                    <label for="recorder-stop" class="label-tiny text-dark">Stop Rec.</label>
+                    <a id="recorder-stop" class="btn btn-danger btn-main-toolbar" data-toggle="button" aria-pressed="false" ><i class="fas fa-stop" data-tooltip="tooltip" title="Stop recording"></i>
+                    </a>            
+                  </div>
+                  
+                  <div class="mr-1 d-flex flex-column align-items-center justify-content-center">
+                      <label for="recorder-save" class="label-tiny text-dark">Save audio</label>
+                      <a id="recorder-save" class="btn btn-success btn-main-toolbar disabled" href="" >
+                        <i class="fas fa-save" data-tooltip="tooltip" title="Collect and save streaming audio files"></i>
+                      </a>
+                  </div>
+                </div>
+                
+                <div class="text-dark text-center">
+                   <span class="ml-auto mr-auto text-dark" id="recorder-chrono">00:00</span>
+                </div>
+                
+                <div class="mt-2 text-dark mat-auto w-100">
+                   <button id="get-sessions" class="btn btn-small btn-outline-secondary w-100 p-0 m-0" style="height: 22px; font-size: 0.8rem" data-tooltip="tooltip" title="Download booth recording sessions from server">Sessions</button>
+                </div>
+             
+              </div>
+              <!-- Recorder: end -->
+  
+  
+              <!-- Batch controls: begin -->
+              <div id="batch-controls" class="d-flex form-inline flex-column justify-content-start ml-2 align-self-shrink position-relative border-right pr-2" style="width: 105px">
+            
+                <div class="w-100 d-flex flex-column align-items-center justify-content-center">
+                  <label for="simultaneous-batch" class="label-tiny text-dark">Sim. session</label>
+                  <a id="simultaneous-batch"  class="w-100 btn btn-success  btn-sm" href="" data-tooltip="tooltip" title="Start a simultaneous interpreting session and automatically record booth outputs">Start sim.</a>
+                </div>
+                
+
+                <div class="w-100 mt-2 d-flex flex-column align-items-center justify-content-center">
+                  <label for="consecutive-batch" class="label-tiny text-dark ">Cons. session</label>
+                  <a id="consecutive-batch"  class="w-100 btn btn-sm btn-success" href="" data-tooltip="tooltip" title="Start a consecutive interpreting session and automatically record booth outputs">Start cons.</a>
+                </div>
+            
+                <div class="rounded border bg-success text-light w-100 h-100 hide" style="position: absolute; left: 0; top: 0" id="batch-display">
+                  <div class="text-center"><span class="fa-blink" id="batch-type" style="font-size: 0.9rem">Simultaneous</span></div>
+                  <div class="text-center mt-2"><span style="font-size: 2rem"  id="batch-counter">00:00</span></div>
+                </div>
+                
+              </div>
+              <!-- Batch controls: end -->
+  
+  
+              <!-- HELPER FUNCTIONS: BEGIN -->
+              <div class="ml-auto d-flex flex-nowrap form-inline  align-items-center mt-2 mb-2">
+                <div class="ml-1 d-flex flex-column align-items-center justify-content-center flex-nowrap align-self-shrink">
                   <label for="clear-all-flags" class="label-tiny text-dark">Check booths</label>
-                  <button id="check-booths-button" style="font-size: 1.5rem;" class="btn btn-info ml-0" data-toggle="modal" data-tooltip="tooltip" data-target="#status-dialog" title="Check booths status">
+                  <button id="check-booths-button" style="width: 3.5rem;font-size: 1.5rem;" class="btn btn-info" data-toggle="modal" data-tooltip="tooltip" data-target="#status-dialog" title="Check booths status">
                     <i class="fas fa-tasks"></i>
                   </button>    
                 </div>
-                <div>
+                <div class="ml-1 d-flex flex-column align-items-center justify-content-center flex-nowrap align-self-shrink">
                   <label for="clear-all-flags" class="label-tiny text-dark">Clear all flags</label>
-                  <button id="clear-all-flags" style="font-size: 1.5rem;" class="btn btn-secondary ml-1" data-tooltip="tooltip" title="Clear all flags">
+                  <button id="clear-all-flags" style="width: 3.5rem;font-size: 1.5rem;" class="btn btn-secondary" data-tooltip="tooltip" title="Clear all flags">
                     <i class="far fa-bell-slash"></i>
                   </button>    
                 </div>
-                <div> 
+                <div class="ml-1 d-flex flex-column align-items-center justify-content-center flex-nowrap align-self-shrink">
                   <label for="class-call" class="label-tiny text-dark">Class call</label>
-                  <button id="class-call" style="font-size: 1.5rem;" class="btn btn-warning ml-1">
+                  <button id="class-call" style="width: 3.5rem;font-size: 1.5rem;" class="btn btn-warning">
                     <i class="fas fa-bullhorn" style="color: yellow" data-tooltip="tooltip" title="Class call (talk to the booths)"></i>  
                   </button>
                 </div>
               </div>            
-              <!-- -->
+              <!-- HELPER FUNCTIONS: END -->
               
-  
-              
-  
             
             </div>
+            <!-- ACTIVITY PANEL: END -->
+            
         </div>  
-        <!-- TOOLBAR: END -->
+        <!-- MAIN PANEL: END -->
         
       </div>      
       
-      <div class="col-sm-3 pl-3 pt-2 mb-2 pr-3">
-        <div id="log-board-container" class="w-100 h-100 border rounded bg-info">
-      
-          <div id="log-board" class="h-100 unselectable cursor-pointer"></div>
+      <div class="col-md-3  d-none d-md-block   pl-0 pt-2 mb-2 pr-1 d-flex">
+        <div id="log-board-container" class="hide-on-narrow-display w-100 h-100 border rounded bg-info d-flex flex-fill">
+          <div id="log-board" class="flex-fill unselectable cursor-pointer"></div>
         </div>
-      
       </div>
+
     </div>  
         
     
+    <!-- Booths and chat -->
     <div class="row">
+    
       <div class="col-sm-9" style="height: calc(100vh - 200px); overflow-y: auto">
-
-<div 
-    style="position: absolute; left: 1px; top: calc( 50% - 0.85rem - 1px ); height: calc( 1.7rem + 2px );">
-    <button title="Enlarge booths" class="btn btn-xs btn-outline-light" style="width: 1rem; margin-bottom: 1px" id="enlarge-booths" data-tooltip="tooltip">+</button><br/>        
-    <button title="Shrink booths"class="btn btn-xs btn-outline-light" style="width: 1rem; margin-top: 1px" id="shrink-booths" data-tooltip="tooltip">-</button><br/>
-</div>      
-        <!-- BOOTHS HERE!!! -->
+        <div 
+            style="position: absolute; left: 1px; top: calc( 50% - 0.85rem - 1px ); height: calc( 1.7rem + 2px );">
+            <button title="Enlarge booths" class="btn btn-xs btn-outline-light" style="width: 1rem; margin-bottom: 1px" id="enlarge-booths" data-tooltip="tooltip">+</button><br/>        
+            <button title="Shrink booths"class="btn btn-xs btn-outline-light" style="width: 1rem; margin-top: 1px" id="shrink-booths" data-tooltip="tooltip">-</button><br/>
+        </div>      
+        
         <div class="d-flex flex-wrap align-content-start justify-content-center h-100 p-0 m-0"  id="booths">
-
-
-
-
-
-        
+          <!-- BOOTHS HERE!!! -->
         </div>
-        
       </div>
     
-      <div class="col-sm-3">
+      <div class="col-sm-3 pl-0 pr-1 mr-0">
+      
+        <!-- CHAT: BEGIN -->
         <div class="card">
           <div class="card-header ">
             Chat&nbsp;
@@ -3061,22 +3083,12 @@ function logToServer(timeStamp, logLevel, script, line, column, log) {
                     <input type="checkbox" class="custom-control-input " id="shared-chat" checked />
                     <label class="custom-control-label" for="shared-chat">Shared</label>
                 </div>
-
-                
-
-
-
-
-
-                
             </div>
-            
-            
           </div>
           <div class="card-body" id="chat-board" style="padding: 4px;overflow-y: scroll; max-height: calc(100vh - 270px); height: calc(100vh - 270px)"></div>
 
           <div class="card-footer border-top-0 p-0">
-          
+         
             <div class="form-inline" >
             
               <div class="input-group w-100">
@@ -3093,19 +3105,12 @@ function logToServer(timeStamp, logLevel, script, line, column, log) {
                 </div>
                 
               </div>
-              
-              <!--button  id="send-chat-text" class="hide btn btn-primary ml-auto" style="width:2.5rem" data-tooltip="tooltip" title="Send a message to each connected booth"><i class="far fa-paper-plane" style="margin-left:-2px" ></i></button-->
-              
-              <!--label _id="send-file-to-booths-button" data-tooltip="tooltip" class="ml-auto btn btn-small btn-success" title="Send a document to each connected booth" style="width:2rem" for="send-file-to-booths">
-                <i class="fas fa-file-upload"></i>
-              </label-->
+
               <input type="file" name="file" id="send-file-to-booths" class="hidden-input" />
             </div>  
-
-         
-          
           </div>
         </div>
+        <!-- CHAT: END --> 
       </div>
     </div>
 
@@ -3127,44 +3132,44 @@ function logToServer(timeStamp, logLevel, script, line, column, log) {
   </div>
 
 
-  <!-- BOOTH PROTOTYPE: BEGIN -->
-  <div id="connection-prototype" class="connection ml-1 mb-1" style="display: none">
-    <div class="card w-100 border rounded">
-    
-      <div class="card-header text-white bg-info booth-header">
-        <span class="invitation-link float-left mt-1 unselectable cursor-pointer show-tooltip" style="display:inline-block" data-tooltip="tooltip" title="Click to copy the invitation link"><i class="fas fa-link"></i></span>
-        <span class="booth-name float-left ml-1 ellipsis unselectable show-tooltip" data-html="true" data-placement="top" data-tooltip="tooltip"></span>&nbsp;
-        <span class="take-snapshot float-right unselectable mt-1 show-tooltip" data-tooltip="tooltip" title="Take a snapshot" style="display:inline-block"><i class="fas fa-camera"></i></span>&nbsp;
-      </div>
-      
-      <div class="card-body position-relative">
+  <!-- BOOTH PROTOTYPE: BEGIN --> 
+  <div id="connection-prototype" class="connection unselectable position-relative border border-info ml-1 mb-1 bg-light p-0 booth-side" style="display: none;box-sizing: border-box;">
+    <div class="absolute-middle w-100 h-100 border border-info">
+      <video class="absolute-middle crop-stream  w-100 h-100" disablePictureInPicture></video>  
+
+      <div class="absolute-middle w-100 h-100">
         <div class="booth-video-container d-flex justify-content-center align-items-center mb-1" >
           <div class="booth-connection "></div>
           <div class="booth-signal absolute-middle"></div>
           <div class="booth-flags absolute-middle" ></div>
           <div class="booth-upload-status absolute-middle text-center"></div>
-          <div class="listen-to-booth-indicator text-brightred" style="position: absolute; top: 2px; right: 2px;" role="status"></div>
-          <div class="talk-to-booth-indicator text-warning" style="position: absolute; top: 2px; left: 2px;" role="status"></div>
-          <div class="booth-mini-log ellipsis label-small m-l-1 m-r-1" style="position: absolute; bottom: 1px; left: 1px; right: 1px"></div>
+          <div class="listen-to-booth-indicator text-brightred" style="position: absolute; top: calc( var( --booth-header-height ) ); right: 2px;" role="status"></div>
+          <div class="talk-to-booth-indicator text-warning" style="position: absolute; top: calc( var( --booth-header-height ) ); left: 2px;" role="status"></div>
+
         </div>
-        
-        <div class="d-flex justify-content-center mb-0">
-          <video class="video-normal booth-video cursor-pointer show-tooltip"
-             disablePictureInPicture 
-             width="240" height="180"
-             data-tooltip="tooltip" title="Click to listen to/mute the booth."></video>
-         </div>
       </div>
-      
-      <div class="card-footer d-flex justify-content-between align-items-center">
-          <div class="">
-            <button class="talk-to-booth btn btn-sm btn-success disabled show-tooltip" data-tooltip="tooltip" title="Talk to the booth"><i class="fas fa-headset"></i></button>
-            &nbsp;
+        
+      <div class="w-100 h-100 position-absolute d-flex flex-column">
+
+          <div class="booth-header text-white bg-disconnected bg-opacity-50 d-flex  align-items-center">
+              <div class="m-1"><span class="invitation-link float-left mt-1  cursor-pointer show-tooltip" style="display:inline-block" data-tooltip="tooltip" title="Click to copy the invitation link"><i class="fas fa-link"></i></span></div>
+              <div class="mt-1 mb-1 flex-fill"><span class="booth-name float-left ellipsis  show-tooltip" data-html="true" data-placement="top" data-tooltip="tooltip"></span></div>
+              <div class="m-1"><span class="take-snapshot float-right  show-tooltip" data-tooltip="tooltip" title="Take a snapshot" style="display:inline-block"><i class="fas fa-camera"></i></span></div>
           </div>
-          <div class="">
-            <button class="disabled kick-out btn btn-sm btn-danger text-light show-tooltip" data-tooltip="tooltip" title="Force disconnection if connection is stuck"><i class="fas fa-skull"></i></button>
-            <a class="disabled download-booth-recording btn btn-sm btn-success show-tooltip" download data-tooltip="tooltip" title="Download recording"><i class="fas fa-save"></i></a>
+
+          <div class="flex-fill booth-discrete-listening d-flex flex-column btn-panel show-tooltip disabled" data-tooltip="tooltip" data-placement="right" title="Click to listen to/mute the booth.">
+              <div class="booth-mini-log ellipsis label-small w-100 mt-auto "></div>          
           </div>
+          
+          <div class="booth-footer d-flex align-items-center bg-disconnected  bg-opacity-50">
+              <div class="m-0 p-2px d-flex align-items-center">
+                <button class="talk-to-booth btn btn-xs btn-success show-tooltip disabled" data-tooltip="tooltip" title="Talk to the booth"><i class="fas fa-headset"></i></button>
+              </div>
+              <div class="ml-auto m-0 p-2px d-flex align-items-center">
+                <button class="kick-out btn btn-xs btn-danger text-light show-tooltip disabled" data-tooltip="tooltip" title="Force disconnection if connection is stuck"><i class="fas fa-skull"></i></button>
+                &nbsp;<a class="download-booth-recording btn btn-xs btn-success show-tooltip disabled" download data-tooltip="tooltip" title="Download recording"><i class="fas fa-save"></i></a>
+              </div>
+          </div>      
       </div>
     </div>
   </div>
